@@ -2,6 +2,6 @@
 int main()
 {
 
-    printf("mostakin");
+    printf("test");
     return 0;
 }
