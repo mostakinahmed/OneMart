@@ -4,11 +4,13 @@
 
 /*-------function List Start------*/
 void logOut();
-void adminPanel();
+void adminPanelHome();
 void home();
 void menuUI(char headingName[]);
 void showUI();
-void adminLogin();
+void adminSignIn();
+void adminSignUp();
+
 /*-------function List END------*/
 //
 //
@@ -75,7 +77,7 @@ void menuUI(char headingName[])
 {
     system("cls");
     drawBorderLine('=');
-    printCentered(headingName, 11); // Cyan
+    printCentered(headingName, 11);
     drawBorderLine('=');
     // drawBorderLine('=');
     // drawBorderLine('=');
@@ -85,14 +87,61 @@ void menuUI(char headingName[])
 //
 //
 /*-------------Main Program start from here---------*/
-void adminLogin()
+/*------------Admin Panel Authentication Start---------*/
+void adminPanelAuthentication()
+{
+    char headingName[30] = "ADMIN PANEL AUTHENTICATION";
+    menuUI(headingName);
+    printf("\n\n");
+    printCentered("1. Sign In.", 10);
+    printCentered("2. Sign Up.", 10);
+    printCentered(" 3. Home Page.", 10);
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        adminSignIn();
+        break;
+    case 2:
+        adminSignUp();
+        break;
+    case 3:
+        home();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        adminPanelAuthentication();
+    }
+}
+/*------------Admin Panel Authentication Start---------*/
+//
+//
+//
+/*------------Admin Sign in Start---------*/
+void adminSignIn()
 {
 }
+/*------------Admin Sign in Start---------*/
+//
+//
+//
+/*------------Admin Sign Up Start---------*/
+void adminSignUp()
+{
+}
+/*------------Admin Sign Up Start---------*/
+//
+//
+//
+
 void logOut()
 {
+    home(); // for user and admin
 }
 /*-----------------ADMIN PANEL START----------------------*/
-void adminPanel()
+void adminPanelHome()
 {
     char headingName[20] = "ADMIN PANEL";
     menuUI(headingName);
@@ -126,7 +175,7 @@ void home()
     switch (option)
     {
     case 111:
-        adminLogin();
+        adminPanelAuthentication();
         break;
     default:
         printCentered("Invalid Choice!", 12);
@@ -162,6 +211,7 @@ int main()
         break;
     default:
         printCentered("Invalid Choice!", 12);
+        main();
     }
 
     return 0;
