@@ -97,6 +97,7 @@ void adminPanelAuthentication()
     printCentered("1. Sign In.", 10);
     printCentered("2. Sign Up.", 10);
     printCentered(" 3. Home Page.", 10);
+    printCentered("    0. Exit Program.", 10);
     int option;
     printf("\n\nEnter your choice: ");
     scanf("%d", &option);
@@ -111,8 +112,13 @@ void adminPanelAuthentication()
     case 3:
         home();
         break;
+    case 0:
+        system("cls");
+        printCentered("Goodbye!", 12);
+        break;
     default:
         printCentered("Invalid Choice!", 12);
+        _getch();
         adminPanelAuthentication();
     }
 }
@@ -240,14 +246,16 @@ void adminPanelHome()
 {
     char headingName[20] = "ADMIN PANEL";
     menuUI(headingName);
-    printCentered("\n\n\nPress 0 logout.", 10);
+    printf("\n\n\n\n\n\n\n\n");
+    printCentered("Press 0 logout.....", 10);
     int option;
-    printf("\n\nEnter your choice: ");
+    printf("\nEnter your choice: ", 10);
     scanf("%d", &option);
     switch (option)
     {
     case 0:
-        logOut();
+        // logOut();
+        adminPanelAuthentication();
         break;
     default:
         printCentered("Invalid Choice!", 12);
@@ -263,10 +271,11 @@ void home()
     char headingName[10] = "HOME";
     menuUI(headingName);
 
-    printCentered("\n\n\nPress 111 for admin panel.", 10);
-    printCentered("\n\n\nPress 0 for Exits.", 10);
+    printf("\n\n\n\n\n\n\n\n\n\n");
+    printCentered("Press 111 for admin panel.", 10);
+    printCentered("Press 0 for Exits.", 10);
     int option;
-    printf("\n\nEnter your choice: ");
+    printf("\nEnter your choice: ");
     scanf("%d", &option);
     switch (option)
     {
@@ -279,6 +288,8 @@ void home()
         break;
     default:
         printCentered("Invalid Choice!", 12);
+        _getch();
+        home();
     }
 }
 /*-----------------HOME END----------------------*/
