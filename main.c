@@ -3,7 +3,7 @@
 #include <string.h>
 #include <conio.h>
 
-/*-------function List Start------*/
+/*-------function List------*/
 void logOut();
 void adminPanelHome();
 void home();
@@ -322,7 +322,6 @@ int main()
     case 1:
         system("cls");
         home();
-        // printCentered("You chose to Start!", 10);
         break;
     case 2:
         system("cls");
