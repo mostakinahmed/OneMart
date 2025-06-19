@@ -12,10 +12,10 @@ void showUI();
 void adminSignIn();
 void adminSignUp();
 
-/*-------function List END------*/
-//
-//
-//
+/*-------Global Variable Section------*/
+char current_user_admin[25];
+char current_user_customer[25];
+
 /*-------------This is for welcome page------------------------------*/
 // Function to set text color
 void setColor(int color)
@@ -127,8 +127,72 @@ void adminSignIn()
     menuUI(headingName);
     printCentered("Sign In", 10);
     printCentered("------------------------", 10);
+
+    int found = 0;
+    char userName[25];
+    char userName1[25];
+    char userPass[25];
+    char userPass1[25];
+    char userEmail[30];
+    char userEmail1[30];
+
+    printf("Enter UserName : ");
+    scanf("%s", userName);
+    printf("Enter Password : ");
+    scanf("%s", userPass);
+
+    // data received from file and cheak user authencity
+    FILE *fp;
+    fp = fopen("customer_data/data.txt", "r");
+
+    while (fscanf(fp, "%s %s %s", userName1, userPass1, userEmail1) != EOF)
+    {
+        if (strcmp(userName, userName1) == 0 && strcmp(userPass, userPass1) == 0)
+        {
+            strcpy(current_user_admin, userName);
+            found = 1;
+            break;
+        }
+    }
+    fclose(fp);
+
+    if (found) // user found
+    {
+        adminPanelHome();
+    }
+
+    else if (found == 0) // user not found
+    {
+        printf("\n\n");
+        printCentered("Error userName or password.\n", 10);
+        printCentered("1. Try Again.", 10);
+        printCentered("    2. Reset Password.", 10);
+        printCentered("      3. Authenticate Home.", 10);
+        printCentered("  0. Exit Program.", 10);
+
+        int option;
+        printf("\n\nEnter your choice: ");
+        scanf("%d", &option);
+        switch (option)
+        {
+        case 1:
+            adminSignIn();
+            break;
+        case 3:
+            adminPanelAuthentication();
+            break;
+        case 0:
+            system("cls");
+            printCentered("Goodbye!", 12);
+            break;
+        default:
+            printCentered("Invalid Choice!", 12);
+            _getch();
+            adminPanelAuthentication();
+        }
+    }
 }
-/*------------Admin Sign in Start---------*/
+/*------------Admin Sign in END---------*/
 //
 //
 //
@@ -159,7 +223,7 @@ void adminSignUp()
     printCentered("Registration is successfull.", 10);
     printCentered("press any key to login......", 10);
 
-    _getch(); //to hold user
+    _getch(); // to hold user
     adminSignIn();
 }
 /*------------Admin Sign Up END---------*/
@@ -200,6 +264,7 @@ void home()
     menuUI(headingName);
 
     printCentered("\n\n\nPress 111 for admin panel.", 10);
+    printCentered("\n\n\nPress 0 for Exits.", 10);
     int option;
     printf("\n\nEnter your choice: ");
     scanf("%d", &option);
@@ -207,6 +272,10 @@ void home()
     {
     case 111:
         adminPanelAuthentication();
+        break;
+    case 0:
+        system("cls");
+        printCentered("Goodbye!", 12);
         break;
     default:
         printCentered("Invalid Choice!", 12);
