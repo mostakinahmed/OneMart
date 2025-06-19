@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
+#include <conio.h>
 
 /*-------function List Start------*/
 void logOut();
@@ -90,7 +91,7 @@ void menuUI(char headingName[])
 /*------------Admin Panel Authentication Start---------*/
 void adminPanelAuthentication()
 {
-    char headingName[30] = "ADMIN PANEL AUTHENTICATION";
+    char headingName[40] = "ADMIN PANEL AUTHENTICATION SYSTEM";
     menuUI(headingName);
     printf("\n\n");
     printCentered("1. Sign In.", 10);
@@ -122,6 +123,10 @@ void adminPanelAuthentication()
 /*------------Admin Sign in Start---------*/
 void adminSignIn()
 {
+    char headingName[40] = "ADMIN PANEL AUTHENTICATION SYSTEM";
+    menuUI(headingName);
+    printCentered("Sign In", 10);
+    printCentered("------------------------", 10);
 }
 /*------------Admin Sign in Start---------*/
 //
@@ -130,8 +135,34 @@ void adminSignIn()
 /*------------Admin Sign Up Start---------*/
 void adminSignUp()
 {
+    char headingName[40] = "ADMIN PANEL AUTHENTICATION SYSTEM";
+    menuUI(headingName);
+    printCentered("Registration", 10);
+    printCentered("------------------------", 10);
+
+    char userName[25];
+    char userPass[25];
+    char userEmail[30];
+    printf("Enter UserName : ");
+    scanf("%s", userName);
+    printf("Enter Password : ");
+    scanf("%s", userPass);
+    printf("Enter Email    : ");
+    scanf("%s", userEmail);
+
+    // User data send to file
+    FILE *fp;
+    fp = fopen("customer_data/data.txt", "a");
+    fprintf(fp, "%s %s %s\n", userName, userPass, userEmail);
+    fclose(fp);
+    printf("\n\n");
+    printCentered("Registration is successfull.", 10);
+    printCentered("press any key to login......", 10);
+
+    _getch(); //to hold user
+    adminSignIn();
 }
-/*------------Admin Sign Up Start---------*/
+/*------------Admin Sign Up END---------*/
 //
 //
 //
