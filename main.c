@@ -246,8 +246,20 @@ void adminPanelHome()
 {
     char headingName[20] = "ADMIN PANEL";
     menuUI(headingName);
-    printf("\n\n\n\n\n\n\n\n");
-    printCentered("Press 0 logout.....", 10);
+
+    printCentered("All Operation:", 10);
+    printCentered("---------------", 10);
+    printf("\n");
+    // operation List
+    printCentered("1. Sales.", 10);
+    printCentered("2. Stock.", 10);
+    printCentered("          3. Order Management.", 10);
+    printCentered("            4. Product Management.", 10);
+    printCentered("         5. User Management.", 10);
+    printCentered("              6. Supplier Management.", 10);
+
+    printf("\n\n\n");
+    printCentered("Press 0 to logout.....", 10);
     int option;
     printf("\nEnter your choice: ", 10);
     scanf("%d", &option);
