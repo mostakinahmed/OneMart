@@ -2,7 +2,18 @@
 #include <windows.h>
 #include <string.h>
 
-/*-------------this is for welcome page------------------------------*/
+/*-------function List Start------*/
+void logOut();
+void adminPanel();
+void home();
+void menuUI(char headingName[]);
+void showUI();
+void adminLogin();
+/*-------function List END------*/
+//
+//
+//
+/*-------------This is for welcome page------------------------------*/
 // Function to set text color
 void setColor(int color)
 {
@@ -59,11 +70,76 @@ void showUI()
     printCentered("Use number keys to select.", 8);
     drawBorderLine('=');
 }
-/*-------------this is for welcome page------------------------------*/
+// for heading only
+void menuUI(char headingName[])
+{
+    system("cls");
+    drawBorderLine('=');
+    printCentered(headingName, 11); // Cyan
+    drawBorderLine('=');
+    // drawBorderLine('=');
+    // drawBorderLine('=');
+}
+/*-------------welcome page END-------------*/
+//
+//
+//
+/*-------------Main Program start from here---------*/
+void adminLogin()
+{
+}
+void logOut()
+{
+}
+/*-----------------ADMIN PANEL START----------------------*/
+void adminPanel()
+{
+    char headingName[20] = "ADMIN PANEL";
+    menuUI(headingName);
+    printCentered("\n\n\nPress 0 logout.", 10);
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 0:
+        logOut();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+    }
+}
+/*-----------------ADMIN PANEL END----------------------*/
+//
+//
+//
+/*-----------------HOME START----------------------*/
+void home()
+{
+    char headingName[10] = "HOME";
+    menuUI(headingName);
 
+    printCentered("\n\n\nPress 111 for admin panel.", 10);
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 111:
+        adminLogin();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+    }
+}
+/*-----------------HOME END----------------------*/
+//
+//
+//
+/*-----------------MAIN FUNCTION START----------------------*/
 int main()
 {
-    showUI();
+    showUI(); // for welcome page only
 
     int choice;
     printf("\n\nEnter your choice: ");
@@ -73,7 +149,8 @@ int main()
     {
     case 1:
         system("cls");
-        printCentered("You chose to Start!", 10);
+        home();
+        // printCentered("You chose to Start!", 10);
         break;
     case 2:
         system("cls");
@@ -89,3 +166,4 @@ int main()
 
     return 0;
 }
+/*-----------------MAIN FUNCTION END----------------------*/
