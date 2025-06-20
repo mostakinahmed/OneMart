@@ -11,6 +11,10 @@ void menuUI(char headingName[]);
 void showUI();
 void adminSignIn();
 void adminSignUp();
+void adminPanelAuthentication();
+void customerPanelAuthentication();
+void customerSignIn();
+void customerSignUp();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -122,7 +126,7 @@ void adminPanelAuthentication()
         adminPanelAuthentication();
     }
 }
-/*------------Admin Panel Authentication Start---------*/
+/*------------Admin Panel Authentication END---------*/
 //
 //
 //
@@ -241,7 +245,7 @@ void logOut()
 {
     home(); // for user and admin
 }
-/*-----------------ADMIN PANEL START----------------------*/
+/*-----------------ADMIN PANEL START HOME----------------------*/
 void adminPanelHome()
 {
     char headingName[20] = "ADMIN PANEL";
@@ -253,9 +257,9 @@ void adminPanelHome()
     // operation List
     printCentered("1. Sales.", 10);
     printCentered("2. Stock.", 10);
-    printCentered("          3. Order Management.", 10);
-    printCentered("            4. Product Management.", 10);
-    printCentered("         5. User Management.", 10);
+    printCentered("           3. Order Management.", 10);
+    printCentered("             4. Product Management.", 10);
+    printCentered("          5. User Management.", 10);
     printCentered("              6. Supplier Management.", 10);
 
     printf("\n\n\n");
@@ -273,7 +277,60 @@ void adminPanelHome()
         printCentered("Invalid Choice!", 12);
     }
 }
-/*-----------------ADMIN PANEL END----------------------*/
+/*-----------------ADMIN PANEL HME END----------------------*/
+//
+//
+///*------------CUSTOMER Panel Authentication Start---------*/
+void customerPanelAuthentication()
+{
+    char headingName[40] = "CUSTOMER AUTHENTICATION SYSTEM";
+    menuUI(headingName);
+    printf("\n\n");
+    printCentered("1. Sign In.", 10);
+    printCentered("2. Sign Up.", 10);
+    printCentered(" 3. Home Page.", 10);
+    printCentered("    0. Exit Program.", 10);
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        customerSignIn();
+        break;
+    case 2:
+        customerSignUp();
+        break;
+    case 3:
+        home();
+        break;
+    case 0:
+        system("cls");
+        printCentered("Goodbye!", 12);
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        _getch();
+        customerPanelAuthentication();
+    }
+}
+/*------------CUSTOMER Panel Authentication END---------*/
+//
+//
+//
+/*------------CUSTOMER SIGN UP START---------*/
+void customerSignUp()
+{
+}
+/*------------CUSTOMER SIGN UP END------------*/
+//
+//
+//
+/*------------CUSTOMER SIGN IN START---------*/
+void customerSignIn()
+{
+}
+/*------------CUSTOMER SIGN IN END---------*/
 //
 //
 //
@@ -285,6 +342,7 @@ void home()
 
     printf("\n\n\n\n\n\n\n\n\n\n");
     printCentered("Press 111 for admin panel.", 10);
+    printCentered("Press 11 for customer panel.", 10);
     printCentered("Press 0 for Exits.", 10);
     int option;
     printf("\nEnter your choice: ");
@@ -293,6 +351,9 @@ void home()
     {
     case 111:
         adminPanelAuthentication();
+        break;
+    case 11:
+        customerPanelAuthentication();
         break;
     case 0:
         system("cls");
