@@ -253,9 +253,9 @@ void adminPanelHome()
     // operation List
     printCentered("1. Sales.", 10);
     printCentered("2. Stock.", 10);
-    printCentered("          3. Order Management.", 10);
-    printCentered("            4. Product Management.", 10);
-    printCentered("         5. User Management.", 10);
+    printCentered("           3. Order Management.", 10);
+    printCentered("             4. Product Management.", 10);
+    printCentered("          5. User Management.", 10);
     printCentered("              6. Supplier Management.", 10);
 
     printf("\n\n\n");
