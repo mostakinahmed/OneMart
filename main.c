@@ -20,8 +20,10 @@ void customerSignUp();
 char current_user_admin[25];
 char current_user_customer[25];
 int customerLoginStatus = 0;
-
-/*-------------This is for welcome page------------------------------*/
+//
+//
+//
+/*------------------------This is for welcome page-----------------------------------------------*/
 // Function to set text color
 void setColor(int color)
 {
@@ -92,7 +94,7 @@ void menuUI(char headingName[])
 //
 //
 //
-/*-------------Main Program start from here---------*/
+/*-------------Main Program start from here----------------------------------------------*/
 /*------------Admin Panel Authentication Start---------*/
 void adminPanelAuthentication()
 {
@@ -203,11 +205,11 @@ void adminSignIn()
         }
     }
 }
-/*------------Admin Sign in END---------*/
+/*-------------Admin Sign in END----------*/
 //
 //
 //
-/*------------Admin Sign Up Start---------*/
+/*----------------Admin Sign Up Start---------------*/
 void adminSignUp()
 {
     char headingName[40] = "ADMIN PANEL AUTHENTICATION SYSTEM";
@@ -237,7 +239,7 @@ void adminSignUp()
     _getch(); // to hold user
     adminSignIn();
 }
-/*------------Admin Sign Up END---------*/
+/*---------------Admin Sign Up END-------------*/
 //
 //
 //
@@ -278,7 +280,7 @@ void adminPanelHome()
         printCentered("Invalid Choice!", 12);
     }
 }
-/*-----------------ADMIN PANEL HME END----------------------*/
+/*--------------------ADMIN PANEL HME END------------------------*/
 //
 //
 ///*------------CUSTOMER Panel Authentication Start---------*/
@@ -349,7 +351,7 @@ void customerSignUp()
     _getch(); // to hold user
     customerSignIn();
 }
-/*------------CUSTOMER SIGN UP END------------*/
+/*------------CUSTOMER SIGN UP END----------------*/
 //
 //
 //
@@ -427,7 +429,7 @@ void customerSignIn()
         }
     }
 }
-/*------------CUSTOMER SIGN IN END---------*/
+/*----------------CUSTOMER SIGN IN END------------*/
 //
 //
 //
