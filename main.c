@@ -52,6 +52,22 @@ void printCentered(const char *text, int color)
     setColor(7); // Reset color
 }
 
+// its created for navber only
+void printCentered2(const char *userName, const char *text, int color)
+{
+    int width = getConsoleWidth();
+    int len = strlen(text);
+    int len2 = strlen(userName);
+    int space = (width - len) - (len2 + 6);
+
+    setColor(color);
+    printf("user: %s", userName);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("%s\n", text);
+    setColor(7); // Reset color
+}
+
 // Draw top/bottom border
 void drawBorderLine(char ch)
 {
@@ -148,10 +164,13 @@ void adminSignIn()
     char userPass1[25];
     char userEmail[30];
     char userEmail1[30];
-
+    setColor(11);
     printf("Enter UserName : ");
+    setColor(7);
     scanf("%s", userName);
+    setColor(11);
     printf("Enter Password : ");
+    setColor(7);
     scanf("%s", userPass);
 
     // data received from file and cheak user authencity
@@ -177,7 +196,7 @@ void adminSignIn()
     else if (found == 0) // user not found
     {
         printf("\n\n");
-        printCentered("Error userName or password.\n", 10);
+        printCentered("Error userName or password.\n", 12);
         printCentered("1. Try Again.", 10);
         printCentered("    2. Reset Password.", 10);
         printCentered("      3. Authenticate Home.", 10);
@@ -220,11 +239,18 @@ void adminSignUp()
     char userName[25];
     char userPass[25];
     char userEmail[30];
+
+    setColor(11);
     printf("Enter UserName : ");
+    setColor(7);
     scanf("%s", userName);
+    setColor(11);
     printf("Enter Password : ");
+    setColor(7);
     scanf("%s", userPass);
+    setColor(11);
     printf("Enter Email    : ");
+    setColor(7);
     scanf("%s", userEmail);
 
     // User data send to file
@@ -439,6 +465,8 @@ void home()
     char headingName[10] = "HOME";
     menuUI(headingName);
 
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
     printf("\n\n\n\n\n\n\n\n\n\n");
     printCentered("Press 111 for admin panel.", 10);
     printCentered("Press 11 for customer panel.", 10);
