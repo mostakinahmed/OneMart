@@ -52,6 +52,22 @@ void printCentered(const char *text, int color)
     setColor(7); // Reset color
 }
 
+// its created for navber only
+void printCentered2(const char *userName, const char *text, int color)
+{
+    int width = getConsoleWidth();
+    int len = strlen(text);
+    int len2 = strlen(userName);
+    int space = (width - len) - (len2 + 6);
+
+    setColor(color);
+    printf("user: %s", userName);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("%s\n", text);
+    setColor(7); // Reset color
+}
+
 // Draw top/bottom border
 void drawBorderLine(char ch)
 {
@@ -439,6 +455,8 @@ void home()
     char headingName[10] = "HOME";
     menuUI(headingName);
 
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
     printf("\n\n\n\n\n\n\n\n\n\n");
     printCentered("Press 111 for admin panel.", 10);
     printCentered("Press 11 for customer panel.", 10);
