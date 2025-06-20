@@ -19,6 +19,7 @@ void customerSignUp();
 /*-------Global Variable Section------*/
 char current_user_admin[25];
 char current_user_customer[25];
+int customerLoginStatus = 0;
 
 /*-------------This is for welcome page------------------------------*/
 // Function to set text color
@@ -153,7 +154,7 @@ void adminSignIn()
 
     // data received from file and cheak user authencity
     FILE *fp;
-    fp = fopen("customer_data/data.txt", "r");
+    fp = fopen("admin_data/data.txt", "r");
 
     while (fscanf(fp, "%s %s %s", userName1, userPass1, userEmail1) != EOF)
     {
@@ -226,7 +227,7 @@ void adminSignUp()
 
     // User data send to file
     FILE *fp;
-    fp = fopen("customer_data/data.txt", "a");
+    fp = fopen("admin_data/data.txt", "a");
     fprintf(fp, "%s %s %s\n", userName, userPass, userEmail);
     fclose(fp);
     printf("\n\n");
@@ -321,6 +322,32 @@ void customerPanelAuthentication()
 /*------------CUSTOMER SIGN UP START---------*/
 void customerSignUp()
 {
+    char headingName[40] = "CUSTOMER AUTHENTICATION SYSTEM";
+    menuUI(headingName);
+    printCentered("Registration", 10);
+    printCentered("------------------------", 10);
+
+    char userName[25];
+    char userPass[25];
+    char userEmail[30];
+    printf("Enter UserName : ");
+    scanf("%s", userName);
+    printf("Enter Password : ");
+    scanf("%s", userPass);
+    printf("Enter Email    : ");
+    scanf("%s", userEmail);
+
+    // User data send to file
+    FILE *fp;
+    fp = fopen("customer_data/data.txt", "a");
+    fprintf(fp, "%s %s %s\n", userName, userPass, userEmail);
+    fclose(fp);
+    printf("\n\n");
+    printCentered("Registration is successfull.", 10);
+    printCentered("press any key to login......", 10);
+
+    _getch(); // to hold user
+    customerSignIn();
 }
 /*------------CUSTOMER SIGN UP END------------*/
 //
@@ -329,6 +356,76 @@ void customerSignUp()
 /*------------CUSTOMER SIGN IN START---------*/
 void customerSignIn()
 {
+    char headingName[40] = "CUSTOMER AUTHENTICATION SYSTEM";
+    menuUI(headingName);
+    printCentered("Sign In", 10);
+    printCentered("------------------------", 10);
+
+    int found = 0;
+    char userName[25];
+    char userName1[25];
+    char userPass[25];
+    char userPass1[25];
+    char userEmail[30];
+    char userEmail1[30];
+
+    printf("Enter UserName : ");
+    scanf("%s", userName);
+    printf("Enter Password : ");
+    scanf("%s", userPass);
+
+    // data received from file and cheak user authencity
+    FILE *fp;
+    fp = fopen("customer_data/data.txt", "r");
+
+    while (fscanf(fp, "%s %s %s", userName1, userPass1, userEmail1) != EOF)
+    {
+        if (strcmp(userName, userName1) == 0 && strcmp(userPass, userPass1) == 0)
+        {
+            strcpy(current_user_customer, userName);
+            found = 1;
+            break;
+        }
+    }
+    fclose(fp);
+
+    if (found) // user found
+    {
+        // use this function when we manage customer profile or order place
+        // adminPanelHome();
+    }
+
+    else if (found == 0) // user not found
+    {
+        printf("\n\n");
+        printCentered("Error userName or password.\n", 10);
+        printCentered("1. Try Again.", 10);
+        printCentered("    2. Reset Password.", 10);
+        printCentered("      3. Authenticate Home.", 10);
+        printCentered("  0. Exit Program.", 10);
+
+        int option;
+        printf("\n\nEnter your choice: ");
+        scanf("%d", &option);
+        switch (option)
+        {
+        case 1:
+            customerSignIn();
+            break;
+            // reset pass not yet done
+        case 3:
+            customerPanelAuthentication();
+            break;
+        case 0:
+            system("cls");
+            printCentered("Goodbye!", 12);
+            break;
+        default:
+            printCentered("Invalid Choice!", 12);
+            _getch();
+            customerPanelAuthentication();
+        }
+    }
 }
 /*------------CUSTOMER SIGN IN END---------*/
 //
