@@ -164,10 +164,13 @@ void adminSignIn()
     char userPass1[25];
     char userEmail[30];
     char userEmail1[30];
-
+    setColor(11);
     printf("Enter UserName : ");
+    setColor(7);
     scanf("%s", userName);
+    setColor(11);
     printf("Enter Password : ");
+    setColor(7);
     scanf("%s", userPass);
 
     // data received from file and cheak user authencity
@@ -193,7 +196,7 @@ void adminSignIn()
     else if (found == 0) // user not found
     {
         printf("\n\n");
-        printCentered("Error userName or password.\n", 10);
+        printCentered("Error userName or password.\n", 12);
         printCentered("1. Try Again.", 10);
         printCentered("    2. Reset Password.", 10);
         printCentered("      3. Authenticate Home.", 10);
@@ -236,11 +239,18 @@ void adminSignUp()
     char userName[25];
     char userPass[25];
     char userEmail[30];
+
+    setColor(11);
     printf("Enter UserName : ");
+    setColor(7);
     scanf("%s", userName);
+    setColor(11);
     printf("Enter Password : ");
+    setColor(7);
     scanf("%s", userPass);
+    setColor(11);
     printf("Enter Email    : ");
+    setColor(7);
     scanf("%s", userEmail);
 
     // User data send to file
