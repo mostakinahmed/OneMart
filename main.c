@@ -153,7 +153,7 @@ void adminSignIn()
 
     // data received from file and cheak user authencity
     FILE *fp;
-    fp = fopen("customer_data/data.txt", "r");
+    fp = fopen("admin_data/data.txt", "r");
 
     while (fscanf(fp, "%s %s %s", userName1, userPass1, userEmail1) != EOF)
     {
@@ -226,7 +226,7 @@ void adminSignUp()
 
     // User data send to file
     FILE *fp;
-    fp = fopen("customer_data/data.txt", "a");
+    fp = fopen("admin_data/data.txt", "a");
     fprintf(fp, "%s %s %s\n", userName, userPass, userEmail);
     fclose(fp);
     printf("\n\n");
@@ -321,6 +321,32 @@ void customerPanelAuthentication()
 /*------------CUSTOMER SIGN UP START---------*/
 void customerSignUp()
 {
+    char headingName[40] = "CUSTOMER AUTHENTICATION SYSTEM";
+    menuUI(headingName);
+    printCentered("Registration", 10);
+    printCentered("------------------------", 10);
+
+    char userName[25];
+    char userPass[25];
+    char userEmail[30];
+    printf("Enter UserName : ");
+    scanf("%s", userName);
+    printf("Enter Password : ");
+    scanf("%s", userPass);
+    printf("Enter Email    : ");
+    scanf("%s", userEmail);
+
+    // User data send to file
+    FILE *fp;
+    fp = fopen("customer_data/data.txt", "a");
+    fprintf(fp, "%s %s %s\n", userName, userPass, userEmail);
+    fclose(fp);
+    printf("\n\n");
+    printCentered("Registration is successfull.", 10);
+    printCentered("press any key to login......", 10);
+
+    _getch(); // to hold user
+    customerSignIn();
 }
 /*------------CUSTOMER SIGN UP END------------*/
 //
