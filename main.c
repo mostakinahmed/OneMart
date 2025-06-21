@@ -119,8 +119,8 @@ void adminPanelAuthentication()
     printf("\n\n");
     printCentered("1. Sign In.", 10);
     printCentered("2. Sign Up.", 10);
-    printCentered(" 3. Home Page.", 10);
-    printCentered("    0. Exit Program.", 10);
+    printCentered("  3. Home Page.", 10);
+    printCentered("     0. Exit Program.", 10);
     int option;
     printf("\n\nEnter your choice: ");
     scanf("%d", &option);
@@ -280,33 +280,44 @@ void adminPanelHome()
     char headingName[20] = "ADMIN PANEL";
     menuUI(headingName);
 
-    printCentered("All Operation:", 10);
-    printCentered("---------------", 10);
-    printf("\n");
-    // operation List
-    printCentered("1. Sales.", 10);
-    printCentered("2. Stock.", 10);
-    printCentered("           3. Order Management.", 10);
-    printCentered("             4. Product Management.", 10);
-    printCentered("          5. User Management.", 10);
-    printCentered("              6. Supplier Management.", 10);
+    // printCentered("OneMart", 10);
+    // printCentered("-----------------", 10);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
 
     printf("\n\n\n");
-    printCentered("Press 0 to logout.....", 10);
+    // operation List
+    printCentered(" 1. Sales.                        2. Stock.                        3. Online Store.", 10);
+    printf("\n");
+    printCentered("        4. Accounts.                     5. Product Management.           6. Supplier Management.", 10);
+    printf("\n");
+    setColor(10);
+    printf("                                                            7. Admin Management.");
+    setColor(7);
+
+    printf("\n\n\n\n\n\n\n\n\n");
+    printCentered("Press 0 to logout_________________11 to EXIT", 4);
     int option;
     printf("\nEnter your choice: ", 10);
     scanf("%d", &option);
+
     switch (option)
     {
     case 0:
         // logOut();
         adminPanelAuthentication();
         break;
+    case 11:
+        system("cls");
+        printCentered("Goodbye!", 12);
+        break;
     default:
         printCentered("Invalid Choice!", 12);
+        _getch();
+        adminPanelHome();
     }
 }
-/*--------------------ADMIN PANEL HME END------------------------*/
+/*--------------------ADMIN PANEL HOME END------------------------*/
 //
 //
 ///*------------CUSTOMER Panel Authentication Start---------*/
@@ -458,7 +469,34 @@ void customerSignIn()
 /*----------------CUSTOMER SIGN IN END------------*/
 //
 //
-//
+///*-----------------2nd HOME START----------------------*/
+
+void home2()
+{
+    char headingName[10] = "OneMart";
+    menuUI(headingName);
+    printCentered("Are you admin?", 15);
+    printCentered("1. YES", 11);
+    printCentered("2. NO", 12);
+
+    int option;
+    printf("\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        adminPanelAuthentication();
+        break;
+    case 2:
+        home();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        _getch();
+        home2();
+    }
+}
+///*-----------------2nd HOME END----------------------*/
 /*-----------------HOME START----------------------*/
 void home()
 {
@@ -468,7 +506,6 @@ void home()
     char userName[20] = "mostakin";
     printCentered2(userName, "Home | Contact | About | Profile. ", 11);
     printf("\n\n\n\n\n\n\n\n\n\n");
-    printCentered("Press 111 for admin panel.", 10);
     printCentered("Press 11 for customer panel.", 10);
     printCentered("Press 0 for Exits.", 10);
     int option;
@@ -476,9 +513,6 @@ void home()
     scanf("%d", &option);
     switch (option)
     {
-    case 111:
-        adminPanelAuthentication();
-        break;
     case 11:
         customerPanelAuthentication();
         break;
@@ -509,7 +543,7 @@ int main()
     {
     case 1:
         system("cls");
-        home();
+        home2();
         break;
     case 2:
         system("cls");
@@ -527,3 +561,5 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
+
+//      g++ main.c && ./a.exe
