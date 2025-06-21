@@ -475,12 +475,13 @@ void home2()
 {
     char headingName[10] = "OneMart";
     menuUI(headingName);
+    printf("\n\n\n\n\n\n\n\n");
     printCentered("Are you admin?", 15);
-    printCentered("1. YES", 11);
+    printCentered(" 1. YES", 11);
     printCentered("2. NO", 12);
 
     int option;
-    printf("\nEnter your choice: ");
+    printf("\n\n\nEnter your choice: ");
     scanf("%d", &option);
     switch (option)
     {
