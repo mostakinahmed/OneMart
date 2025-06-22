@@ -292,7 +292,7 @@ void adminPanelHome()
     printCentered("        4. Accounts.                     5. Product Management.           6. Supplier Management.", 10);
     printf("\n");
     setColor(10);
-    printf("                                                            7. Admin Management.");
+    printCentered("   7. Admin Management.", 10);
     setColor(7);
 
     printf("\n\n\n\n\n\n\n\n\n");

@@ -1,0 +1,25 @@
+g++ main.c && ./a.exe
+
+git branch
+
+git add .
+
+git commit -m "Message"
+
+git push -u origin branceName
+
+git checkout branceName
+
+git checkout -b branceName
+
+git pull origin branceName
+
+git clone repoLink
+
+
+terminal
+-------------------
+folder back    -  cd ..
+folder forward -  cd folderName  (for multiple folder name use string)
+
+
