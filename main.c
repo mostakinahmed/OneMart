@@ -16,10 +16,9 @@ void customerPanelAuthentication();
 void customerSignIn();
 void customerSignUp();
 void adminPanelSales();
-void newSales();  // admin panel new sales 
-void salesHistory();  //admin panel sles history
-void searchSaleProduct();  // admin panel Search sale product
-
+void newSales();          // admin panel new sales
+void salesHistory();      // admin panel sles history
+void searchSaleProduct(); // admin panel Search sale product
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -313,7 +312,7 @@ void adminPanelHome()
         adminPanelAuthentication();
         break;
     case 1:
-        //Sales page
+        // Sales page
         adminPanelSales();
         break;
     case 11:
@@ -480,7 +479,8 @@ void customerSignIn()
 //
 //
 //*---------------Admin Panel sales start----------------*/
-void adminPanelSales(){
+void adminPanelSales()
+{
     char headingName[40] = "SALES";
     menuUI(headingName);
     char userName[20] = "mostakin";
@@ -497,56 +497,56 @@ void adminPanelSales(){
     printCentered("  0. Admin Home", 15);
     printf("\n\n\n");
 
-     int option;
-        printf("\n\nEnter your choice: ");
-        scanf("%d", &option);
-        switch (option)
-        {
-        case 1:
-            newSales();
-            break;
-            // yet not done
-        case 2:
-            salesHistory();
-            break;
-            //yet not done
-        case 3:
-            searchSaleProduct();
-            break;
-            //yet not done
-        case 0:
-            adminPanelHome();
-            break;
-        default:
-            printCentered("Invalid Choice!", 12);
-            printCentered("Press any key",10);
-            _getch();
-            adminPanelSales();
-        }
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        newSales();
+        break;
+        // yet not done
+    case 2:
+        salesHistory();
+        break;
+        // yet not done
+    case 3:
+        searchSaleProduct();
+        break;
+        // yet not done
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
 }
 //*---------------Admin Panel Sales End ----------------*/
 //
 //
 //
 //*---------------Admin Panel New Sales Start----------------*/
-void newSales(){
-
+void newSales()
+{
 }
 //*---------------Admin Panel New Sales End----------------*/
 //
 //
 //
 //*---------------Admin Panel Sales History Start----------------*/
-void salesHistory(){
-
+void salesHistory()
+{
 }
 //*---------------Admin Panel Sales History End----------------*/
 //
 //
 //
 /*---------------Admin Panel Search Sales Procduct Start----------------*/
-void searchSaleProduct(){
-
+void searchSaleProduct()
+{
 }
 //*---------------Admin Panel Search Sales Product End----------------*/
 //
@@ -645,10 +645,3 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
-
-//      g++ main.c && ./a.exe
-// tonmoy 2
-// mostakin
-// tonmoy
-
-//shafat
