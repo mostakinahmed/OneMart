@@ -15,6 +15,11 @@ void adminPanelAuthentication();
 void customerPanelAuthentication();
 void customerSignIn();
 void customerSignUp();
+void adminPanelSales();
+void newSales();  // admin panel new sales 
+void salesHistory();  //admin panel sles history
+void searchSaleProduct();  // admin panel Search sale product
+
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -307,6 +312,10 @@ void adminPanelHome()
         // logOut();
         adminPanelAuthentication();
         break;
+    case 1:
+        //Sales page
+        adminPanelSales();
+        break;
     case 11:
         system("cls");
         printCentered("Goodbye!", 12);
@@ -467,6 +476,80 @@ void customerSignIn()
     }
 }
 /*----------------CUSTOMER SIGN IN END------------*/
+//
+//
+//
+//*---------------Admin Panel sales start----------------*/
+void adminPanelSales(){
+    char headingName[40] = "SALES";
+    menuUI(headingName);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Sales", 15);
+    printCentered("------------------------", 15);
+    printCentered("1. New Sale", 15);
+    printCentered("     2. Sales History", 15);
+    printCentered("           3. Search Sale Product", 15);
+    printCentered("  0. Admin Home", 15);
+    printf("\n\n\n");
+
+     int option;
+        printf("\n\nEnter your choice: ");
+        scanf("%d", &option);
+        switch (option)
+        {
+        case 1:
+            newSales();
+            break;
+            // yet not done
+        case 2:
+            salesHistory();
+            break;
+            //yet not done
+        case 3:
+            searchSaleProduct();
+            break;
+            //yet not done
+        case 0:
+            adminPanelHome();
+            break;
+        default:
+            printCentered("Invalid Choice!", 12);
+            printCentered("Press any key",10);
+            _getch();
+            adminPanelSales();
+        }
+}
+//*---------------Admin Panel Sales End ----------------*/
+//
+//
+//
+//*---------------Admin Panel New Sales Start----------------*/
+void newSales(){
+
+}
+//*---------------Admin Panel New Sales End----------------*/
+//
+//
+//
+//*---------------Admin Panel Sales History Start----------------*/
+void salesHistory(){
+
+}
+//*---------------Admin Panel Sales History End----------------*/
+//
+//
+//
+/*---------------Admin Panel Search Sales Procduct Start----------------*/
+void searchSaleProduct(){
+
+}
+//*---------------Admin Panel Search Sales Product End----------------*/
+//
 //
 //
 ///*-----------------2nd HOME START----------------------*/
