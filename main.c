@@ -2,8 +2,11 @@
 #include <windows.h>
 #include <string.h>
 #include <conio.h>
+#include <time.h>
+#include <stdlib.h>
 
 /*-------function List------*/
+void dateTime();
 void logOut();
 void adminPanelHome();
 void home();
@@ -16,10 +19,9 @@ void customerPanelAuthentication();
 void customerSignIn();
 void customerSignUp();
 void adminPanelSales();
-void newSales();  // admin panel new sales 
-void salesHistory();  //admin panel sles history
-void searchSaleProduct();  // admin panel Search sale product
-
+void newSales();          // admin panel new sales
+void salesHistory();      // admin panel sles history
+void searchSaleProduct(); // admin panel Search sale product
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -116,6 +118,34 @@ void menuUI(char headingName[])
 //
 //
 /*-------------Main Program start from here----------------------------------------------*/
+//
+//
+//
+/*------------Date Time Start---------*/
+void dateTime()
+{
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+
+    int width = getConsoleWidth();
+    int len = 22;
+    int len2 = 17;
+    int space = (width - len - len2);
+
+    setColor(10);
+    printf("Live Time: %02d:%02d", t->tm_hour, t->tm_min);
+    // printf("Live Time: %02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
+    for (int i = 0; i < space; i++)
+    {
+        printf(" ");
+    }
+    printf("Date: %04d-%02d-%02d", t->tm_year + 1900, t->tm_mon + 1, t->tm_mday);
+    setColor(7); // Reset color
+}
+/*------------Date Time END---------*/
+//
+//
+//
 /*------------Admin Panel Authentication Start---------*/
 void adminPanelAuthentication()
 {
@@ -280,7 +310,7 @@ void logOut()
     home(); // for user and admin
 }
 /*-----------------ADMIN PANEL START HOME----------------------*/
-void adminPanelHome()
+void adminPanelHome() // DashBoard
 {
     char headingName[20] = "ADMIN PANEL";
     menuUI(headingName);
@@ -301,6 +331,7 @@ void adminPanelHome()
     setColor(7);
 
     printf("\n\n\n\n\n\n\n\n\n");
+    dateTime();
     printCentered("Press 0 to logout_________________11 to EXIT", 4);
     int option;
     printf("\nEnter your choice: ", 10);
@@ -313,7 +344,7 @@ void adminPanelHome()
         adminPanelAuthentication();
         break;
     case 1:
-        //Sales page
+        // Sales page
         adminPanelSales();
         break;
     case 11:
@@ -480,7 +511,8 @@ void customerSignIn()
 //
 //
 //*---------------Admin Panel sales start----------------*/
-void adminPanelSales(){
+void adminPanelSales()
+{
     char headingName[40] = "SALES";
     menuUI(headingName);
     char userName[20] = "mostakin";
@@ -497,56 +529,56 @@ void adminPanelSales(){
     printCentered("  0. Admin Home", 15);
     printf("\n\n\n");
 
-     int option;
-        printf("\n\nEnter your choice: ");
-        scanf("%d", &option);
-        switch (option)
-        {
-        case 1:
-            newSales();
-            break;
-            // yet not done
-        case 2:
-            salesHistory();
-            break;
-            //yet not done
-        case 3:
-            searchSaleProduct();
-            break;
-            //yet not done
-        case 0:
-            adminPanelHome();
-            break;
-        default:
-            printCentered("Invalid Choice!", 12);
-            printCentered("Press any key",10);
-            _getch();
-            adminPanelSales();
-        }
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        newSales();
+        break;
+        // yet not done
+    case 2:
+        salesHistory();
+        break;
+        // yet not done
+    case 3:
+        searchSaleProduct();
+        break;
+        // yet not done
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
 }
 //*---------------Admin Panel Sales End ----------------*/
 //
 //
 //
 //*---------------Admin Panel New Sales Start----------------*/
-void newSales(){
-
+void newSales()
+{
 }
 //*---------------Admin Panel New Sales End----------------*/
 //
 //
 //
 //*---------------Admin Panel Sales History Start----------------*/
-void salesHistory(){
-
+void salesHistory()
+{
 }
 //*---------------Admin Panel Sales History End----------------*/
 //
 //
 //
 /*---------------Admin Panel Search Sales Procduct Start----------------*/
-void searchSaleProduct(){
-
+void searchSaleProduct()
+{
 }
 //*---------------Admin Panel Search Sales Product End----------------*/
 //
@@ -645,10 +677,3 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
-
-//      g++ main.c && ./a.exe
-// tonmoy 2
-// mostakin
-// tonmoy
-
-//shafat
