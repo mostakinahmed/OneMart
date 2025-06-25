@@ -2,8 +2,11 @@
 #include <windows.h>
 #include <string.h>
 #include <conio.h>
+#include <time.h>
+#include <stdlib.h>
 
 /*-------function List------*/
+void dateTime();
 void logOut();
 void adminPanelHome();
 void home();
@@ -115,6 +118,34 @@ void menuUI(char headingName[])
 //
 //
 /*-------------Main Program start from here----------------------------------------------*/
+//
+//
+//
+/*------------Date Time Start---------*/
+void dateTime()
+{
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+
+    int width = getConsoleWidth();
+    int len = 22;
+    int len2 = 17;
+    int space = (width - len - len2);
+
+    setColor(10);
+    printf("Live Time: %02d:%02d", t->tm_hour, t->tm_min);
+    // printf("Live Time: %02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
+    for (int i = 0; i < space; i++)
+    {
+        printf(" ");
+    }
+    printf("Date: %04d-%02d-%02d", t->tm_year + 1900, t->tm_mon + 1, t->tm_mday);
+    setColor(7); // Reset color
+}
+/*------------Date Time END---------*/
+//
+//
+//
 /*------------Admin Panel Authentication Start---------*/
 void adminPanelAuthentication()
 {
@@ -279,7 +310,7 @@ void logOut()
     home(); // for user and admin
 }
 /*-----------------ADMIN PANEL START HOME----------------------*/
-void adminPanelHome()
+void adminPanelHome() // DashBoard
 {
     char headingName[20] = "ADMIN PANEL";
     menuUI(headingName);
@@ -300,6 +331,7 @@ void adminPanelHome()
     setColor(7);
 
     printf("\n\n\n\n\n\n\n\n\n");
+    dateTime();
     printCentered("Press 0 to logout_________________11 to EXIT", 4);
     int option;
     printf("\nEnter your choice: ", 10);
