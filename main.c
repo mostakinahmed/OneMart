@@ -24,13 +24,17 @@ void newSales();
 void salesHistory();
 void searchSaleProduct();
 
-void adminPanelStock(); // Admin Panel Stock - Stock
+void adminPanelStock(); // Admin Panel Stock - Home
 void AddNewProduct();
 void deleteProduct();
 void listOfProduct();
 void stockCheak();
 void updateStock();
 void stockListByCategory();
+
+void adminPanelOnlineStore(); // Admin Panel Online Store - Home
+void orderPendingList();
+void orderDeliveredList();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -512,6 +516,10 @@ void adminPanelHome() // DashBoard
         // Stock page
         adminPanelStock();
         break;
+    case 3:
+        // Online Store page
+        adminPanelOnlineStore();
+        break;
     case 11:
         system("cls");
         printCentered("Goodbye!", 12);
@@ -527,7 +535,7 @@ void adminPanelHome() // DashBoard
 //
 //
 //*---------------Admin Panel sales start----------------*/
-void adminPanelSales()
+void adminPanelSales() // HOME
 {
     char headingName[40] = "SALES";
     menuUI(headingName);
@@ -601,7 +609,7 @@ void searchSaleProduct()
 //
 //
 //*---------------Admin Panel Stock start----------------*/
-void adminPanelStock()
+void adminPanelStock() // HOME
 {
     char headingName[40] = "Stock / Product";
     menuUI(headingName);
@@ -710,6 +718,67 @@ void stockListByCategory()
 {
 }
 //*---------------Admin Panel Stock List By Category End----------------*/
+//
+//
+//
+//*---------------Admin Panel Online Store start----------------*/
+void adminPanelOnlineStore() // HOME
+{
+    char headingName[40] = "Admin Panel - Online Store";
+    menuUI(headingName);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Online Store", 15);
+    printCentered("------------------------", 15);
+    printCentered("1. Order Pending List", 15);
+    printCentered("     2. Order Delivered List", 15);
+    printCentered("  0. Admin-Home", 15);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        orderPendingList();
+        break;
+        // yet not done
+    case 2:
+        orderDeliveredList();
+        break;
+        // yet not done
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
+}
+//*---------------Admin Panel Stock End ----------------*/
+//
+//
+//
+//*---------------Admin Panel(Online Store) Order Pending List Start----------------*/
+void orderPendingList()
+{
+}
+//*---------------Admin Panel (Online Store) Order Pending List End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Online Store) Order Delivered List Start----------------*/
+void orderDeliveredList()
+{
+}
+//*---------------Admin Panel (Online Store) Order Delivered List End----------------*/
 //
 //
 //
