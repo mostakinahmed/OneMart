@@ -44,10 +44,20 @@ void HalfYearlyIncome();
 void yearlyIncome();
 
 void adminPanelSupplierManagement(); // 6. Admin Panel Supplier Management- Home
-void AddSupplier();
+void addSupplier();
 void deleteSupplier();
 void productSearch();
 void listOfProductBySupplier();
+
+void adminPanelUserManagement(); // 6. Admin Panel User Management- Home
+void addAdmin();
+void deleteAdmin();
+void adminPasswordReset();
+void listOfAdmin();
+void addCustomer();
+void deleteCustomer();
+void customerPasswordReset();
+void listOfCustomer();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -161,7 +171,7 @@ void dateTime()
     setColor(10);
     printf("Live Time: %02d:%02d", t->tm_hour, t->tm_min);
     // printf("Live Time: %02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
-    for (int i = 0; i < space; i++)
+    for (int i = 0; i <= space; i++)
     {
         printf(" ");
     }
@@ -502,7 +512,7 @@ void adminPanelHome() // DashBoard
     // operation List
     printCentered(" 1. Sales.                        2. Stock.                        3. Online Store.", 10);
     printf("\n");
-    printCentered("        4. Accounts.                     5. Supplier Management.           6. User Management.", 10);
+    printCentered("    4. Accounts.                     5. Supplier Management.          6. User Management.", 10);
     printf("\n");
 
     printf("\n\n\n\n\n\n\n\n\n");
@@ -545,8 +555,8 @@ void adminPanelHome() // DashBoard
         break;
 
     case 6:
-        // Accounts page
-        // adminPanelUserManagement();
+        // User page
+        adminPanelUserManagement();
         break;
     case 11:
         system("cls");
@@ -897,7 +907,7 @@ void yearlyIncome()
 //
 //
 //
-//*---------------Admin Panel Stock start----------------*/
+//*---------------Admin Panel Supplier Management start----------------*/
 void adminPanelSupplierManagement() // HOME
 {
     char headingName[40] = "Supplier Management";
@@ -923,7 +933,7 @@ void adminPanelSupplierManagement() // HOME
     switch (option)
     {
     case 1:
-        AddSupplier();
+        addSupplier();
         break;
         // yet not done
 
@@ -957,7 +967,7 @@ void adminPanelSupplierManagement() // HOME
 //
 //
 //*---------------Admin Panel (Supplier) Add Supplier Start----------------*/
-void AddSupplier()
+void addSupplier()
 {
 }
 //*---------------Admin Panel (Supplier) Add Supplier End----------------*/
@@ -988,6 +998,149 @@ void listOfProductBySupplier()
 //
 //
 //
+//*---------------Admin Panel User Management start----------------*/
+void adminPanelUserManagement() // HOME
+{
+    char headingName[40] = "User Management";
+    menuUI(headingName);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("    Admin Management                      Customer Management", 15);
+    printCentered("              ---------------------------           -----------------------------", 15);
+    printCentered(" 1. Add Admin                          1. Add Customer", 15);
+    printCentered("    2. Delete Admin                       2. Delete Customer", 15);
+    printCentered("  3. Password Reset                     3. Password Reset", 15);
+    printCentered("    4. List Of Admin                      4. List Of Customer", 15);
+    printf("\n");
+    printCentered("0. Admin-Home.", 12);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        addAdmin();
+        break;
+        // yet not done
+
+    case 2:
+        deleteAdmin();
+        break;
+        // yet not done
+
+    case 3:
+        adminPasswordReset();
+        break;
+        // yet not done
+
+    case 4:
+        listOfAdmin();
+        break;
+        // yet not done
+    case 5:
+        addCustomer();
+        break;
+        // yet not done
+
+    case 6:
+        deleteCustomer();
+        break;
+        // yet not done
+
+    case 7:
+        customerPasswordReset();
+        break;
+        // yet not done
+
+    case 8:
+        listOfCustomer();
+        break;
+        // yet not done
+
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
+}
+//*---------------Admin Panel Supplier Management End ----------------*/
+//
+//
+//
+//*---------------Admin Panel (USER) Add Admin Start----------------*/
+void addAdmin()
+{
+}
+//*---------------Admin Panel (USER) Add Admin End----------------*/
+//
+//
+//
+//*---------------Admin Panel (USER) Delete Admin Start----------------*/
+void deleteAdmin()
+{
+}
+//*---------------Admin Panel (USER) Delete Admin End----------------*/
+//
+//
+//
+//*---------------Admin Panel (USER) Admin Pass Reset Start----------------*/
+void adminPasswordReset()
+{
+}
+//*---------------Admin Panel (USER) Admin Pass Reset End----------------*/
+//
+//
+//
+//*---------------Admin Panel (USER) Admin List Start----------------*/
+void listOfAdmin()
+{
+}
+//*---------------Admin Panel (USER) Admin List End----------------*/
+//
+//
+//
+//*---------------Admin Panel (USER) Add Customer Start----------------*/
+void addCustomer()
+{
+}
+//*---------------Admin Panel (USER) Admin Pass Reset End----------------*/
+//
+//
+//
+//*---------------Admin Panel (USER) Delete Customer Start----------------*/
+void deleteCustomer()
+{
+}
+//*---------------Admin Panel (USER) Delete Customer End----------------*/
+//
+//
+//
+//*---------------Admin Panel (USER) Customer Pass Reset Start----------------*/
+void customerPasswordReset()
+{
+}
+//*---------------Admin Panel (USER) Customer Pass Reset End----------------*/
+//
+//
+//
+//*---------------Admin Panel (USER) Customer List Start----------------*/
+void listOfCustomer()
+{
+}
+//*---------------Admin Panel (USER) Customer List End----------------*/
+//
+//
+//
 ///*-----------------2nd HOME START----------------------*/
 void home2() // Admin or not
 {
@@ -1015,7 +1168,7 @@ void home2() // Admin or not
         home2();
     }
 }
-///*-----------------2nd HOME END----------------------*/
+//*-----------------2nd HOME END----------------------*/
 /*-----------------HOME START----------------------*/
 void home()
 {
