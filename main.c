@@ -269,9 +269,9 @@ void adminSignIn()
         printf("\n\n");
         printCentered("Error userName or password.\n", 12);
         printCentered("1. Try Again.", 10);
-        printCentered("    2. Reset Password.", 10);
-        printCentered("      3. Authenticate Home.", 10);
-        printCentered("  0. Exit Program.", 10);
+        printCentered("      2. Reset Password.", 10);
+        printCentered("        3. Authenticate Home.", 10);
+        printCentered("   0. Exit Program.", 10);
 
         int option;
         printf("\n\nEnter your choice: ");
@@ -509,6 +509,8 @@ void adminPanelHome() // DashBoard
     printCentered2(userName, "Home | Contact | About | Profile. ", 11);
 
     printf("\n\n\n");
+    printCentered("Stock & Inventory Management System", 11);
+    printCentered("---------------------------------------------------------------------------------", 11);
     // operation List
     printCentered(" 1. Sales.                        2. Stock.                        3. Online Store.", 10);
     printf("\n");
@@ -517,7 +519,8 @@ void adminPanelHome() // DashBoard
 
     printf("\n\n\n\n\n\n\n\n\n");
     dateTime();
-    printCentered("Press 0 to logout_________________11 to EXIT", 4);
+    // printCentered("Press 0 to logout_________________11 to EXIT", 4);
+    printCentered("             Press 0 to logout_______________11 to EXIT", 4);
     int option;
     printf("\nEnter your choice: ", 10);
     scanf("%d", &option);
@@ -588,7 +591,7 @@ void adminPanelSales() // HOME
     printCentered("1. New Sale", 15);
     printCentered("     2. Sales History", 15);
     printCentered("           3. Search Sale Product", 15);
-    printCentered("  0. Admin Home", 15);
+    printCentered("  0. Admin Home", 4);
     printf("\n\n\n");
 
     int option;
@@ -659,13 +662,13 @@ void adminPanelStock() // HOME
     printf("\n");
     printCentered("Stock & Product", 15);
     printCentered("------------------------", 15);
-    printCentered("1. Add New Product.", 15);
-    printCentered("     2. Delete Product.", 15);
-    printCentered("           3. List Of Product.", 15);
-    printCentered("  4. Stock Cheak.", 15);
-    printCentered("  5. Update Stock.", 15);
-    printCentered("  6. Stock List by Category.", 15);
-    printCentered("  0. Admin-Home.", 15);
+    printCentered("          1. Add New Product.", 15);
+    printCentered("         2. Delete Product.", 15);
+    printCentered("          3. List Of Product.", 15);
+    printCentered("      4. Stock Cheak.", 15);
+    printCentered("       5. Update Stock.", 15);
+    printCentered("                 6. Stock List by Category.", 15);
+    printCentered("     0. Admin-Home.", 4);
     printf("\n\n\n");
 
     int option;
@@ -771,10 +774,10 @@ void adminPanelOnlineStore() // HOME
     printCentered("------------------------", 10);
     printf("\n");
     printCentered("Online Store", 15);
-    printCentered("------------------------", 15);
-    printCentered("1. Order Pending List", 15);
-    printCentered("     2. Order Delivered List", 15);
-    printCentered("  0. Admin-Home", 15);
+    printCentered("-------------------------------", 15);
+    printCentered("          1. Order Pending List", 15);
+    printCentered("            2. Order Delivered List", 15);
+    printCentered("  0. Admin-Home", 4);
     printf("\n\n\n");
 
     int option;
@@ -833,11 +836,11 @@ void adminPanelAccounts() // HOME
     printf("\n");
     printCentered("Accounts", 15);
     printCentered("------------------------", 15);
-    printCentered("1. Daily Income", 15);
+    printCentered("  1. Daily Income", 15);
     printCentered("     2. Monthly Income", 15);
-    printCentered("     2. Half Yearly Income", 15);
-    printCentered("     2. Yearly Income", 15);
-    printCentered("  0. Admin-Home", 15);
+    printCentered("        3. Half Yearly Income", 15);
+    printCentered("    4. Yearly Income", 15);
+    printCentered(" 0. Admin-Home", 4);
     printf("\n\n\n");
 
     int option;
@@ -920,11 +923,11 @@ void adminPanelSupplierManagement() // HOME
     printf("\n");
     printCentered("Supplier Management", 15);
     printCentered("------------------------", 15);
-    printCentered("1. Add Supplier", 15);
-    printCentered("     2. Delete Supplier.", 15);
-    printCentered("           3. Product Search", 15);
-    printCentered("  4. List Of Product by Supplier", 15);
-    printCentered("  0. Admin-Home.", 15);
+    printCentered("   1. Add Supplier", 15);
+    printCentered("      2. Delete Supplier.", 15);
+    printCentered("    3. Product Search", 15);
+    printCentered("                 4. List Of Product by Supplier", 15);
+    printCentered("  0. Admin-Home.", 4);
     printf("\n\n\n");
 
     int option;
@@ -1009,14 +1012,14 @@ void adminPanelUserManagement() // HOME
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
     printf("\n");
-    printCentered("    Admin Management                      Customer Management", 15);
-    printCentered("              ---------------------------           -----------------------------", 15);
-    printCentered(" 1. Add Admin                          1. Add Customer", 15);
-    printCentered("    2. Delete Admin                       2. Delete Customer", 15);
-    printCentered("  3. Password Reset                     3. Password Reset", 15);
-    printCentered("    4. List Of Admin                      4. List Of Customer", 15);
+    printCentered("    Admin Management                      Customer Management", 11);
+    printCentered("           ---------------------------           --------------------------", 11);
+    printCentered(" 1. Add Admin                          5. Add Customer", 15);
+    printCentered("    2. Delete Admin                       6. Delete Customer", 15);
+    printCentered("  3. Password Reset                     7. Password Reset", 15);
+    printCentered("    4. List Of Admin                      8. List Of Customer", 15);
     printf("\n");
-    printCentered("0. Admin-Home.", 12);
+    printCentered("0. Admin-Home.", 4);
     printf("\n\n\n");
 
     int option;
