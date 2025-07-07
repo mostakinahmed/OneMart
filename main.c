@@ -43,6 +43,12 @@ void monthlyIncome();
 void HalfYearlyIncome();
 void yearlyIncome();
 
+void adminPanelSupplierManagement(); // 6. Admin Panel Supplier Management- Home
+void AddSupplier();
+void deleteSupplier();
+void productSearch();
+void listOfProductBySupplier();
+
 /*-------Global Variable Section------*/
 char current_user_admin[25];
 char current_user_customer[25];
@@ -496,11 +502,8 @@ void adminPanelHome() // DashBoard
     // operation List
     printCentered(" 1. Sales.                        2. Stock.                        3. Online Store.", 10);
     printf("\n");
-    printCentered("        4. Accounts.                     5. Product Management.           6. Supplier Management.", 10);
+    printCentered("        4. Accounts.                     5. Supplier Management.           6. User Management.", 10);
     printf("\n");
-    setColor(10);
-    printCentered("     7. Admin Management.", 10);
-    setColor(7);
 
     printf("\n\n\n\n\n\n\n\n\n");
     dateTime();
@@ -515,21 +518,35 @@ void adminPanelHome() // DashBoard
         // logOut();
         adminPanelAuthentication();
         break;
+
     case 1:
         // Sales page
         adminPanelSales();
         break;
+
     case 2:
         // Stock page
         adminPanelStock();
         break;
+
     case 3:
         // Online Store page
         adminPanelOnlineStore();
         break;
+
     case 4:
         // Accounts page
         adminPanelAccounts();
+        break;
+
+    case 5:
+        // Accounts page
+        adminPanelSupplierManagement();
+        break;
+
+    case 6:
+        // Accounts page
+        // adminPanelUserManagement();
         break;
     case 11:
         system("cls");
@@ -877,6 +894,97 @@ void yearlyIncome()
 {
 }
 //*---------------Admin Panel (Accounts) Yearly Income End----------------*/
+//
+//
+//
+//*---------------Admin Panel Stock start----------------*/
+void adminPanelSupplierManagement() // HOME
+{
+    char headingName[40] = "Supplier Management";
+    menuUI(headingName);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Supplier Management", 15);
+    printCentered("------------------------", 15);
+    printCentered("1. Add Supplier", 15);
+    printCentered("     2. Delete Supplier.", 15);
+    printCentered("           3. Product Search", 15);
+    printCentered("  4. List Of Product by Supplier", 15);
+    printCentered("  0. Admin-Home.", 15);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        AddSupplier();
+        break;
+        // yet not done
+
+    case 2:
+        deleteSupplier();
+        break;
+        // yet not done
+
+    case 3:
+        productSearch();
+        break;
+        // yet not done
+
+    case 4:
+        listOfProductBySupplier();
+        break;
+        // yet not done
+
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
+}
+//*---------------Admin Panel Supplier Management End ----------------*/
+//
+//
+//
+//*---------------Admin Panel (Supplier) Add Supplier Start----------------*/
+void AddSupplier()
+{
+}
+//*---------------Admin Panel (Supplier) Add Supplier End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Supplier) Delete Supplier Start----------------*/
+void deleteSupplier()
+{
+}
+//*---------------Admin Panel (Supplier) Delete Supplier End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Supplier) Product Search Start----------------*/
+void productSearch()
+{
+}
+//*---------------Admin Panel (Supplier) Product Search End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Supplier) List Of Product By Supplier Start----------------*/
+void listOfProductBySupplier()
+{
+}
+//*---------------Admin Panel (Supplier) List Of Product By Supplier End----------------*/
 //
 //
 //
