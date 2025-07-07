@@ -12,25 +12,36 @@ void adminPanelHome();
 void home();
 void menuUI(char headingName[]);
 void showUI();
-void adminSignIn();
+
+void adminSignIn(); // 1. Authorization & Authentication
 void adminSignUp();
 void adminPanelAuthentication();
 void customerPanelAuthentication();
 void customerSignIn();
 void customerSignUp();
 
-void adminPanelSales(); // Admin Panel Sales - HOME
+void adminPanelSales(); // 2. Admin Panel Sales - HOME
 void newSales();
 void salesHistory();
 void searchSaleProduct();
 
-void adminPanelStock(); // Admin Panel Stock - Stock
+void adminPanelStock(); // 3. Admin Panel Stock - Home
 void AddNewProduct();
 void deleteProduct();
 void listOfProduct();
 void stockCheak();
 void updateStock();
 void stockListByCategory();
+
+void adminPanelOnlineStore(); // 4. Admin Panel Online Store - Home
+void orderPendingList();
+void orderDeliveredList();
+
+void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
+void dailyIncome();
+void monthlyIncome();
+void HalfYearlyIncome();
+void yearlyIncome();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -512,6 +523,14 @@ void adminPanelHome() // DashBoard
         // Stock page
         adminPanelStock();
         break;
+    case 3:
+        // Online Store page
+        adminPanelOnlineStore();
+        break;
+    case 4:
+        // Accounts page
+        adminPanelAccounts();
+        break;
     case 11:
         system("cls");
         printCentered("Goodbye!", 12);
@@ -527,7 +546,7 @@ void adminPanelHome() // DashBoard
 //
 //
 //*---------------Admin Panel sales start----------------*/
-void adminPanelSales()
+void adminPanelSales() // HOME
 {
     char headingName[40] = "SALES";
     menuUI(headingName);
@@ -601,7 +620,7 @@ void searchSaleProduct()
 //
 //
 //*---------------Admin Panel Stock start----------------*/
-void adminPanelStock()
+void adminPanelStock() // HOME
 {
     char headingName[40] = "Stock / Product";
     menuUI(headingName);
@@ -713,8 +732,156 @@ void stockListByCategory()
 //
 //
 //
+//*---------------Admin Panel Online Store start----------------*/
+void adminPanelOnlineStore() // HOME
+{
+    char headingName[40] = "Admin Panel - Online Store";
+    menuUI(headingName);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Online Store", 15);
+    printCentered("------------------------", 15);
+    printCentered("1. Order Pending List", 15);
+    printCentered("     2. Order Delivered List", 15);
+    printCentered("  0. Admin-Home", 15);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        orderPendingList();
+        break;
+        // yet not done
+    case 2:
+        orderDeliveredList();
+        break;
+        // yet not done
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
+}
+//*---------------Admin Panel  Online Store End ----------------*/
+//
+//
+//
+//*---------------Admin Panel(Online Store) Order Pending List Start----------------*/
+void orderPendingList()
+{
+}
+//*---------------Admin Panel (Online Store) Order Pending List End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Online Store) Order Delivered List Start----------------*/
+void orderDeliveredList()
+{
+}
+//*---------------Admin Panel (Online Store) Order Delivered List End----------------*/
+//
+//
+//
+//*---------------Admin Panel Online Store start----------------*/
+void adminPanelAccounts() // HOME
+{
+    char headingName[40] = "Admin Panel - Accounts";
+    menuUI(headingName);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Accounts", 15);
+    printCentered("------------------------", 15);
+    printCentered("1. Daily Income", 15);
+    printCentered("     2. Monthly Income", 15);
+    printCentered("     2. Half Yearly Income", 15);
+    printCentered("     2. Yearly Income", 15);
+    printCentered("  0. Admin-Home", 15);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        dailyIncome();
+        break;
+        // yet not done
+    case 2:
+        monthlyIncome();
+        break;
+    // yet not done
+    case 3:
+        HalfYearlyIncome();
+        break;
+    // yet not done
+    case 4:
+        yearlyIncome();
+        break;
+        // yet not done
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
+}
+//*---------------Admin Panel  Online Store End ----------------*/
+//
+//
+//
+//*---------------Admin Panel (Accounts) Daily Income Start----------------*/
+void dailyIncome()
+{
+}
+//*---------------Admin Panel (Accounts) Daily Income End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Accounts) Monthly Income Start----------------*/
+void monthlyIncome()
+{
+}
+//*---------------Admin Panel (Accounts) Monthly Income End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Accounts) Half Yearly Income Start----------------*/
+void HalfYearlyIncome()
+{
+}
+//*---------------Admin Panel (Accounts) Half Yearly Income End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Accounts) Yearly Income Start----------------*/
+void yearlyIncome()
+{
+}
+//*---------------Admin Panel (Accounts) Yearly Income End----------------*/
+//
+//
+//
 ///*-----------------2nd HOME START----------------------*/
-void home2()
+void home2() // Admin or not
 {
     char headingName[10] = "OneMart";
     menuUI(headingName);
