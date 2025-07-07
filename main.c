@@ -18,10 +18,19 @@ void adminPanelAuthentication();
 void customerPanelAuthentication();
 void customerSignIn();
 void customerSignUp();
-void adminPanelSales();
-void newSales();          // admin panel new sales
-void salesHistory();      // admin panel sles history
-void searchSaleProduct(); // admin panel Search sale product
+
+void adminPanelSales(); // Admin Panel Sales - HOME
+void newSales();
+void salesHistory();
+void searchSaleProduct();
+
+void adminPanelStock(); // Admin Panel Stock - Stock
+void AddNewProduct();
+void deleteProduct();
+void listOfProduct();
+void stockCheak();
+void updateStock();
+void stockListByCategory();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -309,55 +318,6 @@ void logOut()
 {
     home(); // for user and admin
 }
-/*-----------------ADMIN PANEL START HOME----------------------*/
-void adminPanelHome() // DashBoard
-{
-    char headingName[20] = "ADMIN PANEL";
-    menuUI(headingName);
-
-    // printCentered("OneMart", 10);
-    // printCentered("-----------------", 10);
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
-
-    printf("\n\n\n");
-    // operation List
-    printCentered(" 1. Sales.                        2. Stock.                        3. Online Store.", 10);
-    printf("\n");
-    printCentered("        4. Accounts.                     5. Product Management.           6. Supplier Management.", 10);
-    printf("\n");
-    setColor(10);
-    printCentered("     7. Admin Management.", 10);
-    setColor(7);
-
-    printf("\n\n\n\n\n\n\n\n\n");
-    dateTime();
-    printCentered("Press 0 to logout_________________11 to EXIT", 4);
-    int option;
-    printf("\nEnter your choice: ", 10);
-    scanf("%d", &option);
-
-    switch (option)
-    {
-    case 0:
-        // logOut();
-        adminPanelAuthentication();
-        break;
-    case 1:
-        // Sales page
-        adminPanelSales();
-        break;
-    case 11:
-        system("cls");
-        printCentered("Goodbye!", 12);
-        break;
-    default:
-        printCentered("Invalid Choice!", 12);
-        _getch();
-        adminPanelHome();
-    }
-}
-/*--------------------ADMIN PANEL HOME END------------------------*/
 //
 //
 ///*------------CUSTOMER Panel Authentication Start---------*/
@@ -510,6 +470,62 @@ void customerSignIn()
 //
 //
 //
+/*-----------------ADMIN PANEL HOME START----------------------*/
+void adminPanelHome() // DashBoard
+{
+    char headingName[20] = "ADMIN PANEL";
+    menuUI(headingName);
+
+    // printCentered("OneMart", 10);
+    // printCentered("-----------------", 10);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+
+    printf("\n\n\n");
+    // operation List
+    printCentered(" 1. Sales.                        2. Stock.                        3. Online Store.", 10);
+    printf("\n");
+    printCentered("        4. Accounts.                     5. Product Management.           6. Supplier Management.", 10);
+    printf("\n");
+    setColor(10);
+    printCentered("     7. Admin Management.", 10);
+    setColor(7);
+
+    printf("\n\n\n\n\n\n\n\n\n");
+    dateTime();
+    printCentered("Press 0 to logout_________________11 to EXIT", 4);
+    int option;
+    printf("\nEnter your choice: ", 10);
+    scanf("%d", &option);
+
+    switch (option)
+    {
+    case 0:
+        // logOut();
+        adminPanelAuthentication();
+        break;
+    case 1:
+        // Sales page
+        adminPanelSales();
+        break;
+    case 2:
+        // Stock page
+        adminPanelStock();
+        break;
+    case 11:
+        system("cls");
+        printCentered("Goodbye!", 12);
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        _getch();
+        adminPanelHome();
+    }
+}
+/*--------------------ADMIN PANEL HOME END------------------------*/
+//
+//
+//
 //*---------------Admin Panel sales start----------------*/
 void adminPanelSales()
 {
@@ -584,8 +600,120 @@ void searchSaleProduct()
 //
 //
 //
-///*-----------------2nd HOME START----------------------*/
+//*---------------Admin Panel Stock start----------------*/
+void adminPanelStock()
+{
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    char userName[20] = "mostakin";
+    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Stock & Product", 15);
+    printCentered("------------------------", 15);
+    printCentered("1. Add New Product.", 15);
+    printCentered("     2. Delete Product.", 15);
+    printCentered("           3. List Of Product.", 15);
+    printCentered("  4. Stock Cheak.", 15);
+    printCentered("  5. Update Stock.", 15);
+    printCentered("  6. Stock List by Category.", 15);
+    printCentered("  0. Admin-Home.", 15);
+    printf("\n\n\n");
 
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        AddNewProduct();
+        break;
+        // yet not done
+    case 2:
+        deleteProduct();
+        break;
+        // yet not done
+    case 3:
+        listOfProduct();
+        break;
+    // yet not done
+    case 4:
+        stockCheak();
+        break;
+    // yet not done
+    case 5:
+        updateStock();
+        break;
+        // yet not done
+    case 6:
+        stockListByCategory();
+        break;
+        // yet not done
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
+}
+//*---------------Admin Panel Stock End ----------------*/
+//
+//
+//
+//*---------------Admin Panel Add New Product Start----------------*/
+void AddNewProduct()
+{
+}
+//*---------------Admin Panel Add New Product End----------------*/
+//
+//
+//
+//*---------------Admin Panel Delete Product Start----------------*/
+void deleteProduct()
+{
+}
+//*---------------Admin Panel Delete Product End----------------*/
+//
+//
+//
+/*---------------Admin Panel List Of Product Start----------------*/
+void listOfProduct()
+{
+}
+//*---------------Admin Panel List Of Product End----------------*/
+//
+//
+//
+/*---------------Admin Panel stock Cheak Start----------------*/
+void stockCheak()
+{
+}
+//*---------------Admin Panel stock Cheak End----------------*/
+//
+//
+//
+/*---------------Admin Panel Update Stock Start----------------*/
+void updateStock()
+{
+}
+//*---------------Admin Panel Update Stock End----------------*/
+//
+//
+//
+/*---------------Admin Panel Stock List By Category Start----------------*/
+void stockListByCategory()
+{
+}
+//*---------------Admin Panel Stock List By Category End----------------*/
+//
+//
+//
+///*-----------------2nd HOME START----------------------*/
 void home2()
 {
     char headingName[10] = "OneMart";
