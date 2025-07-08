@@ -25,7 +25,7 @@ void newSales();
 void salesHistory();
 void searchSaleProduct();
 
-void adminPanelStock(); // 3. Admin Panel Stock - Home
+void adminPanelStock(); // 3. Admin Panel Product/Stock - Home
 void AddNewProduct();
 void deleteProduct();
 void listOfProduct();
@@ -736,6 +736,7 @@ void adminPanelStock() // HOME
 //*---------------Admin Panel Add New Product Start----------------*/
 void AddNewProduct()
 {
+    // make all cat func
 }
 //*---------------Admin Panel Add New Product End----------------*/
 //
