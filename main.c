@@ -192,7 +192,7 @@ void adminPanelAuthentication()
     printCentered("1. Sign In.", 10);
     printCentered("2. Sign Up.", 10);
     printCentered("  3. Home Page.", 10);
-    printCentered("     0. Exit Program.", 10);
+    printCentered("     0. Exit Program.", 4);
     int option;
     printf("\n\nEnter your choice: ");
     scanf("%d", &option);
@@ -236,6 +236,7 @@ void adminSignIn()
     char userPass1[25];
     char userEmail[30];
     char userEmail1[30];
+    char current_user_admin2[25];
     setColor(11);
     printf("Enter UserName : ");
     setColor(7);
@@ -253,10 +254,18 @@ void adminSignIn()
     {
         if (strcmp(userName, userName1) == 0 && strcmp(userPass, userPass1) == 0)
         {
-            strcpy(current_user_admin, userName);
+
+            // update login status
             adminLoginStatus = 1;
+            FILE *fp;
             fp = fopen("login_Logout_status/logData.txt", "w");
             fprintf(fp, "%d", adminLoginStatus);
+            fclose(fp);
+            // update current admin name
+            strcpy(current_user_admin2, userName);
+            fp = fopen("admin_data/current_user_admin.txt", "w");
+            fprintf(fp, "%s", current_user_admin2);
+            fclose(fp);
             found = 1;
             break;
         }
@@ -511,29 +520,32 @@ void adminPanelHome() // DashBoard
 {
     char headingName[20] = "ADMIN PANEL";
     menuUI(headingName);
+    FILE *fp;
+    fp = fopen("admin_data/current_user_admin.txt", "r");
+    fscanf(fp, "%s", current_user_admin);
+    fclose(fp);
+    // 2nd menu ui
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
 
-    // printCentered("OneMart", 10);
-    // printCentered("-----------------", 10);
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
-
+    printCentered("OneMart", 10);
+    printCentered("-----------------", 10);
     printf("\n\n\n");
     printCentered("Stock & Inventory Management System", 11);
     printCentered("---------------------------------------------------------------------------------", 11);
-    // operation List
+
+    // Operation List
     printCentered(" 1. Sales.                        2. Stock.                        3. Online Store.", 10);
     printf("\n");
     printCentered("    4. Accounts.                     5. Supplier Management.          6. User Management.", 10);
     printf("\n");
-
     printf("\n\n\n\n\n\n\n\n\n");
-    dateTime();
-    // printCentered("Press 0 to logout_________________11 to EXIT", 4);
+
+    dateTime(); // for date and time
     printCentered("             Press 0 to logout_______________11 to EXIT", 4);
+
     int option;
     printf("\nEnter your choice: ", 10);
     scanf("%d", &option);
-
     switch (option)
     {
     case 0:
@@ -589,8 +601,7 @@ void adminPanelSales() // HOME
 {
     char headingName[40] = "SALES";
     menuUI(headingName);
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
@@ -663,8 +674,7 @@ void adminPanelStock() // HOME
 {
     char headingName[40] = "Stock / Product";
     menuUI(headingName);
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
@@ -776,8 +786,7 @@ void adminPanelOnlineStore() // HOME
 {
     char headingName[40] = "Admin Panel - Online Store";
     menuUI(headingName);
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
@@ -837,8 +846,7 @@ void adminPanelAccounts() // HOME
 {
     char headingName[40] = "Admin Panel - Accounts";
     menuUI(headingName);
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
@@ -924,8 +932,7 @@ void adminPanelSupplierManagement() // HOME
 {
     char headingName[40] = "Supplier Management";
     menuUI(headingName);
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
@@ -1015,8 +1022,7 @@ void adminPanelUserManagement() // HOME
 {
     char headingName[40] = "User Management";
     menuUI(headingName);
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
@@ -1160,7 +1166,7 @@ void home2() // Admin or not
     menuUI(headingName);
     printf("\n\n\n\n\n\n\n\n");
     printCentered("Are you admin?", 15);
-    printCentered(" 1. YES", 11);
+    printCentered(" 1. YES", 10);
     printCentered("2. NO", 12);
 
     int option;
@@ -1259,5 +1265,3 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
-// tonomoy
-// mostakin
