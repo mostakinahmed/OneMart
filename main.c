@@ -7,7 +7,7 @@
 
 /*-------function List------*/
 void dateTime();
-void logOut();
+void adminLogOut();
 void adminPanelHome();
 void home();
 void menuUI(char headingName[]);
@@ -63,6 +63,7 @@ void listOfCustomer();
 char current_user_admin[25];
 char current_user_customer[25];
 int customerLoginStatus = 0;
+int adminLoginStatus = 0;
 //
 //
 //
@@ -253,6 +254,9 @@ void adminSignIn()
         if (strcmp(userName, userName1) == 0 && strcmp(userPass, userPass1) == 0)
         {
             strcpy(current_user_admin, userName);
+            adminLoginStatus = 1;
+            fp = fopen("login_Logout_status/logData.txt", "w");
+            fprintf(fp, "%d", adminLoginStatus);
             found = 1;
             break;
         }
@@ -341,9 +345,14 @@ void adminSignUp()
 //
 //
 
-void logOut()
+void adminLogOut()
 {
-    home(); // for user and admin
+    FILE *fp;
+    customerLoginStatus = 0;
+    fp = fopen("login_Logout_status/logData.txt", "w");
+    fprintf(fp, "%d", customerLoginStatus);
+    fclose(fp);
+    adminPanelAuthentication(); // for admin
 }
 //
 //
@@ -528,8 +537,8 @@ void adminPanelHome() // DashBoard
     switch (option)
     {
     case 0:
-        // logOut();
-        adminPanelAuthentication();
+        adminLogOut();
+        // adminPanelAuthentication();
         break;
 
     case 1:
@@ -1157,10 +1166,24 @@ void home2() // Admin or not
     int option;
     printf("\n\n\nEnter your choice: ");
     scanf("%d", &option);
+    int adminLoginStatus2;
+    FILE *fp;
+    fp = fopen("login_Logout_status/logData.txt", "r");
+    fscanf(fp, "%d", &adminLoginStatus2);
+    fclose(fp);
     switch (option)
     {
     case 1:
-        adminPanelAuthentication();
+
+        if (adminLoginStatus2 == 1)
+        {
+            adminPanelHome();
+        }
+        else if (adminLoginStatus2 == 0)
+        {
+            adminPanelAuthentication();
+        }
+
         break;
     case 2:
         home();
