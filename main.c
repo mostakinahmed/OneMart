@@ -926,7 +926,6 @@ void computerAdd()
 
     printf("Supplier ID : ", 15);
     scanf("%d", &proSupID);
-
     setColor(7); // reset color
 
     // data send to file
@@ -1256,7 +1255,7 @@ void addSupplier()
     printCentered("'Supplier Added'....Press any key to return Home.", 10);
     printf("\n\n\n");
     _getch();
-    adminPanelHome();
+    adminPanelHome(); // home
 }
 //*---------------Admin Panel (Supplier) Add Supplier End----------------*/
 //
