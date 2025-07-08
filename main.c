@@ -736,7 +736,61 @@ void adminPanelStock() // HOME
 //*---------------Admin Panel Add New Product Start----------------*/
 void AddNewProduct()
 {
-    // make all cat func
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Stock & Product Category List", 15);
+    printCentered("------------------------------", 15);
+    printCentered("1. CAT - 1.", 15);
+    printCentered("2. CAT - 2.", 15);
+    printCentered("3. CAT - 3.", 15);
+    printCentered("4. CAT - 4.", 15);
+    printCentered("5. CAT - 5.", 15);
+    printCentered("    0. Admin-Home.", 4);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        // AddNewProduct();
+        break;
+        // yet not done
+    case 2:
+        // deleteProduct();
+        break;
+        // yet not done
+    case 3:
+        // listOfProduct();
+        break;
+    // yet not done
+    case 4:
+        // stockCheak();
+        break;
+    // yet not done
+    case 5:
+        // updateStock();
+        break;
+        // yet not done
+    case 6:
+        // stockListByCategory();
+        break;
+        // yet not done
+    case 0:
+        // adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        adminPanelSales();
+    }
 }
 //*---------------Admin Panel Add New Product End----------------*/
 //
