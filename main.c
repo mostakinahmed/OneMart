@@ -887,6 +887,7 @@ void AddNewProduct()
 //*---------------Admin Panel Delete Product Start----------------*/
 void deleteProduct()
 {
+    // start
 }
 //*---------------Admin Panel Delete Product End----------------*/
 //
