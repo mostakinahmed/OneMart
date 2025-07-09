@@ -381,7 +381,6 @@ void adminSignUp()
 //
 //
 //
-
 void adminLogOut()
 {
     FILE *fp;
@@ -929,6 +928,28 @@ void listOfProduct()
 /*---------------Admin Panel stock Cheak Start----------------*/
 void stockCheak()
 {
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+
+    printCentered("Stock Check", 15);
+    printCentered(" ----------------------", 9);
+    printf("\n\n");
+    int pID2;
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Product ID: ", 15);
+    scanf("%d", &pID2);
+    printf("\n\n");
+
+    _getch();
 }
 //*---------------Admin Panel stock Cheak End----------------*/
 //
