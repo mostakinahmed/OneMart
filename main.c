@@ -936,9 +936,9 @@ void deleteProduct()
     {
         printCentered("  Prduct Information:", 10);
         printCentered("  ------------------------", 10);
-        printCentered("Product-ID:     Supplier-ID    Product-Name:   Product-Price:        Unit:       Category:", 15);
+        printCentered("  Product-ID:     Supplier-ID    Product-Name:   Product-Price:        Unit:       Category:", 15);
         printCentered("  -------------------------------------------------------------------------------------------", 9);
-        printf("                                   %d          %d            %s            %d.00TK         %d (P)       %s\n", allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
+        printf("                              %d           %d          %s         %d.00TK           %d (P)       %s\n", allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
 
         int option;
         printf("\n\n\n\n\n");
