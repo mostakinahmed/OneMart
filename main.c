@@ -753,108 +753,29 @@ void adminPanelStock() // HOME
 //*---------------Admin Panel Add New Product Start----------------*/
 void AddNewProduct()
 {
+
     char headingName[40] = "Stock / Product";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
-    printf("\n\n");
+    printf("\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
     printf("\n");
-    printCentered("Stock & Product Category List", 15);
-    printCentered("------------------------------", 15);
-    printCentered("   01. Computer", 15);
-    printCentered("02. Books", 15);
-    printCentered("   03. Medicine", 15);
-    printCentered("        04. Mobile Phone", 15);
-    printCentered("     05. Television", 15);
-    printCentered("     06. Fragrances", 15);
-    printCentered("  07. Camera", 15);
-    printCentered("        08. Smart Watches", 15);
-    printCentered("    09. Beverages", 15);
-    printCentered("              10. Software & Licenses", 15);
-    printCentered("       0. Admin-Home.", 4);
-    printf("\n\n\n");
 
-    int option;
-    printf("\n\nEnter your choice: ");
-    scanf("%d", &option);
-    switch (option)
-    {
-    case 1:
-        computerAdd();
-        break;
-        // yet not done
-    case 2:
-        // booksAdd();
-        break;
-        // yet not done
-    case 3:
-        // medicineAdd();
-        break;
-    // yet not done
-    case 4:
-        // mobilePhoneAdd();
-        break;
-    // yet not done
-    case 5:
-        // televisionAdd();
-        break;
-        // yet not done
-    case 6:
-        // fragrancesAdd();
-        break;
-    // yet not done
-    case 7:
-        // cameraAdd();
-        break;
-    // yet not done
-    case 8:
-        // smartWatchcesAdd();
-        break;
-        // yet not done
-    case 9:
-        // beveragesAdd();
-        break;
-        // yet not done
-    case 10:
-        // softwareLicensesAdd();
-        break;
-        // yet not done
-    case 0:
-        // adminPanelHome();
-        break;
-    default:
-        printCentered("Invalid Choice!", 12);
-        printCentered("Press any key to return Product Add", 10);
-        _getch();
-        AddNewProduct();
-    }
-}
-//*---------------Admin Panel Add New Product End----------------*/
-//
-//
-//
-//*---------------Admin Panel Delete Product Start----------------*/
-void computerAdd()
-{
-
-    char headingName[40] = "Stock / Product";
-    menuUI(headingName);
-    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
-    printf("\n\n");
-    printCentered("OneMart", 10);
-    printCentered("------------------------", 10);
+    printCentered("Available Category List", 9);
+    printCentered(" -----------------------------------------------------", 9);
+    printCentered("| computer    books   medicine  mobile     television |", 15);
+    printCentered("| fragrances  camera  watches   beverages  software   |", 15);
+    printCentered(" -----------------------------------------------------", 9);
     printf("\n");
     printCentered("Input Computer Information:", 15);
-    printCentered("------------------------------", 15);
-    // //sku is auto set
-    // printCentered("SKU: %d", 15);
+    printCentered(" -----------------------------------------------------", 9);
 
-    // variable declare
     int pID;
     char pName[20];
     int pPrice;
     int pUnit;
+    char pCat[15];
     int proSupID; // product supplier id
 
     //-------space/input management for ID-------//
@@ -867,7 +788,7 @@ void computerAdd()
     setColor(15); // start
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("   SKU  : %d\n", pID);
+    printf("    SKU : %d\n", pID);
     ++pID;
     fp = fopen("Stock/productID.txt", "w");
     fprintf(fp, "%d", pID);
@@ -877,7 +798,7 @@ void computerAdd()
     space = (width - 15) / 2;
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("       Name  : ");
+    printf("        Name : ");
     scanf("%s", pName);
 
     //-------space/input management for Price-------//
@@ -894,6 +815,13 @@ void computerAdd()
     printf("        Unit : ", 15);
     scanf("%d", &pUnit);
 
+    //-------space/input management for Category-------//
+    space = (width - 17) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("     Category : ", 15);
+    scanf("%s", pCat);
+
     // Show Supplier List
     int supplierID;
     char supName[20];
@@ -901,7 +829,7 @@ void computerAdd()
     char supCompName[25];
 
     fp = fopen("supplier_data/supplier_list.txt", "r");
-    printf("\n\n");
+    printf("\n");
     printCentered("Available Supplier List", 9);
     printCentered("-----------------------", 9);
     printCentered(" ID      Name ", 15);
@@ -923,26 +851,24 @@ void computerAdd()
     printf("\n");
     for (int i = 0; i < space; i++)
         printf(" ");
-
     printf("Supplier ID : ", 15);
     scanf("%d", &proSupID);
     setColor(7); // reset color
 
     // data send to file
     fp = fopen("Stock/computer.txt", "a");
-    fprintf(fp, "%d %d %s %d %d\n", pID, proSupID, pName, pPrice, pUnit);
+    fprintf(fp, "%d %d %s %s %d %d\n", pID, proSupID, pCat, pName, pPrice, pUnit);
     fclose(fp);
     fp = fopen("Stock/all_product.txt", "a");
-    fprintf(fp, "%d %d %s %d %d\n", pID, proSupID, pName, pPrice, pUnit);
+    fprintf(fp, "%d %d %s %s %d %d\n", pID, proSupID, pCat, pName, pPrice, pUnit);
     fclose(fp);
 
-    printf("\n\n\n");
+    printf("\n\n");
     printCentered("'Product Added'....Press any key to return Home.", 10);
     _getch();
     adminPanelStock();
-
-    // supplierList(); //displaying supplier list
 }
+//*---------------Admin Panel Add New Product End----------------*/
 //
 //
 //
