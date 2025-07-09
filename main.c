@@ -12,6 +12,7 @@ void adminPanelHome();
 void home();
 void menuUI(char headingName[]);
 void showUI();
+void allProductData();
 
 void adminSignIn(); // 1. Authorization & Authentication
 void adminSignUp();
@@ -68,6 +69,19 @@ char current_user_admin[25];
 char current_user_customer[25];
 int customerLoginStatus = 0;
 int adminLoginStatus = 0;
+
+/*-------Global Structure Section------*/
+struct product
+{
+    int pID;
+    int proSupID; // pruduct supplier ID
+    char pCat[15];
+    char pName[20];
+    int pPrice;
+    int pUnit;
+};
+struct product allProduct[500];
+struct product allProductCatList[500];
 //
 //
 //
@@ -856,9 +870,6 @@ void AddNewProduct()
     setColor(7); // reset color
 
     // data send to file
-    fp = fopen("Stock/computer.txt", "a");
-    fprintf(fp, "%d %d %s %s %d %d\n", pID, proSupID, pCat, pName, pPrice, pUnit);
-    fclose(fp);
     fp = fopen("Stock/all_product.txt", "a");
     fprintf(fp, "%d %d %s %s %d %d\n", pID, proSupID, pCat, pName, pPrice, pUnit);
     fclose(fp);
@@ -866,6 +877,7 @@ void AddNewProduct()
     printf("\n\n");
     printCentered("'Product Added'....Press any key to return Home.", 10);
     _getch();
+    allProductData(); // refresh all product index
     adminPanelStock();
 }
 //*---------------Admin Panel Add New Product End----------------*/
@@ -875,6 +887,7 @@ void AddNewProduct()
 //*---------------Admin Panel Delete Product Start----------------*/
 void deleteProduct()
 {
+    // start
 }
 //*---------------Admin Panel Delete Product End----------------*/
 //
@@ -1357,6 +1370,42 @@ void customerPasswordReset()
 void listOfCustomer()
 {
 }
+//*---------------Admin Panel (USER) Customer List End----------------*/
+//
+//
+//
+//*---------------ALL Product from FILE - Start----------------*/
+void allProductData()
+{
+    int pID2;
+    int proSupID2;
+    char pCat2[15];
+    char pName2[20];
+    int pPrice2;
+    int pUnit2;
+    int index = 0;
+
+    FILE *fp;
+    fp = fopen("Stock/all_product.txt", "r");
+    while (fscanf(fp, "%d %d %s %s %d %d\n", &pID2, &proSupID2, pCat2, pName2, &pPrice2, &pUnit2) != EOF)
+    {
+        index++;
+        allProduct[index].pID = pID2;
+        allProduct[index].proSupID = proSupID2;
+        allProduct[index].pPrice = pPrice2;
+        allProduct[index].pUnit = pUnit2;
+        strcpy(allProduct[index].pName, pName2);
+        strcpy(allProduct[index].pCat, pCat2);
+    }
+    fclose(fp);
+    fp = fopen("Stock/index/all_product_index.txt", "w");
+    fprintf(fp, "%d", index);
+    fclose(fp);
+}
+//*---------------ALL Product from FILE - Start----------------*/
+//
+//
+//
 //*---------------Admin Panel (USER) Customer List End----------------*/
 //
 //
