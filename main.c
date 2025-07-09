@@ -28,9 +28,6 @@ void searchSaleProduct();
 
 void adminPanelStock(); // 3. Admin Panel Product/Stock - Home
 void AddNewProduct();
-// 10 function for Add New Product
-void computerAdd();
-
 void deleteProduct();
 void listOfProduct();
 void stockCheak();
@@ -80,7 +77,7 @@ struct product
     int pPrice;
     int pUnit;
 };
-// struct product allProduct[500];
+struct product allProduct[500];
 struct product allProductCatList[500];
 //
 //
@@ -1377,7 +1374,6 @@ void listOfCustomer()
 //*---------------ALL Product from FILE - Start----------------*/
 void allProductData()
 {
-    struct product allProduct[500];
     int pID2;
     int proSupID2;
     char pCat2[15];
