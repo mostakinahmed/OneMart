@@ -893,6 +893,34 @@ void deleteProduct()
 /*---------------Admin Panel List Of Product Start----------------*/
 void listOfProduct()
 {
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+
+    printCentered("All Product List", 9);
+    printCentered("  -----------------------------------------------------------------------------------------------------", 9);
+    printf("\n");
+    printCentered("  NO:     Product-ID:     Supplier-ID    Product-Name:   Product-Price:        Unit:       Category:", 15);
+    printCentered("  -----------------------------------------------------------------------------------------------------", 9);
+    allProductData();
+    int index, serNum = 1;
+    FILE *fp;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    // pID, proSupID, pCat, pName, pPrice, pUnit);
+    for (int i = 0; i < index; i++)
+    {
+        printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.....", 10);
+    _getch();
+    adminPanelStock();
 }
 //*---------------Admin Panel List Of Product End----------------*/
 //
@@ -1386,13 +1414,14 @@ void allProductData()
     fp = fopen("Stock/all_product.txt", "r");
     while (fscanf(fp, "%d %d %s %s %d %d\n", &pID2, &proSupID2, pCat2, pName2, &pPrice2, &pUnit2) != EOF)
     {
-        index++;
+
         allProduct[index].pID = pID2;
         allProduct[index].proSupID = proSupID2;
         allProduct[index].pPrice = pPrice2;
         allProduct[index].pUnit = pUnit2;
         strcpy(allProduct[index].pName, pName2);
         strcpy(allProduct[index].pCat, pCat2);
+        index++;
     }
     fclose(fp);
     fp = fopen("Stock/index/all_product_index.txt", "w");
