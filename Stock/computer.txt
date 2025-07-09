@@ -1,2 +1,0 @@
-102036 10006 computer hp 145247 10
-102038 10007 books shafat_story 99 10
