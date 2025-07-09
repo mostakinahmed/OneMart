@@ -80,7 +80,7 @@ struct product
     int pPrice;
     int pUnit;
 };
-struct product allProduct[500];
+// struct product allProduct[500];
 struct product allProductCatList[500];
 //
 //
@@ -1377,6 +1377,7 @@ void listOfCustomer()
 //*---------------ALL Product from FILE - Start----------------*/
 void allProductData()
 {
+    struct product allProduct[500];
     int pID2;
     int proSupID2;
     char pCat2[15];
