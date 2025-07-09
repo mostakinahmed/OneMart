@@ -1,1 +1,2 @@
 102050 10005 samsung mobile 12547 145
+102051 10010 television samsung 14528 15
