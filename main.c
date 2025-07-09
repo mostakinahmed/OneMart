@@ -79,6 +79,7 @@ struct product
 };
 struct product allProduct[500];
 struct product allProductCatList[500];
+// mark
 //
 //
 //
@@ -699,6 +700,7 @@ void searchSaleProduct()
 //*---------------Admin Panel Stock start----------------*/
 void adminPanelStock() // HOME
 {
+
     char headingName[40] = "Stock / Product";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
@@ -729,7 +731,7 @@ void adminPanelStock() // HOME
     case 2:
         deleteProduct();
         break;
-        // yet not done
+        // yet not done?
     case 3:
         listOfProduct();
         break;
@@ -883,7 +885,119 @@ void AddNewProduct()
 //*---------------Admin Panel Delete Product Start----------------*/
 void deleteProduct()
 {
-    // start
+
+    int pID;
+    char pName[20];
+    int pPrice;
+    int pUnit;
+    char pCat[15];
+    int proSupID;
+
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printCentered("Product Delete", 15);
+    printCentered(" --------------------------", 9);
+    printf("\n\n");
+    int pID2;
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Product ID: ", 15);
+    scanf("%d", &pID2);
+    printf("\n\n");
+
+    // Picking product number form file
+    int index;
+    FILE *fp;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+
+    // Finding Product
+    allProductData();
+    int deletePos, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+        if (allProduct[i].pID == pID2)
+        {
+            deletePos = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // Product
+    if (found)
+    {
+        printCentered("  Prduct Information:", 10);
+        printCentered("  ------------------------", 10);
+        printCentered("Product-ID:     Supplier-ID    Product-Name:   Product-Price:        Unit:       Category:", 15);
+        printCentered("  -------------------------------------------------------------------------------------------", 9);
+        printf("                                   %d          %d            %s            %d.00TK         %d (P)       %s\n", allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
+
+        int option;
+        printf("\n\n\n\n\n");
+        printCentered("    Are you confirm to delete?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option:: ", 15);
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+            for (int j = deletePos; j < index; j++)
+            {
+                allProduct[deletePos] = allProduct[deletePos + 1];
+            }
+            index = index - 1;
+
+            // Latest Data Send to allProduct-FILE
+            fp = fopen("Stock/all_product.txt", "w");
+            fclose(fp);
+            fp = fopen("Stock/all_product.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%d %d %s %s %d %d\n", allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pCat, allProduct[j].pPrice, allProduct[j].pUnit);
+            }
+            fclose(fp);
+
+            fp = fopen("Stock/index/all_product_index.txt", "w");
+            fprintf(fp, "%d", index);
+            fclose(fp);
+
+            printf("\n\n");
+            printCentered("'Product Deleted'....Press any key to return Home.", 10);
+            _getch();
+            adminPanelHome();
+
+        case 2:
+            printCentered("Deletation cancel!", 4);
+            _getch;
+            adminPanelStock();
+        }
+    }
+    else
+    {
+        printCentered("     Porduct has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelStock();
+    }
 }
 //*---------------Admin Panel Delete Product End----------------*/
 //
