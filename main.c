@@ -961,7 +961,7 @@ void deleteProduct()
         case 1:
             for (int j = deletePos; j < index; j++)
             {
-                allProduct[deletePos] = allProduct[deletePos + 1];
+                allProduct[j] = allProduct[j + 1];
             }
             index = index - 1;
 
@@ -982,12 +982,14 @@ void deleteProduct()
             printf("\n\n");
             printCentered("'Product Deleted'....Press any key to return Home.", 10);
             _getch();
-            adminPanelHome();
+            adminPanelStock();
+            break;
 
         case 2:
             printCentered("Deletation cancel!", 4);
-            _getch;
+            _getch();
             adminPanelStock();
+            break;
         }
     }
     else
@@ -1247,6 +1249,7 @@ void adminPanelSupplierManagement() // HOME
     printCentered("      2. Delete Supplier.", 15);
     printCentered("    3. Product Search", 15);
     printCentered("                 4. List Of Product by Supplier", 15);
+    printCentered("   5. Supplier List", 15);
     printCentered("  0. Admin-Home.", 4);
     printf("\n\n\n");
 
@@ -1258,7 +1261,6 @@ void adminPanelSupplierManagement() // HOME
     case 1:
         addSupplier();
         break;
-        // yet not done
 
     case 2:
         deleteSupplier();
@@ -1275,14 +1277,18 @@ void adminPanelSupplierManagement() // HOME
         break;
         // yet not done
 
+    case 5:
+        supplierList();
+        break;
+        // yet not done
     case 0:
         adminPanelHome();
         break;
     default:
-        printCentered("Invalid Choice!", 12);
-        printCentered("Press any key", 10);
+        printCentered("Invalid Choice!", 4);
+        printCentered("Press any key to return....", 10);
         _getch();
-        adminPanelSales();
+        adminPanelSupplierManagement();
     }
 }
 //*---------------Admin Panel Supplier Management End ----------------*/
@@ -1313,16 +1319,13 @@ void addSupplier()
     fp = fopen("supplier_data/supplierID.txt", "r");
     fscanf(fp, "%d", &supplierID);
     fclose(fp);
+
     int width = getConsoleWidth();
     int space = (width - 5) / 2;
     setColor(15); // start
     for (int i = 0; i < space; i++)
         printf(" ");
     printf("ID    : %d\n", supplierID);
-    ++supplierID;
-    fp = fopen("supplier_data/supplierID.txt", "w");
-    fprintf(fp, "%d", supplierID);
-    fclose(fp);
 
     //-------space/input management for name-------//
     space = (width - 12) / 2;
@@ -1350,11 +1353,18 @@ void addSupplier()
     fp = fopen("supplier_data/supplier_list.txt", "a");
     fprintf(fp, "%d %s %s %s\n", supplierID, supName, supPhn, supCompName);
     fclose(fp);
+
+    // dupplier id send to file
+    ++supplierID;
+    fp = fopen("supplier_data/supplierID.txt", "w");
+    fprintf(fp, "%d", supplierID);
+    fclose(fp);
+
     printf("\n\n");
     printCentered("'Supplier Added'....Press any key to return Home.", 10);
     printf("\n\n\n");
     _getch();
-    adminPanelHome(); // home
+    adminPanelStock(); // home
 }
 //*---------------Admin Panel (Supplier) Add Supplier End----------------*/
 //
@@ -1363,6 +1373,130 @@ void addSupplier()
 //*---------------Admin Panel (Supplier) Delete Supplier Start----------------*/
 void deleteSupplier()
 {
+
+    char headingName[40] = "Supplier Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("Supplier Delete", 15);
+    printCentered(" -----------------------", 9);
+    // printf("\n");
+
+    // create supplier array
+    struct supplier
+    {
+        int supplierID;
+        char supName[20];
+        char supPhn[20];
+        char supCompName[25];
+    };
+    struct supplier supplierData[100];
+
+    int serNum = 1;
+    int supplierID2;
+    char supName2[20];
+    char supPhn2[20];
+    char supCompName2[25];
+
+    int sID2, index = 0;
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Supplier ID: ", 15);
+    scanf("%d", &sID2);
+    printf("\n");
+
+    FILE *fp;
+    fp = fopen("supplier_data/supplier_list.txt", "r");
+    while (fscanf(fp, "%d %s %s %s\n", &supplierID2, supName2, supPhn2, supCompName2) != EOF)
+    {
+
+        supplierData[index].supplierID = supplierID2;
+        strcpy(supplierData[index].supName, supName2);
+        strcpy(supplierData[index].supPhn, supPhn2);
+        strcpy(supplierData[index].supCompName, supCompName2);
+        index++;
+    }
+    fclose(fp);
+
+    int deletePos, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+        if (supplierData[i].supplierID == sID2)
+        {
+            deletePos = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // Product
+    if (found)
+    {
+        printCentered("Supplier Found...", 10);
+        printCentered("-----------------------", 10);
+        printCentered("    SN:         ID:            Name:          Phone:        Company:    ", 15);
+        printCentered("----------------------------------------------------------------", 9);
+
+        printf("                                        %d          %d         %s        %s    %s\n", serNum, supplierData[i].supplierID, supplierData[i].supName, supplierData[i].supPhn, supplierData[i].supCompName);
+        int option;
+        printf("\n\n\n\n\n");
+        printCentered("     Are you confirm to delete?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option: ");
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+            for (int j = deletePos; j < index; j++)
+            {
+                supplierData[j] = supplierData[j + 1];
+            }
+            index = index - 1;
+
+            // Latest Data Send to Supplier -FILE
+            fp = fopen("supplier_data/supplier_list.txt", "w"); // reset previous data
+            fclose(fp);
+            fp = fopen("supplier_data/supplier_list.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%d %s %s %s\n", supplierData[j].supplierID, supplierData[j].supName, supplierData[j].supPhn, supplierData[j].supCompName);
+            }
+            fclose(fp);
+            printf("\n\n");
+            printCentered("'Supplier Deleted'....Press any key to return Home.", 4);
+            _getch();
+            adminPanelSupplierManagement();
+
+        case 2:
+            printCentered("Deletation cancel!", 4);
+            _getch();
+            adminPanelSupplierManagement();
+        }
+    }
+    else
+    {
+        printCentered("     Supplier has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelSupplierManagement();
+    }
 }
 //*---------------Admin Panel (Supplier) Delete Supplier End----------------*/
 //
@@ -1387,6 +1521,40 @@ void listOfProductBySupplier()
 //*---------------Admin Panel (Supplier) List Of Supplier Start----------------*/
 void supplierList()
 {
+    char headingName[40] = "Supplier Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("Supplier List", 9);
+    printCentered("------------------------------------------------------------------", 9);
+    printCentered("| SN:     ID:          Name:          Phone:           Company:    |", 9);
+    // printCentered("------------------------------------------------------------------", 9);
+    printCentered("==================================================================", 9);
+    int serNum = 1;
+    int supplierID;
+    char supName[20];
+    int supPhn[15];
+    char supCompName[25];
+
+    FILE *fp;
+    fp = fopen("supplier_data/supplier_list.txt", "r");
+
+    // print data from file
+    while (fscanf(fp, "%d %s %s %s", &supplierID, supName, supPhn, supCompName) != EOF)
+    {
+        printf("                                         %d     %d       %s      %s       %s\n", serNum, supplierID, supName);
+        printCentered("------------------------------------------------------------------", 8);
+        serNum++;
+    }
+    fclose(fp);
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.", 10);
+    _getch();
+    adminPanelSupplierManagement();
 }
 //*---------------Admin Panel (Supplier) List Of supplier End----------------*/
 //
