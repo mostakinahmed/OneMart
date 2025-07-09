@@ -382,7 +382,6 @@ void adminSignUp()
 //
 //
 //
-
 void adminLogOut()
 {
     FILE *fp;
@@ -937,9 +936,9 @@ void deleteProduct()
     {
         printCentered("  Prduct Information:", 10);
         printCentered("  ------------------------", 10);
-        printCentered("Product-ID:     Supplier-ID    Product-Name:   Product-Price:        Unit:       Category:", 15);
+        printCentered("  Product-ID:     Supplier-ID    Product-Name:   Product-Price:        Unit:       Category:", 15);
         printCentered("  -------------------------------------------------------------------------------------------", 9);
-        printf("                                   %d          %d            %s            %d.00TK         %d (P)       %s\n", allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
+        printf("                              %d           %d          %s         %d.00TK           %d (P)       %s\n", allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
 
         int option;
         printf("\n\n\n\n\n");
@@ -1007,6 +1006,34 @@ void deleteProduct()
 /*---------------Admin Panel List Of Product Start----------------*/
 void listOfProduct()
 {
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+
+    printCentered("All Product List", 9);
+    printCentered("  -----------------------------------------------------------------------------------------------------", 9);
+    printf("\n");
+    printCentered("  NO:     Product-ID:     Supplier-ID    Product-Name:   Product-Price:        Unit:       Category:", 15);
+    printCentered("  -----------------------------------------------------------------------------------------------------", 9);
+    allProductData();
+    int index, serNum = 1;
+    FILE *fp;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    // pID, proSupID, pCat, pName, pPrice, pUnit);
+    for (int i = 0; i < index; i++)
+    {
+        printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.....", 10);
+    _getch();
+    adminPanelStock();
 }
 //*---------------Admin Panel List Of Product End----------------*/
 //
@@ -1015,6 +1042,28 @@ void listOfProduct()
 /*---------------Admin Panel stock Cheak Start----------------*/
 void stockCheak()
 {
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+
+    printCentered("Stock Check", 15);
+    printCentered(" ----------------------", 9);
+    printf("\n\n");
+    int pID2;
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Product ID: ", 15);
+    scanf("%d", &pID2);
+    printf("\n\n");
+
+    _getch();
 }
 //*---------------Admin Panel stock Cheak End----------------*/
 //
@@ -1594,6 +1643,7 @@ void home()
     }
 }
 /*-----------------HOME END----------------------*/
+//
 //
 //
 //
