@@ -1,6 +1,1 @@
-102036 10006 computer hp 145247 10
-102038 10007 books shafat_story 99 10
-102041 10008 mobile mostak 14 14
-102042 10006 mobile mo 4 4
-102043 10005 computer mod 77 7
-102044 10008 mobile ff 1 4
+102049 10007 rr computer 14 11
