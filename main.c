@@ -50,6 +50,7 @@ void deleteSupplier();
 void productSearch();
 void listOfProductBySupplier();
 void supplierList();
+void supplierLatestData();
 
 void adminPanelUserManagement(); // 6. Admin Panel User Management- Home
 void addAdmin();
@@ -79,6 +80,15 @@ struct product
 };
 struct product allProduct[500];
 struct product allProductCatList[500];
+
+struct supplier
+{
+    int supplierID;
+    char supName[20];
+    char supPhn[15];
+    char supCompName[25];
+};
+struct supplier supplierData[100];
 // mark
 //
 //
@@ -1637,6 +1647,7 @@ void yearlyIncome()
 //*---------------Admin Panel Supplier Management start----------------*/
 void adminPanelSupplierManagement() // HOME
 {
+    supplierLatestData();
     char headingName[40] = "Supplier Management";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
@@ -1765,7 +1776,8 @@ void addSupplier()
     printCentered("'Supplier Added'....Press any key to return Home.", 10);
     printf("\n\n\n");
     _getch();
-    adminPanelStock(); // home
+    supplierLatestData();
+    adminPanelSupplierManagement(); // home
 }
 //*---------------Admin Panel (Supplier) Add Supplier End----------------*/
 //
@@ -1774,7 +1786,6 @@ void addSupplier()
 //*---------------Admin Panel (Supplier) Delete Supplier Start----------------*/
 void deleteSupplier()
 {
-
     char headingName[40] = "Supplier Management";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
@@ -1784,25 +1795,8 @@ void deleteSupplier()
     printf("\n\n");
     printCentered("Supplier Delete", 15);
     printCentered(" -----------------------", 9);
-    // printf("\n");
 
-    // create supplier array
-    struct supplier
-    {
-        int supplierID;
-        char supName[20];
-        char supPhn[20];
-        char supCompName[25];
-    };
-    struct supplier supplierData[100];
-
-    int serNum = 1;
-    int supplierID2;
-    char supName2[20];
-    char supPhn2[20];
-    char supCompName2[25];
-
-    int sID2, index = 0;
+    int sID2, index;
     int width = getConsoleWidth();
     int space = (width - 18) / 2;
     setColor(15);
@@ -1812,20 +1806,14 @@ void deleteSupplier()
     scanf("%d", &sID2);
     printf("\n");
 
+    supplierLatestData(); // get latest supplier data
     FILE *fp;
-    fp = fopen("supplier_data/supplier_list.txt", "r");
-    while (fscanf(fp, "%d %s %s %s\n", &supplierID2, supName2, supPhn2, supCompName2) != EOF)
-    {
-
-        supplierData[index].supplierID = supplierID2;
-        strcpy(supplierData[index].supName, supName2);
-        strcpy(supplierData[index].supPhn, supPhn2);
-        strcpy(supplierData[index].supCompName, supCompName2);
-        index++;
-    }
+    fp = fopen("supplier_data/supplier_data_index.txt", "r");
+    fscanf(fp, "%d", &index); // get supplier index
     fclose(fp);
 
-    int deletePos, i, found = 0;
+    // find del position
+    int deletePos, i, found = 0, serNum = 1;
     for (i = 0; i < index; i++)
     {
         if (supplierData[i].supplierID == sID2)
@@ -1844,7 +1832,7 @@ void deleteSupplier()
         printCentered("    SN:         ID:            Name:          Phone:        Company:    ", 15);
         printCentered("----------------------------------------------------------------", 9);
 
-        printf("                                        %d          %d         %s        %s    %s\n", serNum, supplierData[i].supplierID, supplierData[i].supName, supplierData[i].supPhn, supplierData[i].supCompName);
+        printf("                                        %d          %d         %s        %s    %s\n", serNum++, supplierData[i].supplierID, supplierData[i].supName, supplierData[i].supPhn, supplierData[i].supCompName);
         int option;
         printf("\n\n\n\n\n");
         printCentered("     Are you confirm to delete?", 15);
@@ -1870,7 +1858,8 @@ void deleteSupplier()
             }
             index = index - 1;
 
-            // Latest Data Send to Supplier -FILE
+            FILE *fp;
+            // Latest Data Send to Supplier - FILE
             fp = fopen("supplier_data/supplier_list.txt", "w"); // reset previous data
             fclose(fp);
             fp = fopen("supplier_data/supplier_list.txt", "a");
@@ -1879,6 +1868,12 @@ void deleteSupplier()
                 fprintf(fp, "%d %s %s %s\n", supplierData[j].supplierID, supplierData[j].supName, supplierData[j].supPhn, supplierData[j].supCompName);
             }
             fclose(fp);
+
+            // send index to supplier index
+            fp = fopen("supplier_data/supplier_data_index.txt", "w");
+            fprintf(fp, "%d", index);
+            fclose(fp);
+
             printf("\n\n");
             printCentered("'Supplier Deleted'....Press any key to return Home.", 4);
             _getch();
@@ -1914,8 +1909,103 @@ void productSearch()
 //*---------------Admin Panel (Supplier) List Of Product By Supplier Start----------------*/
 void listOfProductBySupplier()
 {
+    char headingName[40] = "Supplier Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+
+    printCentered("All Product List by Supplier", 9);
+    printCentered("  ------------------------------------------------------------------------------------------------------", 9);
+
+    FILE *fp;
+    int supIndex;
+
+    // take Product index num from file
+    supplierLatestData(); // get all latest supplier list
+    fp = fopen("supplier_data/supplier_data_index.txt", "r");
+    fscanf(fp, "%d", &supIndex);
+    fclose(fp);
+
+    // take Product index num from file
+    int pIndex;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &pIndex);
+    fclose(fp);
+    allProductData(); // get latest all product
+
+    for (int i = 0; i < supIndex; i++)
+    {
+        // int serNum = 1;
+        for (int k = 0; k < pIndex; k++)
+        {
+            if (supplierData[i].supplierID == allProduct[k].proSupID)
+            {
+                printf("\n\n");
+                int serNum = 1;
+                int width = getConsoleWidth();
+                int space = (width - 8) / 2;
+                setColor(15);
+                for (int i = 0; i < space; i++)
+                {
+                    printf(" ");
+                }
+                printf("%s\n", supplierData[i].supName);
+                printCentered("  ----------------------", 12);
+                printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
+                printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+
+                for (int j = 0; j < pIndex; j++)
+                {
+                    if (supplierData[i].supplierID == allProduct[j].proSupID)
+                    {
+                        printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    }
+                }
+                break;
+            }
+        }
+    }
+    fclose(fp);
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.....", 10);
+    _getch();
+    adminPanelSupplierManagement();
 }
 //*---------------Admin Panel (Supplier) List Of Product By Supplier End----------------*/
+//
+//
+//
+//*---------------Admin Panel (Supplier) Supplier data start----------------*/
+void supplierLatestData() // always return latest data
+{
+    int supplierID2;
+    char supName2[20];
+    char supPhn2[15];
+    char supCompName2[25];
+
+    // take all supplier name from file
+    char sName[15];
+    int index = 0;
+    FILE *fp;
+    fp = fopen("supplier_data/supplier_list.txt", "r");
+    while (fscanf(fp, "%d %s %s %s", &supplierID2, supName2, supPhn2, supCompName2) != EOF)
+    {
+        supplierData[index].supplierID = supplierID2;
+        strcpy(supplierData[index].supName, supName2);
+        strcpy(supplierData[index].supPhn, supPhn2);
+        strcpy(supplierData[index].supCompName, supCompName2);
+        index++;
+    }
+    fclose(fp);
+    fp = fopen("supplier_data/supplier_data_index.txt", "w");
+    fprintf(fp, "%d", index);
+    fclose(fp);
+}
+//*---------------Admin Panel (Supplier) Supplier data start----------------*/
 //
 //
 //
@@ -1937,7 +2027,7 @@ void supplierList()
     int serNum = 1;
     int supplierID;
     char supName[20];
-    int supPhn[15];
+    char supPhn[15];
     char supCompName[25];
 
     FILE *fp;
