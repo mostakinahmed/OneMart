@@ -1,7 +1,7 @@
 102054 10010 samsung 12044 10 mobile
 102056 10013 montin 20 20 medicine
 102057 10010 asus 15424 120 computer
-102058 10012 hp 14254 50 computer
+102058 10012 hp 14254 60 computer
 102059 10013 lenovo 12547 10 computer
 102061 10012 coca-cola 550 10 beverages
 102063 10017 dark_vivo 1424 10 fragrances

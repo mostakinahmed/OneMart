@@ -8,7 +8,7 @@
 /*-------Extra function List------*/
 void dateTime();
 void adminPanelHome();
-void home();
+void OnlineHome();
 void menuUI(char headingName[]);
 void showUI();
 void allProductData();
@@ -61,6 +61,8 @@ void addCustomer();
 void deleteCustomer();
 void customerPasswordReset();
 void listOfCustomer();
+void ListOfCustomerData();
+void listOfAdminData();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -89,6 +91,15 @@ struct supplier
     char supCompName[25];
 };
 struct supplier supplierData[100];
+
+struct admin
+{
+    char adName[30];
+    char adPass[20];
+    char adEmail[50];
+};
+struct admin adminData[100];
+
 // mark
 //
 //
@@ -244,7 +255,7 @@ void adminPanelAuthentication()
         adminSignUp();
         break;
     case 3:
-        home();
+        OnlineHome();
         break;
     case 0:
         system("cls");
@@ -425,7 +436,7 @@ void customerPanelAuthentication()
         customerSignUp();
         break;
     case 3:
-        home();
+        OnlineHome();
         break;
     case 0:
         system("cls");
@@ -2140,6 +2151,115 @@ void addAdmin()
 //*---------------Admin Panel (USER) Delete Admin Start----------------*/
 void deleteAdmin()
 {
+    char headingName[40] = "Admin Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("Admin Deletation", 15);
+    printCentered(" -----------------------", 9);
+
+    int index;
+    char Admin_Name[30];
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Admin Name: ", 15);
+    scanf("%s", Admin_Name);
+    printf("\n");
+
+    listOfAdmin(); // get latest Admin data
+    FILE *fp;
+    fp = fopen("admin_data/admin_index.txt", "r");
+    fscanf(fp, "%d", &index); // get Admin Name
+    fclose(fp);
+
+    // find del position
+    int deletePos, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+
+        if (strcmp(adminData[i].adName, Admin_Name) == 0)
+        {
+            deletePos = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // Admin
+    if (found)
+    {
+        printCentered("Admin Found...", 10);
+        printCentered("-----------------------", 10);
+        printCentered("   Name:            Email:    ", 15);
+        printCentered("----------------------------------------------------------------", 9);
+
+        printf("                                        %s             %s\n", adminData[i].adName, adminData[i].adEmail);
+        printf("\n\n\n\n\n");
+        printCentered("     Are you confirm to delete?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        int option;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option: ");
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+            for (int j = deletePos; j < index; j++)
+            {
+                adminData[j] = adminData[j + 1];
+            }
+            index = index - 1;
+
+            FILE *fp;
+            // Latest Data Send to Admin - FILE
+            fp = fopen("admin_data/data.txt", "w"); // reset previous data
+            fclose(fp);
+            fp = fopen("admin_data/data.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%s %s %s\n", adminData[j].adName, adminData[j].adPass, adminData[j].adEmail);
+            }
+            fclose(fp);
+
+            // send index to admin index
+            fp = fopen("admin_data/admin_index.txt", "w");
+            fprintf(fp, "%d", index);
+            fclose(fp);
+
+            printf("\n\n");
+            printCentered("'Amin Deleted'....Press any key to return Home.", 4);
+            _getch();
+            adminPanelUserManagement();
+
+        case 2:
+            printCentered("Deletation cancel!", 4);
+            _getch();
+            adminPanelUserManagement();
+        }
+    }
+    else
+    {
+        printCentered("     Admin has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelUserManagement();
+    }
 }
 //*---------------Admin Panel (USER) Delete Admin End----------------*/
 //
@@ -2156,6 +2276,36 @@ void adminPasswordReset()
 //*---------------Admin Panel (USER) Admin List Start----------------*/
 void listOfAdmin()
 {
+    int index;
+
+    listOfAdminData();
+    char headingName[40] = "List of Admin";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("List of Admins", 9);
+    printCentered("-------------------------------------", 9);
+    printCentered("| Name:          Email:             |", 9);
+    printCentered("=====================================", 9);
+
+    FILE *fp;
+    fp = fopen("admin_data/admin_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    for (int i = 0; i < index; i++)
+    {
+        printf("                                                        %s", adminData[i].adName);
+        printf("                %s\n", adminData[i].adEmail);
+    }
+    //
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.", 10);
+    _getch();
+    adminPanelSupplierManagement();
 }
 //*---------------Admin Panel (USER) Admin List End----------------*/
 //
@@ -2222,12 +2372,47 @@ void allProductData()
     fprintf(fp, "%d", index);
     fclose(fp);
 }
-//*---------------ALL Product from FILE - Start----------------*/
+//*---------------ALL Product from FILE - End----------------*/
+//
+//
+//
+//*---------------ALL Admin from FILE - Start----------------*/
+void listOfAdminData()
+{
+    int index = 0;
+    char adminName[30];
+    char adminPass[20];
+    char adminEmail[50];
+
+    FILE *fp;
+    fp = fopen("admin_data/data.txt", "r");
+    while (fscanf(fp, "%s %s %s\n", adminName, adminPass, adminEmail) != EOF)
+    {
+        strcpy(adminData[index].adName, adminName);
+        strcpy(adminData[index].adPass, adminPass);
+        strcpy(adminData[index].adEmail, adminEmail);
+        index++;
+    }
+    fclose(fp);
+    fp = fopen("admin_data/admin_index.txt", "w");
+    fprintf(fp, "%d", index);
+    fclose(fp);
+}
+//*---------------ALL Admin from FILE - End----------------*/
 //
 //
 //
 //*---------------Admin Panel (USER) Customer List End----------------*/
 //
+//
+////*---------------Admin Panel (USER) Customer data End----------------*/
+void ListOfCustomerData(){
+
+}
+//
+//
+//
+////*---------------Admin Panel (USER) Customer data End----------------*/
 //
 //
 ///*-----------------2nd HOME START----------------------*/
@@ -2263,7 +2448,7 @@ void home2() // Admin or not
 
         break;
     case 2:
-        home();
+        OnlineHome();
         break;
     default:
         printCentered("Invalid Choice!", 12);
@@ -2273,13 +2458,273 @@ void home2() // Admin or not
 }
 //*-----------------2nd HOME END----------------------*/
 /*-----------------HOME START----------------------*/
-void home()
+void OnlineHome()
 {
     char headingName[10] = "HOME";
     menuUI(headingName);
 
     char userName[20] = "mostakin";
     printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+
+    printCentered("OneMart - Online Shopping", 10);
+    printCentered("--------------------------", 10);
+
+    // take index num from file
+    int index, serNum = 1;
+    FILE *fp;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+    allProductData(); // get latest all product
+
+    // For computer
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "computer") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Computer\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "computer") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For books
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "books") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Books\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "books") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For medicine
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "medicine") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Medicine\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "medicine") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For camera
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "camera") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Camera\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "camera") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For television
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "television") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Television\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "television") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For watches
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "watches") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Watches\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "watches") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For fragrances
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "fragrances") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Fragrances\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "fragrances") == 0)
+                {
+                    printf("                         %d        %d          %d            %s         %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For Beverages
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "beverages") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Beverages\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "beverages") == 0)
+                {
+                    printf("                         %d        %d          %d            %s          %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For Mobile
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "mobile") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Mobile\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "mobile") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For Software
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "software") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Software\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "software") == 0)
+                {
+                    printf("                         %d        %d          %d            %s         %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
     printf("\n\n\n\n\n\n\n\n\n\n");
     printCentered("Press 11 for customer panel.", 10);
     printCentered("Press 0 for Exits.", 10);
@@ -2298,7 +2743,7 @@ void home()
     default:
         printCentered("Invalid Choice!", 12);
         _getch();
-        home();
+        OnlineHome();
     }
 }
 /*-----------------HOME END----------------------*/
@@ -2337,3 +2782,4 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
+//ashata
