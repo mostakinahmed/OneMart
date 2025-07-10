@@ -2151,6 +2151,115 @@ void addAdmin()
 //*---------------Admin Panel (USER) Delete Admin Start----------------*/
 void deleteAdmin()
 {
+    char headingName[40] = "Admin Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("Admin Deletation", 15);
+    printCentered(" -----------------------", 9);
+
+    int index;
+    char Admin_Name[30];
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Admin Name: ", 15);
+    scanf("%s", Admin_Name);
+    printf("\n");
+
+    listOfAdmin(); // get latest Admin data
+    FILE *fp;
+    fp = fopen("admin_data/admin_index.txt", "r");
+    fscanf(fp, "%d", &index); // get Admin Name
+    fclose(fp);
+
+    // find del position
+    int deletePos, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+
+        if (strcmp(adminData[i].adName, Admin_Name) == 0)
+        {
+            deletePos = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // Admin
+    if (found)
+    {
+        printCentered("Admin Found...", 10);
+        printCentered("-----------------------", 10);
+        printCentered("   Name:            Email:    ", 15);
+        printCentered("----------------------------------------------------------------", 9);
+
+        printf("                                        %s             %s\n", adminData[i].adName, adminData[i].adEmail);
+        printf("\n\n\n\n\n");
+        printCentered("     Are you confirm to delete?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        int option;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option: ");
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+            for (int j = deletePos; j < index; j++)
+            {
+                adminData[j] = adminData[j + 1];
+            }
+            index = index - 1;
+
+            FILE *fp;
+            // Latest Data Send to Admin - FILE
+            fp = fopen("admin_data/data.txt", "w"); // reset previous data
+            fclose(fp);
+            fp = fopen("admin_data/data.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%s %s %s\n", adminData[j].adName, adminData[j].adPass, adminData[j].adEmail);
+            }
+            fclose(fp);
+
+            // send index to admin index
+            fp = fopen("admin_data/admin_index.txt", "w");
+            fprintf(fp, "%d", index);
+            fclose(fp);
+
+            printf("\n\n");
+            printCentered("'Amin Deleted'....Press any key to return Home.", 4);
+            _getch();
+            adminPanelUserManagement();
+
+        case 2:
+            printCentered("Deletation cancel!", 4);
+            _getch();
+            adminPanelUserManagement();
+        }
+    }
+    else
+    {
+        printCentered("     Admin has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelUserManagement();
+    }
 }
 //*---------------Admin Panel (USER) Delete Admin End----------------*/
 //
@@ -2167,32 +2276,36 @@ void adminPasswordReset()
 //*---------------Admin Panel (USER) Admin List Start----------------*/
 void listOfAdmin()
 {
+    int index;
+
     listOfAdminData();
-    char headingName[40] = "Supplier Management";
+    char headingName[40] = "List of Admin";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
     printf("\n\n");
-    printCentered("Supplier List", 9);
-    printCentered("------------------------------------------------------------------", 9);
-    printCentered("| SN:     ID:          Name:          Phone:           Company:    |", 9);
-    printCentered("==================================================================", 9);
+    printCentered("List of Admins", 9);
+    printCentered("-------------------------------------", 9);
+    printCentered("| Name:          Email:             |", 9);
+    printCentered("=====================================", 9);
 
+    FILE *fp;
+    fp = fopen("admin_data/admin_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
 
-
-
-
-
-
-
-   // _getch();
-
-
-
-
-
+    for (int i = 0; i < index; i++)
+    {
+        printf("                                                        %s", adminData[i].adName);
+        printf("                %s\n", adminData[i].adEmail);
+    }
+    //
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.", 10);
+    _getch();
+    adminPanelSupplierManagement();
 }
 //*---------------Admin Panel (USER) Admin List End----------------*/
 //
@@ -2270,7 +2383,6 @@ void listOfAdminData()
     char adminName[30];
     char adminPass[20];
     char adminEmail[50];
-
 
     FILE *fp;
     fp = fopen("admin_data/data.txt", "r");
