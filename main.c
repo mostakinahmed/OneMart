@@ -61,6 +61,7 @@ void addCustomer();
 void deleteCustomer();
 void customerPasswordReset();
 void listOfCustomer();
+void listOfAdminData();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -89,6 +90,15 @@ struct supplier
     char supCompName[25];
 };
 struct supplier supplierData[100];
+
+struct admin
+{
+    char adName[30];
+    char adPass[20];
+    char adEmail[50];
+};
+struct admin adminData[100];
+
 // mark
 //
 //
@@ -2156,6 +2166,32 @@ void adminPasswordReset()
 //*---------------Admin Panel (USER) Admin List Start----------------*/
 void listOfAdmin()
 {
+    listOfAdminData();
+    char headingName[40] = "Supplier Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("Supplier List", 9);
+    printCentered("------------------------------------------------------------------", 9);
+    printCentered("| SN:     ID:          Name:          Phone:           Company:    |", 9);
+    printCentered("==================================================================", 9);
+
+
+
+
+
+
+
+
+   // _getch();
+
+
+
+
+
 }
 //*---------------Admin Panel (USER) Admin List End----------------*/
 //
@@ -2222,7 +2258,34 @@ void allProductData()
     fprintf(fp, "%d", index);
     fclose(fp);
 }
-//*---------------ALL Product from FILE - Start----------------*/
+//*---------------ALL Product from FILE - End----------------*/
+//
+//
+//
+//*---------------ALL Admin from FILE - Start----------------*/
+void listOfAdminData()
+{
+    int index = 0;
+    char adminName[30];
+    char adminPass[20];
+    char adminEmail[50];
+
+
+    FILE *fp;
+    fp = fopen("admin_data/data.txt", "r");
+    while (fscanf(fp, "%s %s %s\n", adminName, adminPass, adminEmail) != EOF)
+    {
+        strcpy(adminData[index].adName, adminName);
+        strcpy(adminData[index].adPass, adminPass);
+        strcpy(adminData[index].adEmail, adminEmail);
+        index++;
+    }
+    fclose(fp);
+    fp = fopen("admin_data/admin_index.txt", "w");
+    fprintf(fp, "%d", index);
+    fclose(fp);
+}
+//*---------------ALL Admin from FILE - End----------------*/
 //
 //
 //
