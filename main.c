@@ -61,6 +61,7 @@ void addCustomer();
 void deleteCustomer();
 void customerPasswordReset();
 void listOfCustomer();
+void ListOfCustomerData();
 void listOfAdminData();
 
 /*-------Global Variable Section------*/
@@ -2292,6 +2293,15 @@ void listOfAdminData()
 //*---------------Admin Panel (USER) Customer List End----------------*/
 //
 //
+////*---------------Admin Panel (USER) Customer data End----------------*/
+void ListOfCustomerData(){
+
+}
+//
+//
+//
+////*---------------Admin Panel (USER) Customer data End----------------*/
+//
 //
 ///*-----------------2nd HOME START----------------------*/
 void home2() // Admin or not
@@ -2400,3 +2410,4 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
+//ashata
