@@ -8,7 +8,7 @@
 /*-------Extra function List------*/
 void dateTime();
 void adminPanelHome();
-void home();
+void OnlineHome();
 void menuUI(char headingName[]);
 void showUI();
 void allProductData();
@@ -255,7 +255,7 @@ void adminPanelAuthentication()
         adminSignUp();
         break;
     case 3:
-        home();
+        OnlineHome();
         break;
     case 0:
         system("cls");
@@ -436,7 +436,7 @@ void customerPanelAuthentication()
         customerSignUp();
         break;
     case 3:
-        home();
+        OnlineHome();
         break;
     case 0:
         system("cls");
@@ -2336,7 +2336,7 @@ void home2() // Admin or not
 
         break;
     case 2:
-        home();
+        OnlineHome();
         break;
     default:
         printCentered("Invalid Choice!", 12);
@@ -2346,13 +2346,273 @@ void home2() // Admin or not
 }
 //*-----------------2nd HOME END----------------------*/
 /*-----------------HOME START----------------------*/
-void home()
+void OnlineHome()
 {
     char headingName[10] = "HOME";
     menuUI(headingName);
 
     char userName[20] = "mostakin";
     printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+
+    printCentered("OneMart - Online Shopping", 10);
+    printCentered("--------------------------", 10);
+
+    // take index num from file
+    int index, serNum = 1;
+    FILE *fp;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+    allProductData(); // get latest all product
+
+    // For computer
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "computer") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Computer\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "computer") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For books
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "books") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Books\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "books") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For medicine
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "medicine") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Medicine\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "medicine") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For camera
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "camera") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Camera\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "camera") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For television
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "television") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Television\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "television") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For watches
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "watches") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Watches\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "watches") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For fragrances
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "fragrances") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Fragrances\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "fragrances") == 0)
+                {
+                    printf("                         %d        %d          %d            %s         %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For Beverages
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "beverages") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Beverages\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "beverages") == 0)
+                {
+                    printf("                         %d        %d          %d            %s          %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For Mobile
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "mobile") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Mobile\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "mobile") == 0)
+                {
+                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
+    // For Software
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "software") == 0)
+        {
+            printf("\n\n");
+            setColor(12);
+            printf("                        Software\n");
+            setColor(7);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            printCentered("    NO:     Product-ID:    Supplier-ID      Product-Name:     Product-Price:      Unit:      Category:", 9);
+            printCentered("     ------------------------------------------------------------------------------------------------------", 9);
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "software") == 0)
+                {
+                    printf("                         %d        %d          %d            %s         %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                }
+            }
+            break;
+        }
+    }
+
     printf("\n\n\n\n\n\n\n\n\n\n");
     printCentered("Press 11 for customer panel.", 10);
     printCentered("Press 0 for Exits.", 10);
@@ -2371,7 +2631,7 @@ void home()
     default:
         printCentered("Invalid Choice!", 12);
         _getch();
-        home();
+        OnlineHome();
     }
 }
 /*-----------------HOME END----------------------*/
