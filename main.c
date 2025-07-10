@@ -61,11 +61,8 @@ void addCustomer();
 void deleteCustomer();
 void customerPasswordReset();
 void listOfCustomer();
-<<<<<<< HEAD
 void ListOfCustomerData();
-=======
 void listOfAdminData();
->>>>>>> 4c9f3e47c3ad393bb9b8f2fe0be7e05b2f9be1e2
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -2413,3 +2410,4 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
+//ashata
