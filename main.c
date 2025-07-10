@@ -2131,9 +2131,9 @@ void adminPanelUserManagement() // HOME
         break;
     default:
         printCentered("Invalid Choice!", 12);
-        printCentered("Press any key", 10);
+        printCentered("Press any key to return home..", 10);
         _getch();
-        adminPanelSales();
+        adminPanelHome();
     }
 }
 //*---------------Admin Panel Supplier Management End ----------------*/
@@ -2151,7 +2151,7 @@ void addAdmin()
 //*---------------Admin Panel (USER) Delete Admin Start----------------*/
 void deleteAdmin()
 {
-    char headingName[40] = "Admin Management";
+    char headingName[40] = "User Management";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n");
@@ -2172,7 +2172,7 @@ void deleteAdmin()
     scanf("%s", Admin_Name);
     printf("\n");
 
-    listOfAdmin(); // get latest Admin data
+    listOfAdminData(); // get latest Admin data
     FILE *fp;
     fp = fopen("admin_data/admin_index.txt", "r");
     fscanf(fp, "%d", &index); // get Admin Name
@@ -2191,7 +2191,7 @@ void deleteAdmin()
         }
     }
 
-    // Admin
+    // if Admin found
     if (found)
     {
         printCentered("Admin Found...", 10);
@@ -2199,7 +2199,7 @@ void deleteAdmin()
         printCentered("   Name:            Email:    ", 15);
         printCentered("----------------------------------------------------------------", 9);
 
-        printf("                                        %s             %s\n", adminData[i].adName, adminData[i].adEmail);
+        printf("                                        %s             %s\n", adminData[deletePos].adName, adminData[deletePos].adEmail);
         printf("\n\n\n\n\n");
         printCentered("     Are you confirm to delete?", 15);
         printCentered("     1. YES", 10);
@@ -2225,7 +2225,6 @@ void deleteAdmin()
             }
             index = index - 1;
 
-            FILE *fp;
             // Latest Data Send to Admin - FILE
             fp = fopen("admin_data/data.txt", "w"); // reset previous data
             fclose(fp);
@@ -2242,12 +2241,14 @@ void deleteAdmin()
             fclose(fp);
 
             printf("\n\n");
-            printCentered("'Amin Deleted'....Press any key to return Home.", 4);
+            printCentered("'Admin Deleted'....Press any key to return Home.", 4);
             _getch();
             adminPanelUserManagement();
 
         case 2:
             printCentered("Deletation cancel!", 4);
+            printf("\n\n");
+            printCentered("          Press any key to return Home.....", 10);
             _getch();
             adminPanelUserManagement();
         }
@@ -2305,7 +2306,7 @@ void listOfAdmin()
     printf("\n\n\n");
     printCentered("Press any key to return Home.", 10);
     _getch();
-    adminPanelSupplierManagement();
+    adminPanelUserManagement();
 }
 //*---------------Admin Panel (USER) Admin List End----------------*/
 //
@@ -2406,8 +2407,8 @@ void listOfAdminData()
 //
 //
 ////*---------------Admin Panel (USER) Customer data End----------------*/
-void ListOfCustomerData(){
-
+void ListOfCustomerData()
+{
 }
 //
 //
@@ -2782,4 +2783,4 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
-//ashata
+// ashata
