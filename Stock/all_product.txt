@@ -4,3 +4,5 @@
 102058 10012 hp 14254 50 computer
 102059 10013 lenovo 12547 10 computer
 102061 10012 coca-cola 550 10 beverages
+102063 10017 dark_vivo 1424 10 fragrances
+102064 10013 windows-10 10300 10 software
