@@ -61,6 +61,7 @@ void addCustomer();
 void deleteCustomer();
 void customerPasswordReset();
 void listOfCustomer();
+void ListOfCustomerData();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -2228,6 +2229,15 @@ void allProductData()
 //
 //*---------------Admin Panel (USER) Customer List End----------------*/
 //
+//
+////*---------------Admin Panel (USER) Customer data End----------------*/
+void ListOfCustomerData(){
+
+}
+//
+//
+//
+////*---------------Admin Panel (USER) Customer data End----------------*/
 //
 //
 ///*-----------------2nd HOME START----------------------*/
