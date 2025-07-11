@@ -6,3 +6,4 @@
 102061 10012 coca-cola 550 10 beverages
 102063 10017 dark_vivo 1424 10 fragrances
 102064 10013 windows-10 10300 10 software
+102067 10010 vivo-v9 12548 20 mobile
