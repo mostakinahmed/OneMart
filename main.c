@@ -61,7 +61,7 @@ void addCustomer();
 void deleteCustomer();
 void customerPasswordReset();
 void listOfCustomer();
-void ListOfCustomerData();
+void listOfCustomerData();
 void listOfAdminData();
 
 /*-------Global Variable Section------*/
@@ -99,6 +99,14 @@ struct admin
     char adEmail[50];
 };
 struct admin adminData[100];
+
+struct user
+{
+    char usName[30];
+    char usPass[20];
+    char usEmail[50];
+};
+struct user userData[100];
 
 // mark
 //
@@ -1688,7 +1696,6 @@ void adminPanelSupplierManagement() // HOME
     case 2:
         deleteSupplier();
         break;
-        // yet not done
 
     case 3:
         productSearch();
@@ -1698,12 +1705,11 @@ void adminPanelSupplierManagement() // HOME
     case 4:
         listOfProductBySupplier();
         break;
-        // yet not done
 
     case 5:
         supplierList();
         break;
-        // yet not done
+
     case 0:
         adminPanelHome();
         break;
@@ -2090,22 +2096,19 @@ void adminPanelUserManagement() // HOME
     case 1:
         addAdmin();
         break;
-        // yet not done
 
     case 2:
         deleteAdmin();
         break;
-        // yet not done
 
     case 3:
         adminPasswordReset();
         break;
-        // yet not done
 
     case 4:
         listOfAdmin();
         break;
-        // yet not done
+
     case 5:
         addCustomer();
         break;
@@ -2216,7 +2219,7 @@ void addAdmin()
 //*---------------Admin Panel (USER) Delete Admin Start----------------*/
 void deleteAdmin()
 {
-    char headingName[40] = "User Management";
+    char headingName[40] = "Admin Management";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n");
@@ -2266,7 +2269,7 @@ void deleteAdmin()
 
         printf("                                        %s             %s\n", adminData[deletePos].adName, adminData[deletePos].adEmail);
         printf("\n\n\n\n\n");
-        printCentered("     Are you confirm to delete?", 15);
+        printCentered("     Are you sure you want to delete?", 15);
         printCentered("     1. YES", 10);
         printCentered("    2. NO", 4);
 
@@ -2334,6 +2337,117 @@ void deleteAdmin()
 //*---------------Admin Panel (USER) Admin Pass Reset Start----------------*/
 void adminPasswordReset()
 {
+    char headingName[40] = "Admin Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("Admin Password Reset", 15);
+    printCentered(" --------------------------", 9);
+    printf("\n\n");
+
+    int index;
+    char adPass[20];
+    char adName[30];
+
+    FILE *fp;
+    fp = fopen("admin_data/admin_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    listOfAdminData();
+
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Admin Name: ", 15);
+    scanf("%s", adName);
+    printf("\n");
+
+    int pass, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+
+        if (strcmp(adminData[i].adName, adName) == 0)
+        {
+            pass = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // Admin found
+    if (found)
+    {
+        printCentered("Admin Found...", 10);
+        printCentered("-----------------------", 10);
+        printCentered("   Name:            Email:    ", 15);
+        printCentered("----------------------------------------------------------------", 9);
+
+        printf("                                                            %s                %s\n", adminData[pass].adName, adminData[pass].adEmail);
+        printf("\n\n\n\n\n");
+        printCentered("     Are you sure you want to change Password?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        int option;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option: ");
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+
+            for (int i = 0; i < space; i++)
+                printf(" ");
+            printf("Input New Password: ", 15);
+            scanf("%s", adPass);
+            printf("\n\n");
+
+            strcpy(adminData[pass].adPass, adPass);
+
+            // Latest Data Send to Admin - FILE
+            fp = fopen("admin_data/data.txt", "w"); // delete previous data
+            fclose(fp);
+            fp = fopen("admin_data/data.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%s %s %s\n", adminData[j].adName, adminData[j].adPass, adminData[j].adEmail);
+            }
+            fclose(fp);
+
+            printf("\n\n");
+            printCentered("'Password Reset Done'....Press any key to return Home.", 4);
+            _getch();
+            adminPanelUserManagement();
+
+        case 2:
+            printCentered("Password Reset cancel!", 4);
+            printf("\n\n");
+            printCentered("          Press any key to return Home.....", 10);
+            _getch();
+            adminPanelUserManagement();
+        }
+    }
+    else
+    {
+        printCentered("     Admin has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelUserManagement();
+    }
 }
 //*---------------Admin Panel (USER) Admin Pass Reset End----------------*/
 //
@@ -2367,7 +2481,7 @@ void listOfAdmin()
         printf("                                                        %s", adminData[i].adName);
         printf("                %s\n", adminData[i].adEmail);
     }
-    //
+
     printf("\n\n\n");
     printCentered("Press any key to return Home.", 10);
     _getch();
@@ -2380,6 +2494,71 @@ void listOfAdmin()
 //*---------------Admin Panel (USER) Add Customer Start----------------*/
 void addCustomer()
 {
+    // adding user
+    char headingName[40] = "User Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Input User Information:", 15);
+    printCentered("------------------------------", 15);
+
+    // variable declare
+    char usName[30];
+    char usPass[20];
+    char usEmail[50];
+    int usIndex;
+
+    int width = getConsoleWidth();
+    int space = (width - 5) / 2;
+    setColor(15);
+
+    //-------space/input management for name-------//
+    space = (width - 12) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("  User Name  : ");
+    scanf("%s", usName);
+
+    //-------space/input management for password-------//
+    space = (width - 14) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("    Password  : ");
+    scanf("%s", usPass);
+
+    //-------space/input management for email-------//
+    space = (width - 11) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("     Email  : ", 15);
+    scanf("%s", usEmail);
+    setColor(7); // reset color
+
+    // data send to file
+    FILE *fp;
+    fp = fopen("customer_data/data.txt", "a");
+    fprintf(fp, "%s %s %s\n", usName, usPass, usEmail);
+    fclose(fp);
+
+    // admin index send to file
+
+    fp = fopen("customer_data/customer_index.txt", "r");
+    fscanf(fp, "%d", &usIndex);
+    fclose(fp);
+
+    usIndex = usIndex + 1;
+
+    fp = fopen("customer_data/customer_index.txt", "w");
+    fprintf(fp, "%d", usIndex);
+    fclose(fp);
+
+    printf("\n\n\n");
+    printCentered("User Added'....Press any key to return Home.", 10);
+    _getch();
+    adminPanelUserManagement(); // home
 }
 //*---------------Admin Panel (USER) Admin Pass Reset End----------------*/
 //
@@ -2388,6 +2567,117 @@ void addCustomer()
 //*---------------Admin Panel (USER) Delete Customer Start----------------*/
 void deleteCustomer()
 {
+    char headingName[40] = "User Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("User Deletation", 15);
+    printCentered(" -----------------------", 9);
+
+    int index;
+    char usName[30];
+
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input User Name: ", 15);
+    scanf("%s", usName);
+    printf("\n");
+
+    listOfCustomerData(); // get latest User data
+    FILE *fp;
+    fp = fopen("customer_data/customer_index.txt", "r");
+    fscanf(fp, "%d", &index); // get User Name
+    fclose(fp);
+
+    // find del position
+    int deletePos, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+
+        if (strcmp(userData[i].usName, usName) == 0)
+        {
+            deletePos = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // if user found
+    if (found)
+    {
+        printCentered("User Found...", 10);
+        printCentered("-----------------------", 10);
+        printCentered("   Name:            Email:    ", 15);
+        printCentered("----------------------------------------------------------------", 9);
+
+        printf("                                                            %s                %s\n", userData[deletePos].usName, userData[deletePos].usEmail);
+        printf("\n\n\n\n\n");
+        printCentered("     Are you sure you want to delete?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        int option;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option: ");
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+            for (int j = deletePos; j < index; j++)
+            {
+                userData[j] = userData[j + 1];
+            }
+            index = index - 1;
+
+            // Latest Data Send to User - FILE
+            fp = fopen("customer_data/data.txt", "w"); // Reset previous data
+            fclose(fp);
+            fp = fopen("customer_data/data.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%s %s %s\n", userData[j].usName, userData[j].usPass, userData[j].usEmail);
+            }
+            fclose(fp);
+
+            // send index to admin index
+            fp = fopen("customer_data/customer_index.txt", "w");
+            fprintf(fp, "%d", index);
+            fclose(fp);
+
+            printf("\n\n");
+            printCentered("'User Deleted'....Press any key to return Home.", 4);
+            _getch();
+            adminPanelUserManagement();
+
+        case 2:
+            printCentered("Deletation cancel!", 4);
+            printf("\n\n");
+            printCentered("          Press any key to return Home.....", 10);
+            _getch();
+            adminPanelUserManagement();
+        }
+    }
+    else
+    {
+        printCentered("     User has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelUserManagement();
+    }
 }
 //*---------------Admin Panel (USER) Delete Customer End----------------*/
 //
@@ -2396,6 +2686,117 @@ void deleteCustomer()
 //*---------------Admin Panel (USER) Customer Pass Reset Start----------------*/
 void customerPasswordReset()
 {
+    char headingName[40] = "User Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("User Password Reset", 15);
+    printCentered(" --------------------------", 9);
+    printf("\n\n");
+
+    int index;
+    char usPass[20];
+    char usName[30];
+
+    FILE *fp;
+    fp = fopen("customer_data/customer_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    listOfCustomerData();
+
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input User Name: ", 15);
+    scanf("%s", usName);
+    printf("\n");
+
+    int pass, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+
+        if (strcmp(userData[i].usName, usName) == 0)
+        {
+            pass = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // user found
+    if (found)
+    {
+        printCentered("User Found...", 10);
+        printCentered("-----------------------", 10);
+        printCentered("   Name:            Email:    ", 15);
+        printCentered("----------------------------------------------------------------", 9);
+
+        printf("                                                            %s                %s\n", userData[pass].usName, userData[pass].usEmail);
+        printf("\n\n\n\n\n");
+        printCentered("     Are you sure you want to change Password?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        int option;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option: ");
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+
+            for (int i = 0; i < space; i++)
+                printf(" ");
+            printf("Input New Password: ", 15);
+            scanf("%s", usPass);
+            printf("\n\n");
+
+            strcpy(userData[pass].usPass, usPass);
+
+            // Latest Data Send to Costomer - FILE
+            fp = fopen("customer_data/data.txt", "w"); // delete previous data
+            fclose(fp);
+            fp = fopen("customer_data/data.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%s %s %s\n", userData[j].usName, userData[j].usPass, userData[j].usEmail);
+            }
+            fclose(fp);
+
+            printf("\n\n");
+            printCentered("'Password Reset Done'....Press any key to return Home.", 4);
+            _getch();
+            adminPanelUserManagement();
+
+        case 2:
+            printCentered("Password Reset cancel!", 4);
+            printf("\n\n");
+            printCentered("          Press any key to return Home.....", 10);
+            _getch();
+            adminPanelUserManagement();
+        }
+    }
+    else
+    {
+        printCentered("     User has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelUserManagement();
+    }
 }
 //*---------------Admin Panel (USER) Customer Pass Reset End----------------*/
 //
@@ -2404,6 +2805,36 @@ void customerPasswordReset()
 //*---------------Admin Panel (USER) Customer List Start----------------*/
 void listOfCustomer()
 {
+    int index;
+
+    listOfCustomerData();
+    char headingName[40] = "List of User";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("List of User", 9);
+    printCentered("-------------------------------------", 9);
+    printCentered("| Name:          Email:             |", 9);
+    printCentered("=====================================", 9);
+
+    FILE *fp;
+    fp = fopen("customer_data/customer_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    for (int i = 0; i < index; i++)
+    {
+        printf("                                                        %s", userData[i].usName);
+        printf("                %s\n", userData[i].usEmail);
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.", 10);
+    _getch();
+    adminPanelUserManagement();
 }
 //*---------------Admin Panel (USER) Customer List End----------------*/
 //
@@ -2468,17 +2899,30 @@ void listOfAdminData()
 //
 //
 //
-//*---------------Admin Panel (USER) Customer List End----------------*/
-//
-//
-////*---------------Admin Panel (USER) Customer data End----------------*/
-void ListOfCustomerData()
+////*---------------Admin Panel (USER) Customer data start----------------*/
+void listOfCustomerData()
 {
+    int index = 0;
+    char userName[30];
+    char userPass[20];
+    char userEmail[50];
+
+    FILE *fp;
+    fp = fopen("customer_data/data.txt", "r");
+    while (fscanf(fp, "%s %s %s\n", userName, userPass, userEmail) != EOF)
+    {
+        strcpy(userData[index].usName, userName);
+        strcpy(userData[index].usPass, userPass);
+        strcpy(userData[index].usEmail, userEmail);
+        index++;
+    }
+    fclose(fp);
+    fp = fopen("customer_data/customer_index.txt", "w");
+    fprintf(fp, "%d", index);
+    fclose(fp);
 }
-//
-//
-//
 ////*---------------Admin Panel (USER) Customer data End----------------*/
+//
 //
 //
 ///*-----------------2nd HOME START----------------------*/
