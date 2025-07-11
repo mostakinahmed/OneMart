@@ -2458,8 +2458,8 @@ void listOfAdmin()
 {
     int index;
 
-    listOfAdminData();
-    char headingName[40] = "List of Admin";
+    listOfAdminData(); // get all list of admin by array
+    char headingName[40] = "Admin Management";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
@@ -2467,9 +2467,9 @@ void listOfAdmin()
     printCentered("------------------------", 10);
     printf("\n\n");
     printCentered("List of Admins", 9);
-    printCentered("-------------------------------------", 9);
-    printCentered("| Name:          Email:             |", 9);
-    printCentered("=====================================", 9);
+    printCentered("-----------------------------------------------------------", 9);
+    printCentered("|    Name:          Password:            Email:             |", 9);
+    printCentered("============================================================", 9);
 
     FILE *fp;
     fp = fopen("admin_data/admin_index.txt", "r");
@@ -2478,8 +2478,7 @@ void listOfAdmin()
 
     for (int i = 0; i < index; i++)
     {
-        printf("                                                        %s", adminData[i].adName);
-        printf("                %s\n", adminData[i].adEmail);
+        printf("                                             %s           %s            %s\n", adminData[i].adName, adminData[i].adPass, adminData[i].adEmail);
     }
 
     printf("\n\n\n");
