@@ -13,6 +13,9 @@ void menuUI(char headingName[]);
 void showUI();
 void allProductData();
 
+void encripTech(struct admin adminData[100], int index); // Caesar Cypher - For Password
+void decripTech(struct admin adminData[100], int index);
+
 void adminSignIn(); // 1. Authorization & Authentication
 void adminSignUp();
 void adminPanelAuthentication();
@@ -304,18 +307,22 @@ void adminSignIn()
     setColor(7);
     scanf("%s", userPass);
 
-    // data received from file and cheak user authencity
     FILE *fp;
-    fp = fopen("admin_data/data.txt", "r");
+    int index;
+    fp = fopen("admin_data/admin_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
 
-    while (fscanf(fp, "%s %s %s", userName1, userPass1, userEmail1) != EOF)
+    listOfAdminData();            // encripted data here
+    decripTech(adminData, index); // decripted data
+
+    for (int i = 0; i < index; i++)
     {
-        if (strcmp(userName, userName1) == 0 && strcmp(userPass, userPass1) == 0)
+        if (strcmp(userName, adminData[i].adName) == 0 &&
+            strcmp(userPass, adminData[i].adPass) == 0)
         {
-
             // update login status
             adminLoginStatus = 1;
-            FILE *fp;
             fp = fopen("login_Logout_status/logData.txt", "w");
             fprintf(fp, "%d", adminLoginStatus);
             fclose(fp);
@@ -328,7 +335,6 @@ void adminSignIn()
             break;
         }
     }
-    fclose(fp);
 
     if (found) // user found
     {
@@ -394,6 +400,12 @@ void adminSignUp()
     printf("Enter Email    : ");
     setColor(7);
     scanf("%s", userEmail);
+
+    // using caesar cypher
+    for (int i = 0; (i < 100 && userPass[i] != '\0'); i++)
+    {
+        userPass[i] = userPass[i] + 5;
+    }
 
     // User data send to file
     FILE *fp;
@@ -2189,6 +2201,12 @@ void addAdmin()
     scanf("%s", adEmail);
     setColor(7); // reset color
 
+    // using caesar cypher to encript
+    for (int i = 0; (i < 100 && adPass[i] != '\0'); i++)
+    {
+        adPass[i] = adPass[i] + 5;
+    }
+
     // data send to file
     FILE *fp;
     fp = fopen("admin_data/data.txt", "a");
@@ -2196,7 +2214,6 @@ void addAdmin()
     fclose(fp);
 
     // admin index send to file
-
     fp = fopen("admin_data/admin_index.txt", "r");
     fscanf(fp, "%d", &adIndex);
     fclose(fp);
@@ -2357,7 +2374,8 @@ void adminPasswordReset()
     fscanf(fp, "%d", &index);
     fclose(fp);
 
-    listOfAdminData();
+    listOfAdminData(); // encripted data
+    decripTech(adminData, index);
 
     int width = getConsoleWidth();
     int space = (width - 18) / 2;
@@ -2415,7 +2433,9 @@ void adminPasswordReset()
             scanf("%s", adPass);
             printf("\n\n");
 
-            strcpy(adminData[pass].adPass, adPass);
+            strcpy(adminData[pass].adPass, adPass); // pass copy to another variable
+
+            encripTech(adminData, index); // again encript all data before sending to file
 
             // Latest Data Send to Admin - FILE
             fp = fopen("admin_data/data.txt", "w"); // delete previous data
@@ -2476,6 +2496,7 @@ void listOfAdmin()
     fscanf(fp, "%d", &index);
     fclose(fp);
 
+    decripTech(adminData, index); // decript data
     for (int i = 0; i < index; i++)
     {
         printf("                                             %s           %s            %s\n", adminData[i].adName, adminData[i].adPass, adminData[i].adEmail);
@@ -2921,6 +2942,37 @@ void listOfCustomerData()
     fclose(fp);
 }
 ////*---------------Admin Panel (USER) Customer data End----------------*/
+//
+//
+//
+/*---------------Encripton Start----------------*/
+void encripTech(struct admin adminData[100], int index)
+{
+    // listOfAdminData();
+    for (int j = 0; j < index; j++)
+    {
+        for (int i = 0; (i < 100 && adminData[j].adPass[i] != '\0'); i++)
+        {
+            adminData[j].adPass[i] = adminData[j].adPass[i] + 5;
+        }
+    }
+}
+//*---------------Encripton End----------------*/
+//
+//
+//
+//*---------------Decripton Start----------------*/
+void decripTech(struct admin adminData[100], int index)
+{
+    for (int j = 0; j < index; j++)
+    {
+        for (int i = 0; (i < 100 && adminData[j].adPass[i] != '\0'); i++)
+        {
+            adminData[j].adPass[i] = adminData[j].adPass[i] - 5;
+        }
+    }
+}
+//*---------------Decripton End----------------*/
 //
 //
 //
