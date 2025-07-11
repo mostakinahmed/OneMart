@@ -1688,7 +1688,6 @@ void adminPanelSupplierManagement() // HOME
     case 2:
         deleteSupplier();
         break;
-        // yet not done
 
     case 3:
         productSearch();
@@ -1698,12 +1697,11 @@ void adminPanelSupplierManagement() // HOME
     case 4:
         listOfProductBySupplier();
         break;
-        // yet not done
 
     case 5:
         supplierList();
         break;
-        // yet not done
+
     case 0:
         adminPanelHome();
         break;
@@ -2090,22 +2088,19 @@ void adminPanelUserManagement() // HOME
     case 1:
         addAdmin();
         break;
-        // yet not done
 
     case 2:
         deleteAdmin();
         break;
-        // yet not done
 
     case 3:
         adminPasswordReset();
         break;
-        // yet not done
 
     case 4:
         listOfAdmin();
         break;
-        // yet not done
+
     case 5:
         addCustomer();
         break;
@@ -2266,7 +2261,7 @@ void deleteAdmin()
 
         printf("                                        %s             %s\n", adminData[deletePos].adName, adminData[deletePos].adEmail);
         printf("\n\n\n\n\n");
-        printCentered("     Are you confirm to delete?", 15);
+        printCentered("     Are you sure you want to delete?", 15);
         printCentered("     1. YES", 10);
         printCentered("    2. NO", 4);
 
@@ -2334,6 +2329,117 @@ void deleteAdmin()
 //*---------------Admin Panel (USER) Admin Pass Reset Start----------------*/
 void adminPasswordReset()
 {
+    char headingName[40] = "User Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("Admin Password Reset", 15);
+    printCentered(" --------------------------", 9);
+    printf("\n\n");
+
+    int index;
+    char adPass[20];
+    char adName[30];
+
+    FILE *fp;
+    fp = fopen("admin_data/admin_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    listOfAdminData();
+
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Admin Name: ", 15);
+    scanf("%s", adName);
+    printf("\n");
+
+    int pass, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+
+        if (strcmp(adminData[i].adName, adName) == 0)
+        {
+            pass = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // Admin found
+    if (found)
+    {
+        printCentered("Admin Found...", 10);
+        printCentered("-----------------------", 10);
+        printCentered("   Name:            Email:    ", 15);
+        printCentered("----------------------------------------------------------------", 9);
+
+        printf("                                                            %s                %s\n", adminData[pass].adName, adminData[pass].adEmail);
+        printf("\n\n\n\n\n");
+        printCentered("     Are you sure you want to change Password?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        int option;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option: ");
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+
+            for (int i = 0; i < space; i++)
+            printf(" ");
+            printf("Input New Password: ", 15);
+            scanf("%s", adPass);
+            printf("\n\n");
+
+            strcpy(adminData[pass].adPass, adPass);
+
+            // Latest Data Send to Admin - FILE
+            fp = fopen("admin_data/data.txt", "w"); // delete previous data
+            fclose(fp);
+            fp = fopen("admin_data/data.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%s %s %s\n", adminData[j].adName, adminData[j].adPass, adminData[j].adEmail);
+            }
+            fclose(fp);
+
+            printf("\n\n");
+            printCentered("'Password Reset Done'....Press any key to return Home.", 4);
+            _getch();
+            adminPanelUserManagement();
+
+        case 2:
+            printCentered("Password Reset cancel!", 4);
+            printf("\n\n");
+            printCentered("          Press any key to return Home.....", 10);
+            _getch();
+            adminPanelUserManagement();
+        }
+    }
+    else
+    {
+        printCentered("     Admin has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelUserManagement();
+    }
 }
 //*---------------Admin Panel (USER) Admin Pass Reset End----------------*/
 //
