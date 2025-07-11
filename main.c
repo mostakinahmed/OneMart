@@ -1777,7 +1777,7 @@ void addSupplier()
     fprintf(fp, "%d %s %s %s\n", supplierID, supName, supPhn, supCompName);
     fclose(fp);
 
-    // dupplier id send to file
+    // supplier id send to file
     ++supplierID;
     fp = fopen("supplier_data/supplierID.txt", "w");
     fprintf(fp, "%d", supplierID);
@@ -2143,6 +2143,71 @@ void adminPanelUserManagement() // HOME
 //*---------------Admin Panel (USER) Add Admin Start----------------*/
 void addAdmin()
 {
+    // adding admin
+    char headingName[40] = "Admin Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Input Admin Information:", 15);
+    printCentered("------------------------------", 15);
+
+    // variable declare
+    char adName[30];
+    char adPass[20];
+    char adEmail[50];
+    int adIndex;
+
+    int width = getConsoleWidth();
+    int space = (width - 5) / 2;
+    setColor(15);
+
+    //-------space/input management for name-------//
+    space = (width - 12) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("  User Name  : ");
+    scanf("%s", adName);
+
+    //-------space/input management for password-------//
+    space = (width - 14) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("    Password  : ");
+    scanf("%s", adPass);
+
+    //-------space/input management for email-------//
+    space = (width - 11) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("     Email  : ", 15);
+    scanf("%s", adEmail);
+    setColor(7); // reset color
+
+    // data send to file
+    FILE *fp;
+    fp = fopen("admin_data/data.txt", "a");
+    fprintf(fp, "%s %s %s\n", adName, adPass, adEmail);
+    fclose(fp);
+
+    // admin index send to file
+
+    fp = fopen("admin_data/admin_index.txt", "r");
+    fscanf(fp, "%d", &adIndex);
+    fclose(fp);
+
+    adIndex = adIndex + 1;
+
+    fp = fopen("admin_data/admin_index.txt", "w");
+    fprintf(fp, "%d", adIndex);
+    fclose(fp);
+
+    printf("\n\n\n");
+    printCentered("'Admin Added'....Press any key to return Home.", 10);
+    _getch();
+    adminPanelUserManagement(); // home
 }
 //*---------------Admin Panel (USER) Add Admin End----------------*/
 //
