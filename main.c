@@ -13,8 +13,8 @@ void menuUI(char headingName[]);
 void showUI();
 void allProductData();
 
-void encripTech(struct admin adminData[100], int index); // Caesar Cypher - For Password
-void decripTech(struct admin adminData[100], int index);
+void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
+void decripTech(struct user Data[100], int index);
 
 void adminSignIn(); // 1. Authorization & Authentication
 void adminSignUp();
@@ -95,21 +95,24 @@ struct supplier
 };
 struct supplier supplierData[100];
 
-struct admin
-{
-    char adName[30];
-    char adPass[20];
-    char adEmail[50];
-};
-struct admin adminData[100];
-
+// for admin & customer
 struct user
 {
-    char usName[30];
-    char usPass[20];
-    char usEmail[50];
+    int id;
+    char Name[30];
+    char Pass[20];
+    char Email[50];
 };
-struct user userData[100];
+struct user adminData[50];
+struct user customerData[100];
+
+// struct user
+// {
+//     char usName[30];
+//     char usPass[20];
+//     char usEmail[50];
+// };
+// struct user userData[100];
 
 // mark
 //
@@ -318,8 +321,8 @@ void adminSignIn()
 
     for (int i = 0; i < index; i++)
     {
-        if (strcmp(userName, adminData[i].adName) == 0 &&
-            strcmp(userPass, adminData[i].adPass) == 0)
+        if (strcmp(userName, adminData[i].Name) == 0 &&
+            strcmp(userPass, adminData[i].Pass) == 0)
         {
             // update login status
             adminLoginStatus = 1;
@@ -416,6 +419,7 @@ void adminSignUp()
     printCentered("Registration is successfull.", 10);
     printCentered("press any key to login......", 10);
 
+    listOfAdminData();
     _getch(); // to hold user
     adminSignIn();
 }
@@ -490,6 +494,12 @@ void customerSignUp()
     printf("Enter Email    : ");
     scanf("%s", userEmail);
 
+    // using caesar cypher
+    for (int i = 0; (i < 100 && userPass[i] != '\0'); i++)
+    {
+        userPass[i] = userPass[i] + 5;
+    }
+
     // User data send to file
     FILE *fp;
     fp = fopen("customer_data/data.txt", "a");
@@ -514,6 +524,7 @@ void customerSignIn()
     printCentered("Sign In", 10);
     printCentered("------------------------", 10);
 
+    char current_user_customer2[20];
     int found = 0;
     char userName[25];
     char userName1[25];
@@ -527,25 +538,56 @@ void customerSignIn()
     printf("Enter Password : ");
     scanf("%s", userPass);
 
-    // data received from file and cheak user authencity
     FILE *fp;
-    fp = fopen("customer_data/data.txt", "r");
+    int index;
+    fp = fopen("customer_data/customer_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
 
-    while (fscanf(fp, "%s %s %s", userName1, userPass1, userEmail1) != EOF)
+    listOfCustomerData();            // encripted data here
+    decripTech(customerData, index); // decripted data
+
+    for (int i = 0; i < index; i++)
     {
-        if (strcmp(userName, userName1) == 0 && strcmp(userPass, userPass1) == 0)
+        if (strcmp(userName, customerData[i].Name) == 0 &&
+            strcmp(userPass, customerData[i].Pass) == 0)
         {
-            strcpy(current_user_customer, userName);
+            // update login status
+            // customerLoginStatus = 1;
+            // fp = fopen("login_Logout_status/logData_customer.txt", "w");
+            // fprintf(fp, "%d", adminLoginStatus);
+            // fclose(fp);
+            // update current customer name
+            strcpy(current_user_customer2, userName);
+            fp = fopen("customer_data/current_user_customer.txt", "w");
+            fprintf(fp, "%s", current_user_customer2);
+            fclose(fp);
             found = 1;
             break;
         }
     }
-    fclose(fp);
+
+    // // data received from file and cheak user authencity
+    // FILE *fp;
+    // fp = fopen("customer_data/data.txt", "r");
+
+    // while (fscanf(fp, "%s %s %s", userName1, userPass1, userEmail1) != EOF)
+    // {
+    //     if (strcmp(userName, userName1) == 0 && strcmp(userPass, userPass1) == 0)
+    //     {
+    //         strcpy(current_user_customer, userName);
+    //         found = 1;
+    //         break;
+    //     }
+    // }
+    // fclose(fp);
 
     if (found) // user found
     {
         // use this function when we manage customer profile or order place
-        // adminPanelHome();
+        printf("log in successfull\n");
+        _getch();
+        adminPanelHome();
     }
 
     else if (found == 0) // user not found
@@ -2148,7 +2190,7 @@ void adminPanelUserManagement() // HOME
         printCentered("Invalid Choice!", 12);
         printCentered("Press any key to return home..", 10);
         _getch();
-        adminPanelHome();
+        adminPanelUserManagement();
     }
 }
 //*---------------Admin Panel Supplier Management End ----------------*/
@@ -2268,7 +2310,7 @@ void deleteAdmin()
     for (i = 0; i < index; i++)
     {
 
-        if (strcmp(adminData[i].adName, Admin_Name) == 0)
+        if (strcmp(adminData[i].Name, Admin_Name) == 0)
         {
             deletePos = i;
             found = 1;
@@ -2284,7 +2326,7 @@ void deleteAdmin()
         printCentered("   Name:            Email:    ", 15);
         printCentered("----------------------------------------------------------------", 9);
 
-        printf("                                        %s             %s\n", adminData[deletePos].adName, adminData[deletePos].adEmail);
+        printf("                                        %s             %s\n", adminData[deletePos].Name, adminData[deletePos].Email);
         printf("\n\n\n\n\n");
         printCentered("     Are you sure you want to delete?", 15);
         printCentered("     1. YES", 10);
@@ -2316,7 +2358,7 @@ void deleteAdmin()
             fp = fopen("admin_data/data.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%s %s %s\n", adminData[j].adName, adminData[j].adPass, adminData[j].adEmail);
+                fprintf(fp, "%s %s %s\n", adminData[j].Name, adminData[j].Pass, adminData[j].Email);
             }
             fclose(fp);
 
@@ -2390,7 +2432,7 @@ void adminPasswordReset()
     for (i = 0; i < index; i++)
     {
 
-        if (strcmp(adminData[i].adName, adName) == 0)
+        if (strcmp(adminData[i].Name, adName) == 0)
         {
             pass = i;
             found = 1;
@@ -2406,7 +2448,7 @@ void adminPasswordReset()
         printCentered("   Name:            Email:    ", 15);
         printCentered("----------------------------------------------------------------", 9);
 
-        printf("                                                            %s                %s\n", adminData[pass].adName, adminData[pass].adEmail);
+        printf("                                                            %s                %s\n", adminData[pass].Name, adminData[pass].Email);
         printf("\n\n\n\n\n");
         printCentered("     Are you sure you want to change Password?", 15);
         printCentered("     1. YES", 10);
@@ -2433,7 +2475,7 @@ void adminPasswordReset()
             scanf("%s", adPass);
             printf("\n\n");
 
-            strcpy(adminData[pass].adPass, adPass); // pass copy to another variable
+            strcpy(adminData[pass].Pass, adPass); // pass copy to another variable
 
             encripTech(adminData, index); // again encript all data before sending to file
 
@@ -2443,7 +2485,7 @@ void adminPasswordReset()
             fp = fopen("admin_data/data.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%s %s %s\n", adminData[j].adName, adminData[j].adPass, adminData[j].adEmail);
+                fprintf(fp, "%s %s %s\n", adminData[j].Name, adminData[j].Pass, adminData[j].Email);
             }
             fclose(fp);
 
@@ -2499,7 +2541,7 @@ void listOfAdmin()
     decripTech(adminData, index); // decript data
     for (int i = 0; i < index; i++)
     {
-        printf("                                             %s           %s            %s\n", adminData[i].adName, adminData[i].adPass, adminData[i].adEmail);
+        printf("                                             %s           %s            %s\n", adminData[i].Name, adminData[i].Pass, adminData[i].Email);
     }
 
     printf("\n\n\n");
@@ -2557,20 +2599,26 @@ void addCustomer()
     scanf("%s", usEmail);
     setColor(7); // reset color
 
+    // using caesar cypher to encript
+    for (int i = 0; (i < 100 && usPass[i] != '\0'); i++)
+    {
+        usPass[i] = usPass[i] + 5;
+    }
+
     // data send to file
     FILE *fp;
     fp = fopen("customer_data/data.txt", "a");
     fprintf(fp, "%s %s %s\n", usName, usPass, usEmail);
     fclose(fp);
 
-    // admin index send to file
-
+    // Customer index received
     fp = fopen("customer_data/customer_index.txt", "r");
     fscanf(fp, "%d", &usIndex);
     fclose(fp);
 
     usIndex = usIndex + 1;
 
+    // send latest index
     fp = fopen("customer_data/customer_index.txt", "w");
     fprintf(fp, "%d", usIndex);
     fclose(fp);
@@ -2620,7 +2668,7 @@ void deleteCustomer()
     for (i = 0; i < index; i++)
     {
 
-        if (strcmp(userData[i].usName, usName) == 0)
+        if (strcmp(customerData[i].Name, usName) == 0)
         {
             deletePos = i;
             found = 1;
@@ -2636,7 +2684,7 @@ void deleteCustomer()
         printCentered("   Name:            Email:    ", 15);
         printCentered("----------------------------------------------------------------", 9);
 
-        printf("                                                            %s                %s\n", userData[deletePos].usName, userData[deletePos].usEmail);
+        printf("                                                            %s                %s\n", customerData[deletePos].Name, customerData[deletePos].Email);
         printf("\n\n\n\n\n");
         printCentered("     Are you sure you want to delete?", 15);
         printCentered("     1. YES", 10);
@@ -2658,7 +2706,7 @@ void deleteCustomer()
         case 1:
             for (int j = deletePos; j < index; j++)
             {
-                userData[j] = userData[j + 1];
+                customerData[j] = customerData[j + 1];
             }
             index = index - 1;
 
@@ -2668,7 +2716,7 @@ void deleteCustomer()
             fp = fopen("customer_data/data.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%s %s %s\n", userData[j].usName, userData[j].usPass, userData[j].usEmail);
+                fprintf(fp, "%s %s %s\n", customerData[j].Name, customerData[j].Pass, customerData[j].Email);
             }
             fclose(fp);
 
@@ -2741,7 +2789,7 @@ void customerPasswordReset()
     for (i = 0; i < index; i++)
     {
 
-        if (strcmp(userData[i].usName, usName) == 0)
+        if (strcmp(customerData[i].Name, usName) == 0)
         {
             pass = i;
             found = 1;
@@ -2757,7 +2805,7 @@ void customerPasswordReset()
         printCentered("   Name:            Email:    ", 15);
         printCentered("----------------------------------------------------------------", 9);
 
-        printf("                                                            %s                %s\n", userData[pass].usName, userData[pass].usEmail);
+        printf("                                                            %s                %s\n", customerData[pass].Name, customerData[pass].Email);
         printf("\n\n\n\n\n");
         printCentered("     Are you sure you want to change Password?", 15);
         printCentered("     1. YES", 10);
@@ -2784,7 +2832,9 @@ void customerPasswordReset()
             scanf("%s", usPass);
             printf("\n\n");
 
-            strcpy(userData[pass].usPass, usPass);
+            decripTech(customerData, index); // for decript data
+            strcpy(customerData[pass].Pass, usPass);
+            encripTech(customerData, index); // again encript data
 
             // Latest Data Send to Costomer - FILE
             fp = fopen("customer_data/data.txt", "w"); // delete previous data
@@ -2792,7 +2842,7 @@ void customerPasswordReset()
             fp = fopen("customer_data/data.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%s %s %s\n", userData[j].usName, userData[j].usPass, userData[j].usEmail);
+                fprintf(fp, "%s %s %s\n", customerData[j].Name, customerData[j].Pass, customerData[j].Email);
             }
             fclose(fp);
 
@@ -2847,8 +2897,8 @@ void listOfCustomer()
 
     for (int i = 0; i < index; i++)
     {
-        printf("                                                        %s", userData[i].usName);
-        printf("                %s\n", userData[i].usEmail);
+        printf("                                                        %s", customerData[i].Name);
+        printf("                %s\n", customerData[i].Email);
     }
 
     printf("\n\n\n");
@@ -2905,9 +2955,9 @@ void listOfAdminData()
     fp = fopen("admin_data/data.txt", "r");
     while (fscanf(fp, "%s %s %s\n", adminName, adminPass, adminEmail) != EOF)
     {
-        strcpy(adminData[index].adName, adminName);
-        strcpy(adminData[index].adPass, adminPass);
-        strcpy(adminData[index].adEmail, adminEmail);
+        strcpy(adminData[index].Name, adminName);
+        strcpy(adminData[index].Pass, adminPass);
+        strcpy(adminData[index].Email, adminEmail);
         index++;
     }
     fclose(fp);
@@ -2923,6 +2973,7 @@ void listOfAdminData()
 void listOfCustomerData()
 {
     int index = 0;
+    int cusID;
     char userName[30];
     char userPass[20];
     char userEmail[50];
@@ -2931,9 +2982,9 @@ void listOfCustomerData()
     fp = fopen("customer_data/data.txt", "r");
     while (fscanf(fp, "%s %s %s\n", userName, userPass, userEmail) != EOF)
     {
-        strcpy(userData[index].usName, userName);
-        strcpy(userData[index].usPass, userPass);
-        strcpy(userData[index].usEmail, userEmail);
+        strcpy(customerData[index].Name, userName);
+        strcpy(customerData[index].Pass, userPass);
+        strcpy(customerData[index].Email, userEmail);
         index++;
     }
     fclose(fp);
@@ -2946,14 +2997,13 @@ void listOfCustomerData()
 //
 //
 /*---------------Encripton Start----------------*/
-void encripTech(struct admin adminData[100], int index)
+void encripTech(struct user Data[50], int index)
 {
-    // listOfAdminData();
     for (int j = 0; j < index; j++)
     {
-        for (int i = 0; (i < 100 && adminData[j].adPass[i] != '\0'); i++)
+        for (int i = 0; (i < 100 && Data[j].Pass[i] != '\0'); i++)
         {
-            adminData[j].adPass[i] = adminData[j].adPass[i] + 5;
+            Data[j].Pass[i] = Data[j].Pass[i] + 5;
         }
     }
 }
@@ -2962,13 +3012,13 @@ void encripTech(struct admin adminData[100], int index)
 //
 //
 //*---------------Decripton Start----------------*/
-void decripTech(struct admin adminData[100], int index)
+void decripTech(struct user Data[100], int index)
 {
     for (int j = 0; j < index; j++)
     {
-        for (int i = 0; (i < 100 && adminData[j].adPass[i] != '\0'); i++)
+        for (int i = 0; (i < 100 && Data[j].Pass[i] != '\0'); i++)
         {
-            adminData[j].adPass[i] = adminData[j].adPass[i] - 5;
+            Data[j].Pass[i] = Data[j].Pass[i] - 5;
         }
     }
 }
