@@ -86,6 +86,7 @@ struct product
 struct product allProduct[500];
 struct product allProductCatList[500];
 
+// for supplier only
 struct supplier
 {
     int supplierID;
@@ -105,6 +106,28 @@ struct user
 };
 struct user adminData[50];
 struct user customerData[100];
+
+// date structure
+struct date
+{
+    int day;
+    int mon;
+    int year;
+};
+struct date date[100]; // not used
+
+// customer payment-card data
+struct card
+{
+    int cusID;
+    char cardHolderName[20];
+    long cardNum;
+    int cvv;
+    struct date cardDate;
+    int balance;
+    
+};
+struct card card[100];
 // mark
 //
 //
