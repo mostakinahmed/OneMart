@@ -301,13 +301,13 @@ void adminSignIn()
     setColor(7);
     scanf("%s", userPass);
 
+    listOfAdminData(); // encripted data here
     FILE *fp;
     int index;
     fp = fopen("admin_data/admin_index.txt", "r");
     fscanf(fp, "%d", &index);
     fclose(fp);
 
-    listOfAdminData();            // encripted data here
     decripTech(adminData, index); // decripted data
 
     for (int i = 0; i < index; i++)
@@ -475,14 +475,43 @@ void customerSignUp()
     printCentered("Registration", 10);
     printCentered("------------------------", 10);
 
+    // file management
+    FILE *fp;
+    int cID;
+    fp = fopen("customer_data/customerID.txt", "r");
+    fscanf(fp, "%d", &cID);
+    fclose(fp);
+
     char userName[25];
     char userPass[25];
     char userEmail[30];
-    printf("Enter UserName : ");
+
+    int width = getConsoleWidth();
+    int space = (width - 5) / 2;
+    setColor(15); // start
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("    ID : %d\n", cID);
+
+    //-------space/input management for name-------//
+    space = (width - 15) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("     Customer Name : ");
     scanf("%s", userName);
-    printf("Enter Password : ");
+
+    //-------space/input management for Price-------//
+    space = (width - 15) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("       Customer Password : ");
     scanf("%s", userPass);
-    printf("Enter Email    : ");
+
+    //-------space/input management for Unit-------//
+    space = (width - 15) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("      Customer Email : ", 15);
     scanf("%s", userEmail);
 
     // using caesar cypher
@@ -492,10 +521,15 @@ void customerSignUp()
     }
 
     // User data send to file
-    FILE *fp;
     fp = fopen("customer_data/data.txt", "a");
-    fprintf(fp, "%s %s %s\n", userName, userPass, userEmail);
+    fprintf(fp, "%d %s %s %s\n", cID, userName, userPass, userEmail);
     fclose(fp);
+
+    ++cID;
+    fp = fopen("customer_data/customerID.txt", "w");
+    fprintf(fp, "%d", cID);
+    fclose(fp);
+
     printf("\n\n");
     printCentered("Registration is successfull.", 10);
     printCentered("press any key to login......", 10);
@@ -529,13 +563,14 @@ void customerSignIn()
     printf("Enter Password : ");
     scanf("%s", userPass);
 
+    // encripted data here
+    listOfCustomerData();
     FILE *fp;
     int index;
     fp = fopen("customer_data/customer_index.txt", "r");
     fscanf(fp, "%d", &index);
     fclose(fp);
 
-    listOfCustomerData();            // encripted data here
     decripTech(customerData, index); // decripted data
 
     for (int i = 0; i < index; i++)
@@ -2564,8 +2599,21 @@ void addCustomer()
     char usEmail[50];
     int usIndex;
 
+    // file management
+    FILE *fp;
+    int cID;
+    fp = fopen("customer_data/customerID.txt", "r");
+    fscanf(fp, "%d", &cID);
+    fclose(fp);
+
     int width = getConsoleWidth();
     int space = (width - 5) / 2;
+    setColor(15); // start
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("    ID : %d\n", cID);
+
+    space = (width - 5) / 2;
     setColor(15);
 
     //-------space/input management for name-------//
@@ -2597,9 +2645,13 @@ void addCustomer()
     }
 
     // data send to file
-    FILE *fp;
     fp = fopen("customer_data/data.txt", "a");
-    fprintf(fp, "%s %s %s\n", usName, usPass, usEmail);
+    fprintf(fp, "%d %s %s %s\n", cID, usName, usPass, usEmail);
+    fclose(fp);
+
+    ++cID; // customer id update
+    fp = fopen("customer_data/customerID.txt", "w");
+    fprintf(fp, "%d", cID);
     fclose(fp);
 
     // Customer index received
@@ -2707,7 +2759,7 @@ void deleteCustomer()
             fp = fopen("customer_data/data.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%s %s %s\n", customerData[j].Name, customerData[j].Pass, customerData[j].Email);
+                fprintf(fp, "%d %s %s %s\n", customerData[i].id, customerData[j].Name, customerData[j].Pass, customerData[j].Email);
             }
             fclose(fp);
 
@@ -2766,7 +2818,7 @@ void customerPasswordReset()
     fclose(fp);
 
     listOfCustomerData();
-
+    decripTech(customerData, index); // for decript data
     int width = getConsoleWidth();
     int space = (width - 18) / 2;
     setColor(15);
@@ -2793,10 +2845,10 @@ void customerPasswordReset()
     {
         printCentered("User Found...", 10);
         printCentered("-----------------------", 10);
-        printCentered("   Name:            Email:    ", 15);
-        printCentered("----------------------------------------------------------------", 9);
+        printCentered("|     ID:       Name:        Password:            Email:  |", 9);
+        printCentered("==========================================================", 9);
 
-        printf("                                                            %s                %s\n", customerData[pass].Name, customerData[pass].Email);
+        printf("                                                %d     %s      %s         %s \n", customerData[i].id, customerData[i].Name, customerData[i].Pass, customerData[i].Email);
         printf("\n\n\n\n\n");
         printCentered("     Are you sure you want to change Password?", 15);
         printCentered("     1. YES", 10);
@@ -2823,7 +2875,6 @@ void customerPasswordReset()
             scanf("%s", usPass);
             printf("\n\n");
 
-            decripTech(customerData, index); // for decript data
             strcpy(customerData[pass].Pass, usPass);
             encripTech(customerData, index); // again encript data
 
@@ -2833,7 +2884,7 @@ void customerPasswordReset()
             fp = fopen("customer_data/data.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%s %s %s\n", customerData[j].Name, customerData[j].Pass, customerData[j].Email);
+                fprintf(fp, "%d %s %s %s\n", customerData[j].id, customerData[j].Name, customerData[j].Pass, customerData[j].Email);
             }
             fclose(fp);
 
@@ -2848,6 +2899,11 @@ void customerPasswordReset()
             printCentered("          Press any key to return Home.....", 10);
             _getch();
             adminPanelUserManagement();
+        default:
+            printf("\n\n");
+            printCentered("'Invalid option'...press any key to try again.", 4);
+            _getch();
+            customerPasswordReset();
         }
     }
     else
@@ -2867,8 +2923,8 @@ void customerPasswordReset()
 void listOfCustomer()
 {
     int index;
-
     listOfCustomerData();
+
     char headingName[40] = "List of User";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
@@ -2877,9 +2933,9 @@ void listOfCustomer()
     printCentered("------------------------", 10);
     printf("\n\n");
     printCentered("List of User", 9);
-    printCentered("-------------------------------------", 9);
-    printCentered("| Name:          Email:             |", 9);
-    printCentered("=====================================", 9);
+    printCentered("----------------------------------------------------------", 9);
+    printCentered("|     ID:       Name:        Password:            Email:  |", 9);
+    printCentered("==========================================================", 9);
 
     FILE *fp;
     fp = fopen("customer_data/customer_index.txt", "r");
@@ -2888,8 +2944,7 @@ void listOfCustomer()
 
     for (int i = 0; i < index; i++)
     {
-        printf("                                                        %s", customerData[i].Name);
-        printf("                %s\n", customerData[i].Email);
+        printf("                                                %d     %s      %s         %s \n", customerData[i].id, customerData[i].Name, customerData[i].Pass, customerData[i].Email);
     }
 
     printf("\n\n\n");
@@ -2971,8 +3026,9 @@ void listOfCustomerData()
 
     FILE *fp;
     fp = fopen("customer_data/data.txt", "r");
-    while (fscanf(fp, "%s %s %s\n", userName, userPass, userEmail) != EOF)
+    while (fscanf(fp, "%d %s %s %s\n", &cusID, userName, userPass, userEmail) != EOF)
     {
+        customerData[index].id = cusID;
         strcpy(customerData[index].Name, userName);
         strcpy(customerData[index].Pass, userPass);
         strcpy(customerData[index].Email, userEmail);
