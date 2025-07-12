@@ -105,15 +105,6 @@ struct user
 };
 struct user adminData[50];
 struct user customerData[100];
-
-// struct user
-// {
-//     char usName[30];
-//     char usPass[20];
-//     char usEmail[50];
-// };
-// struct user userData[100];
-
 // mark
 //
 //
