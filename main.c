@@ -125,7 +125,6 @@ struct card
     int cvv;
     struct date cardDate;
     int balance;
-    
 };
 struct card card[100];
 // mark
@@ -510,32 +509,79 @@ void customerSignUp()
     char userEmail[30];
 
     int width = getConsoleWidth();
-    int space = (width - 5) / 2;
+    int space = (width - 10) / 2;
     setColor(15); // start
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("    ID : %d\n", cID);
+    printf("   ID : %d\n", cID);
 
     //-------space/input management for name-------//
-    space = (width - 15) / 2;
+    space = (width - 29) / 2;
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("     Customer Name : ");
+    printf(" Customer Name : ");
     scanf("%s", userName);
 
-    //-------space/input management for Price-------//
-    space = (width - 15) / 2;
+    //-------space/input management for password-------//
+    space = (width - 35) / 2;
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("       Customer Password : ");
+    printf("Customer Password : ");
     scanf("%s", userPass);
 
-    //-------space/input management for Unit-------//
+    //-------space/input management for email-------//
+    space = (width - 31) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf(" Customer Email : ");
+    scanf("%s", userEmail);
+
+    printf("\n\n");
+    // print payment card info
+    // received data from file
+    long cardNum;
+    int cardCVV, day, mon, year, balance;
+    fp = fopen("payment_card/cardInfo.txt", "r");
+    fscanf(fp, "%d %d %d %d %d %d\n", &cardNum, &cardCVV, &day, &mon, &year, &balance);
+    fclose(fp);
+
+    printCentered("Your Payment Card Info:", 9);
+    printCentered("----------------------------", 9);
+    space = (width - 26) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("  Card Holder Name: %s\n", userName);
+
     space = (width - 15) / 2;
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("      Customer Email : ", 15);
-    scanf("%s", userEmail);
+    printf(" Card Number: %ld\n", cardNum);
+
+    space = (width - 13) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf(" Card - CVV: %d\n", cardCVV);
+
+    space = (width - 19) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("   Expire Date: %d-%d-%d\n", day, mon, year);
+
+    space = (width - 24) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("  Opening Balance: %d\n", balance);
+
+    // card info send to file
+    fp = fopen("payment_card/cardData.txt", "a");
+    fprintf(fp, "%d %d %d %d %d %d %d\n", cID, cardNum, cardCVV, day, mon, year, balance);
+    cardNum++, cardCVV++, year++;
+    fclose(fp);
+
+    // update card info
+    fp = fopen("payment_card/cardInfo.txt", "w");
+    fprintf(fp, "%d %d %d %d %d %d\n", cardNum, cardCVV, day, mon, year, balance);
+    fclose(fp);
 
     // using caesar cypher
     for (int i = 0; (i < 100 && userPass[i] != '\0'); i++)
@@ -548,6 +594,7 @@ void customerSignUp()
     fprintf(fp, "%d %s %s %s\n", cID, userName, userPass, userEmail);
     fclose(fp);
 
+    // customer id send to file
     ++cID;
     fp = fopen("customer_data/customerID.txt", "w");
     fprintf(fp, "%d", cID);
