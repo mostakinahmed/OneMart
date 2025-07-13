@@ -78,17 +78,27 @@ int customerLoginStatus = 0;
 int adminLoginStatus = 0;
 
 /*-------Global Structure Section------*/
+// date structure
+struct date
+{
+    int day;
+    int mon;
+    int year;
+};
+struct date date[100]; // not used
+
 struct product
 {
     int pID;
-    int proSupID; // pruduct supplier ID
+    int proSupID; // product supplier ID
     char pCat[15];
     char pName[20];
     int pPrice;
     int pUnit;
+    struct date expDate;
 };
 struct product allProduct[500];
-struct product allProductCatList[500];
+// struct product allProductCatList[500];
 
 // for supplier only
 struct supplier
@@ -111,21 +121,12 @@ struct user
 struct user adminData[50];
 struct user customerData[100];
 
-// date structure
-struct date
-{
-    int day;
-    int mon;
-    int year;
-};
-struct date date[100]; // not used
-
 // customer payment-card data
 struct card
 {
     int cusID;
     char cardHolderName[20];
-    long cardNum;
+    int cardNum;
     int cvv;
     struct date cardDate;
     int balance;
@@ -972,6 +973,7 @@ void AddNewProduct()
     int pUnit;
     char pCat[15];
     int proSupID; // product supplier id
+    int day, mon, year;
 
     //-------space/input management for ID-------//
     FILE *fp;
@@ -1017,6 +1019,13 @@ void AddNewProduct()
     printf("     Category : ", 15);
     scanf("%s", pCat);
 
+    //-------space/input management for Category-------//
+    space = (width - 17) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("  Expire Date : ", 15);
+    scanf("%d %d %d", &day, &mon, &year);
+
     // Show Supplier List
     int supplierID;
     char supName[20];
@@ -1052,7 +1061,7 @@ void AddNewProduct()
 
     // data send to file
     fp = fopen("Stock/all_product.txt", "a");
-    fprintf(fp, "%d %d %s %d %d %s\n", pID, proSupID, pName, pPrice, pUnit, pCat);
+    fprintf(fp, "%d %d %s %d %d %s %d %d %d\n", pID, proSupID, pName, pPrice, pUnit, pCat, day, mon, year);
     fclose(fp);
 
     printf("\n\n");
@@ -1141,6 +1150,7 @@ void deleteProduct()
         switch (option)
         {
         case 1:
+            // delete process
             for (int j = deletePos; j < index; j++)
             {
                 allProduct[j] = allProduct[j + 1];
@@ -1153,7 +1163,7 @@ void deleteProduct()
             fp = fopen("Stock/all_product.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%d %d %s %d %d %s\n", allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                fprintf(fp, "%d %d %s %d %d %s %d %d %d\n", allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
             }
             fclose(fp);
 
@@ -1199,9 +1209,9 @@ void listOfProduct()
     printf("\n\n");
 
     printCentered("All Product List", 9);
-    printCentered("  ------------------------------------------------------------------------------------------------------", 9);
-    printCentered("     NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-    printCentered("  -------------------------------------------------------------------------------------------------------", 9);
+    printCentered("  ------------------------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("     NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+    printCentered("  ------------------------------------------------------------------------------------------------------------------------------", 9);
     allProductData();
     int index, serNum = 1;
     FILE *fp;
@@ -1210,7 +1220,7 @@ void listOfProduct()
     // pID, proSupID, pCat, pName, pPrice, pUnit);
     for (int i = 0; i < index; i++)
     {
-        printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
+        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s         %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
     }
 
     printf("\n\n\n");
@@ -1388,7 +1398,7 @@ void updateStock()
         fp = fopen("Stock/all_product.txt", "a");
         for (int j = 0; j < index; j++)
         {
-            fprintf(fp, "%d %d %s %d %d %s\n", allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+            fprintf(fp, "%d %d %s %d %d %s %d %d %d\n", allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
         }
         fclose(fp);
 
@@ -1441,14 +1451,14 @@ void stockListByCategory()
             printf("\n\n");
             printCentered("Computer", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "computer") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1464,14 +1474,14 @@ void stockListByCategory()
             printf("\n\n");
             printCentered("Books", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "books") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1487,14 +1497,14 @@ void stockListByCategory()
             printf("\n\n");
             printCentered("Medicine", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "medicine") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1510,14 +1520,14 @@ void stockListByCategory()
             printf("\n\n");
             printCentered("Camera", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "camera") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1533,14 +1543,14 @@ void stockListByCategory()
             printf("\n\n");
             printCentered("Television", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "television") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1554,16 +1564,16 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "watches") == 0)
         {
             printf("\n\n");
-            printCentered("Smart Watches", 12);
+            printCentered("Watches", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "watches") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1579,14 +1589,14 @@ void stockListByCategory()
             printf("\n\n");
             printCentered("Fragrances", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "fragrances") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1599,17 +1609,18 @@ void stockListByCategory()
         int serNum = 1;
         if (strcmp(allProduct[i].pCat, "beverages") == 0)
         {
+
             printf("\n\n");
             printCentered("Beverages", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "beverages") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1625,14 +1636,14 @@ void stockListByCategory()
             printf("\n\n");
             printCentered("Mobile", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "mobile") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -1648,14 +1659,14 @@ void stockListByCategory()
             printf("\n\n");
             printCentered("Software", 12);
             printCentered("  ----------------------", 12);
-            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-            printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
 
             for (int j = i; j < index; j++)
             {
                 if (strcmp(allProduct[j].pCat, "software") == 0)
                 {
-                    printf("                         %d        %d          %d            %s            %d.00TK         %d (P)      %s\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat);
+                    printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
                 }
             }
             break;
@@ -3087,16 +3098,20 @@ void allProductData()
     int pPrice2;
     int pUnit2;
     int index = 0;
+    int day, mon, year;
 
     FILE *fp;
     fp = fopen("Stock/all_product.txt", "r");
-    while (fscanf(fp, "%d %d %s %d %d %s\n", &pID2, &proSupID2, pName2, &pPrice2, &pUnit2, pCat2) != EOF)
+    while (fscanf(fp, "%d %d %s %d %d %s %d %d %d\n", &pID2, &proSupID2, pName2, &pPrice2, &pUnit2, pCat2, &day, &mon, &year) != EOF)
     {
 
         allProduct[index].pID = pID2;
         allProduct[index].proSupID = proSupID2;
         allProduct[index].pPrice = pPrice2;
         allProduct[index].pUnit = pUnit2;
+        allProduct[index].expDate.day = day;
+        allProduct[index].expDate.mon = mon;
+        allProduct[index].expDate.year = year;
         strcpy(allProduct[index].pName, pName2);
         strcpy(allProduct[index].pCat, pCat2);
         index++;
