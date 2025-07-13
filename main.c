@@ -13,6 +13,7 @@ void menuUI(char headingName[]);
 void showUI();
 void allProductData();
 void buyProduct();
+void dateTimeForExpireProduct();
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -40,6 +41,7 @@ void listOfProduct();
 void stockCheak();
 void updateStock();
 void stockListByCategory();
+void expireProductList();
 
 void adminPanelOnlineStore(); // 4. Admin Panel Online Store - Home
 void orderPendingList();
@@ -85,7 +87,8 @@ struct date
     int mon;
     int year;
 };
-struct date date[100]; // not used
+struct date date[100];   // not used
+struct date currentDate; // used for expired product list
 
 struct product
 {
@@ -260,6 +263,25 @@ void dateTime()
     }
     printf("Date: %04d-%02d-%02d", t->tm_year + 1900, t->tm_mon + 1, t->tm_mday);
     setColor(7); // Reset color
+}
+
+void dateTimeForExpireProduct()
+{
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+
+    setColor(10);
+    for (int i = 0; i <= 118; i++)
+    {
+        printf(" ");
+    }
+    printf("Date: %02d-%02d-%04d", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+    setColor(7); // Reset color
+
+    // take date for expired list
+    currentDate.day = t->tm_mday;
+    currentDate.mon = t->tm_mon + 1;
+    currentDate.year = t->tm_year + 1900;
 }
 /*------------Date Time END---------*/
 //
@@ -900,6 +922,7 @@ void adminPanelStock() // HOME
     printCentered("      4. Stock Cheak.", 15);
     printCentered("       5. Update Stock.", 15);
     printCentered("                 6. Stock List by Category.", 15);
+    printCentered("          7. Expired Product.", 15);
     printCentered("     0. Admin-Home.", 4);
     printf("\n\n\n");
 
@@ -911,27 +934,24 @@ void adminPanelStock() // HOME
     case 1:
         AddNewProduct();
         break;
-        // yet not done
     case 2:
         deleteProduct();
         break;
-        // yet not done?
     case 3:
         listOfProduct();
         break;
-    // yet not done
     case 4:
         stockCheak();
         break;
-    // yet not done
     case 5:
         updateStock();
         break;
-        // yet not done
     case 6:
         stockListByCategory();
         break;
-        // yet not done
+    case 7:
+        expireProductList();
+        break;
     case 0:
         adminPanelHome();
         break;
@@ -939,7 +959,7 @@ void adminPanelStock() // HOME
         printCentered("Invalid Choice!", 12);
         printCentered("Press any key", 10);
         _getch();
-        adminPanelSales();
+        adminPanelStock();
     }
 }
 //*---------------Admin Panel Stock End ----------------*/
@@ -1667,6 +1687,330 @@ void stockListByCategory()
                 if (strcmp(allProduct[j].pCat, "software") == 0)
                 {
                     printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
+                }
+            }
+            break;
+        }
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.....", 10);
+    _getch();
+    adminPanelStock();
+}
+//*---------------Admin Panel Stock List By Category End----------------*/
+//
+//
+//
+/*---------------Admin Panel Expired List Start----------------*/
+void expireProductList()
+{
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+
+    printCentered("Expired Product List By Category", 9);
+    printCentered("    -------------------------------------------------------------------------------------------------------------------------", 9);
+
+    // take index num from file
+    int index, serNum = 1;
+    FILE *fp;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    allProductData();           // get latest all product
+    dateTimeForExpireProduct(); // get latest date - currentDate
+
+    // For computer
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "computer") == 0)
+        {
+            printf("\n\n");
+            printCentered("Computer", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "computer") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For books
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "books") == 0)
+        {
+            printf("\n\n");
+            printCentered("Books", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "books") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For medicine
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "medicine") == 0)
+        {
+            printf("\n\n");
+            printCentered("Medicine", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "medicine") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For camera
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "camera") == 0)
+        {
+            printf("\n\n");
+            printCentered("Camera", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "camera") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For television
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "television") == 0)
+        {
+            printf("\n\n");
+            printCentered("Television", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "television") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For watches
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "watches") == 0)
+        {
+            printf("\n\n");
+            printCentered("Watches", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "watches") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For fragrances
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "fragrances") == 0)
+        {
+            printf("\n\n");
+            printCentered("Fragrances", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "fragrances") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For Beverages
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "beverages") == 0)
+        {
+
+            printf("\n\n");
+            printCentered("Beverages", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "beverages") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For Mobile
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "mobile") == 0)
+        {
+            printf("\n\n");
+            printCentered("Mobile", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "mobile") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // For Software
+    for (int i = 0; i < index; i++)
+    {
+        int serNum = 1;
+        if (strcmp(allProduct[i].pCat, "software") == 0)
+        {
+            printf("\n\n");
+            printCentered("Software", 12);
+            printCentered("  ----------------------", 12);
+            printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+
+            for (int j = i; j < index; j++)
+            {
+                if (strcmp(allProduct[j].pCat, "Software") == 0)
+                {
+                    if (allProduct[j].expDate.year < currentDate.year ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon < currentDate.mon) ||
+                        (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
+                    {
+
+                        printf("               %d        %d          %d             %s           %d.00TK           %d (P)        %s          %d-%d-%d\n", serNum++, allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
                 }
             }
             break;
