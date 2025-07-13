@@ -12,6 +12,7 @@ void OnlineHome();
 void menuUI(char headingName[]);
 void showUI();
 void allProductData();
+void buyProduct();
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -23,6 +24,9 @@ void customerPanelAuthentication();
 void customerSignIn();
 void customerSignUp();
 void adminLogOut();
+void menuContact();
+void menuAbout();
+void menuProfile();
 
 void adminPanelSales(); // 2. Admin Panel Sales - HOME
 void newSales();
@@ -539,7 +543,7 @@ void customerSignUp()
     printf("\n\n");
     // print payment card info
     // received data from file
-    long cardNum;
+    int cardNum;
     int cardCVV, day, mon, year, balance;
     fp = fopen("payment_card/cardInfo.txt", "r");
     fscanf(fp, "%d %d %d %d %d %d\n", &cardNum, &cardCVV, &day, &mon, &year, &balance);
@@ -2681,7 +2685,7 @@ void addCustomer()
     setColor(15); // start
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("    ID : %d\n", cID);
+    printf("      ID : %d\n", cID);
 
     space = (width - 5) / 2;
     setColor(15);
@@ -2707,6 +2711,53 @@ void addCustomer()
     printf("     Email  : ", 15);
     scanf("%s", usEmail);
     setColor(7); // reset color
+
+    printf("\n\n");
+    // print payment card info
+    // received data from file
+    int cardNum;
+    int cardCVV, day, mon, year, balance;
+    fp = fopen("payment_card/cardInfo.txt", "r");
+    fscanf(fp, "%d %d %d %d %d %d\n", &cardNum, &cardCVV, &day, &mon, &year, &balance);
+    fclose(fp);
+
+    printCentered("Your Payment Card Info:", 9);
+    printCentered("----------------------------", 9);
+    space = (width - 26) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("  Card Holder Name: %s\n", usName);
+
+    space = (width - 15) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf(" Card Number: %ld\n", cardNum);
+
+    space = (width - 13) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf(" Card - CVV: %d\n", cardCVV);
+
+    space = (width - 19) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("   Expire Date: %d-%d-%d\n", day, mon, year);
+
+    space = (width - 24) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("  Opening Balance: %d\n", balance);
+
+    // card info send to file
+    fp = fopen("payment_card/cardData.txt", "a");
+    fprintf(fp, "%d %d %d %d %d %d %d\n", cID, cardNum, cardCVV, day, mon, year, balance);
+    fclose(fp);
+
+    cardNum++, cardCVV++, year++;
+    // update card info
+    fp = fopen("payment_card/cardInfo.txt", "w");
+    fprintf(fp, "%d %d %d %d %d %d\n", cardNum, cardCVV, day, mon, year, balance);
+    fclose(fp);
 
     // using caesar cypher to encript
     for (int i = 0; (i < 100 && usPass[i] != '\0'); i++)
@@ -3185,6 +3236,24 @@ void home2() // Admin or not
     }
 }
 //*-----------------2nd HOME END----------------------*/
+//
+//
+//
+void buyProduct()
+{
+    // start for buy product
+}
+
+void menuContact()
+{
+}
+
+void menuAbout()
+{
+}
+void menuProfile()
+{
+}
 /*-----------------HOME START----------------------*/
 void OnlineHome()
 {
@@ -3453,16 +3522,63 @@ void OnlineHome()
         }
     }
 
-    printf("\n\n\n\n\n\n\n\n\n\n");
-    printCentered("Press 11 for customer panel.", 10);
-    printCentered("Press 0 for Exits.", 10);
+    printf("\n\n\n");
+    printCentered("      1. Buy Product.", 10);
+    printCentered("      2. Access Menu.", 10);
+    printCentered("0. Exit.", 12);
+
+    // printCentered("Press 11 for customer panel.", 10);
+    // printCentered("Press 0 for Exits.", 10);
+    int width, space;
     int option;
-    printf("\nEnter your choice: ");
+    width = getConsoleWidth();
+    space = (width - 15) / 2;
+
+    printf("\n");
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("   Choose Option: ");
     scanf("%d", &option);
     switch (option)
     {
-    case 11:
-        customerPanelAuthentication();
+    case 1:
+        buyProduct();
+        break;
+    case 2:
+        char optionMenu;
+        width = getConsoleWidth();
+        space = (width - 15) / 2;
+
+        printf("\n");
+        printCentered("                                   h -Home   a -About   c -Contact   p -Profile", 9);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("   Choose Option: ");
+        scanf(" %c", &optionMenu);
+        switch (optionMenu)
+        {
+        case 'h':
+            OnlineHome();
+            break;
+
+        case 'c':
+            menuContact();
+            break;
+
+        case 'a':
+            menuAbout();
+            break;
+
+        case 'p':
+            menuProfile();
+            break;
+
+        default:
+            printCentered("Invalid Choice! 2", 12);
+            _getch();
+            OnlineHome();
+            break;
+        }
         break;
     case 0:
         system("cls");
