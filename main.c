@@ -125,7 +125,7 @@ struct card
 {
     int cusID;
     char cardHolderName[20];
-    long cardNum;
+    int cardNum;
     int cvv;
     struct date cardDate;
     int balance;
