@@ -14,6 +14,7 @@ void showUI();
 void allProductData();
 void buyProduct();
 void dateTimeForExpireProduct();
+void cardData();
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -46,6 +47,7 @@ void expireProductList();
 void adminPanelOnlineStore(); // 4. Admin Panel Online Store - Home
 void orderPendingList();
 void orderDeliveredList();
+void OnePayManagement();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -120,6 +122,7 @@ struct user
     char Name[30];
     char Pass[20];
     char Email[50];
+    char phn[15];
 };
 struct user adminData[50];
 struct user customerData[100];
@@ -132,7 +135,7 @@ struct card
     int cardNum;
     int cvv;
     struct date cardDate;
-    int balance;
+    float balance;
 };
 struct card card[100];
 // mark
@@ -534,6 +537,7 @@ void customerSignUp()
     char userName[25];
     char userPass[25];
     char userEmail[30];
+    char phn[15];
 
     int width = getConsoleWidth();
     int space = (width - 10) / 2;
@@ -563,11 +567,17 @@ void customerSignUp()
     printf(" Customer Email : ");
     scanf("%s", userEmail);
 
+    //-------space/input management for Phone-------//
+    space = (width - 31) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf(" Customer Phone : ");
+    scanf("%s", phn);
+
     printf("\n\n");
     // print payment card info
     // received data from file
-    int cardNum;
-    int cardCVV, day, mon, year, balance;
+    int cardNum, cardCVV, day, mon, year, balance;
     fp = fopen("payment_card/cardInfo.txt", "r");
     fscanf(fp, "%d %d %d %d %d %d\n", &cardNum, &cardCVV, &day, &mon, &year, &balance);
     fclose(fp);
@@ -601,7 +611,7 @@ void customerSignUp()
 
     // card info send to file
     fp = fopen("payment_card/cardData.txt", "a");
-    fprintf(fp, "%d %d %d %d %d %d %d\n", cID, cardNum, cardCVV, day, mon, year, balance);
+    fprintf(fp, "%d %s %d %d %d %d %d %d\n", cID, userName, cardNum, cardCVV, day, mon, year, balance);
     cardNum++, cardCVV++, year++;
     fclose(fp);
 
@@ -618,7 +628,7 @@ void customerSignUp()
 
     // User data send to file
     fp = fopen("customer_data/data.txt", "a");
-    fprintf(fp, "%d %s %s %s\n", cID, userName, userPass, userEmail);
+    fprintf(fp, "%d %s %s %s %s\n", cID, userName, userPass, userEmail, phn);
     fclose(fp);
 
     // customer id send to file
@@ -2146,9 +2156,10 @@ void adminPanelOnlineStore() // HOME
     printf("\n");
     printCentered("Online Store", 15);
     printCentered("-------------------------------", 15);
-    printCentered("          1. Order Pending List", 15);
-    printCentered("            2. Order Delivered List", 15);
-    printCentered("  0. Admin-Home", 4);
+    printCentered("1. OnePay", 15);
+    printCentered("           2. Order Pending List", 15);
+    printCentered("             3. Order Delivered List", 15);
+    printCentered("   0. Admin-Home", 4);
     printf("\n\n\n");
 
     int option;
@@ -2157,10 +2168,13 @@ void adminPanelOnlineStore() // HOME
     switch (option)
     {
     case 1:
+        OnePayManagement();
+        break;
+    case 2:
         orderPendingList();
         break;
         // yet not done
-    case 2:
+    case 3:
         orderDeliveredList();
         break;
         // yet not done
@@ -2178,6 +2192,16 @@ void adminPanelOnlineStore() // HOME
 //
 //
 //
+void OnePayManagement()
+{
+    char headingName[40] = "Admin Panel - Online Store";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    _getch();
+}
 //*---------------Admin Panel(Online Store) Order Pending List Start----------------*/
 void orderPendingList()
 {
@@ -3135,6 +3159,7 @@ void addCustomer()
     char usPass[20];
     char usEmail[50];
     int usIndex;
+    char phn[15];
 
     // file management
     FILE *fp;
@@ -3171,15 +3196,21 @@ void addCustomer()
     space = (width - 11) / 2;
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("     Email  : ", 15);
+    printf("     Email  : ");
     scanf("%s", usEmail);
+
+    //-------space/input management for email-------//
+    space = (width - 11) / 2;
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("     Phone  : ");
+    scanf("%s", phn);
     setColor(7); // reset color
 
     printf("\n\n");
     // print payment card info
     // received data from file
-    int cardNum;
-    int cardCVV, day, mon, year, balance;
+    int cardNum, cardCVV, day, mon, year, balance;
     fp = fopen("payment_card/cardInfo.txt", "r");
     fscanf(fp, "%d %d %d %d %d %d\n", &cardNum, &cardCVV, &day, &mon, &year, &balance);
     fclose(fp);
@@ -3211,15 +3242,27 @@ void addCustomer()
         printf(" ");
     printf("  Opening Balance: %d\n", balance);
 
-    // card info send to file
+    // card data send to file
     fp = fopen("payment_card/cardData.txt", "a");
-    fprintf(fp, "%d %d %d %d %d %d %d\n", cID, cardNum, cardCVV, day, mon, year, balance);
+    fprintf(fp, "%d %s %d %d %d %d %d %d\n", cID, usName, cardNum, cardCVV, day, mon, year, balance);
     fclose(fp);
 
     cardNum++, cardCVV++, year++;
     // update card info
     fp = fopen("payment_card/cardInfo.txt", "w");
     fprintf(fp, "%d %d %d %d %d %d\n", cardNum, cardCVV, day, mon, year, balance);
+    fclose(fp);
+
+    int cardIndex;
+    // PAYMENT index received from file
+    fp = fopen("payment_card/card_index.txt", "r");
+    fscanf(fp, "%d", &cardIndex);
+    fclose(fp);
+    cardIndex = cardIndex + 1;
+
+    // index send to file
+    fp = fopen("payment_card/card_index.txt", "w");
+    fprintf(fp, "%d", cardIndex);
     fclose(fp);
 
     // using caesar cypher to encript
@@ -3230,7 +3273,7 @@ void addCustomer()
 
     // data send to file
     fp = fopen("customer_data/data.txt", "a");
-    fprintf(fp, "%d %s %s %s\n", cID, usName, usPass, usEmail);
+    fprintf(fp, "%d %s %s %s %s\n", cID, usName, usPass, usEmail, phn);
     fclose(fp);
 
     ++cID; // customer id update
@@ -3245,7 +3288,7 @@ void addCustomer()
 
     usIndex = usIndex + 1;
 
-    // send latest index
+    //  Customer latest send index
     fp = fopen("customer_data/customer_index.txt", "w");
     fprintf(fp, "%d", usIndex);
     fclose(fp);
@@ -3611,15 +3654,17 @@ void listOfCustomerData()
     char userName[30];
     char userPass[20];
     char userEmail[50];
+    char phn2[15];
 
     FILE *fp;
     fp = fopen("customer_data/data.txt", "r");
-    while (fscanf(fp, "%d %s %s %s\n", &cusID, userName, userPass, userEmail) != EOF)
+    while (fscanf(fp, "%d %s %s %s %s\n", &cusID, userName, userPass, userEmail, phn2) != EOF)
     {
         customerData[index].id = cusID;
         strcpy(customerData[index].Name, userName);
         strcpy(customerData[index].Pass, userPass);
         strcpy(customerData[index].Email, userEmail);
+        strcpy(customerData[index].phn, phn2);
         index++;
     }
     fclose(fp);
@@ -3628,6 +3673,65 @@ void listOfCustomerData()
     fclose(fp);
 }
 ////*---------------Admin Panel (USER) Customer data End----------------*/
+//
+//
+//
+/*---------------cardData Start----------------*/
+void cardData()
+{
+    int index = 0, cusID2, cardNum2, cvv2, day2, mon2, year2;
+    float balance2;
+    char cardHolderName[20];
+
+    FILE *fp;
+    // received data from file
+    fp = fopen("payment_card/cardData.txt", "r");
+    while (fscanf(fp, "%d %d %d %d %d %d %f\n", &cusID2, &cardNum2, &cvv2, &day2, &mon2, &year2, &balance2) != EOF)
+    {
+        card[index].cusID = cusID2;
+        card[index].cardNum = cardNum2;
+        card[index].cvv = cvv2;
+        card[index].cardDate.day = day2;
+        card[index].cardDate.mon = mon2;
+        card[index].cardDate.year = year2;
+        card[index].balance = balance2;
+        index++;
+    }
+    fclose(fp);
+
+    // index send to file
+    fp = fopen("payment_card/card_index.txt", "w");
+    fprintf(fp, "%d", index);
+    fclose(fp);
+
+    // printCentered("Your Payment Card Info:", 9);
+    // printCentered("----------------------------", 9);
+    // space = (width - 26) / 2;
+    // for (int i = 0; i < space; i++)
+    //     printf(" ");
+    // printf("  Card Holder Name: %s\n", userName);
+
+    // space = (width - 15) / 2;
+    // for (int i = 0; i < space; i++)
+    //     printf(" ");
+    // printf(" Card Number: %ld\n", cardNum);
+
+    // space = (width - 13) / 2;
+    // for (int i = 0; i < space; i++)
+    //     printf(" ");
+    // printf(" Card - CVV: %d\n", cardCVV);
+
+    // space = (width - 19) / 2;
+    // for (int i = 0; i < space; i++)
+    //     printf(" ");
+    // printf("   Expire Date: %d-%d-%d\n", day, mon, year);
+
+    // space = (width - 24) / 2;
+    // for (int i = 0; i < space; i++)
+    //     printf(" ");
+    // printf("  Opening Balance: %d\n", balance);
+}
+/*---------------cardData end----------------*/
 //
 //
 //
@@ -3804,6 +3908,36 @@ void buyProduct()
         printf("\n");
         printCentered("  Payment with 'OnePay'", 10);
         printCentered("  ----------------------", 10);
+
+        // cardData(); // get all card data
+
+        // printCentered(" Card Info:", 9);
+        // printCentered("----------------------------", 9);
+        // space = (width - 26) / 2;
+        // for (int i = 0; i < space; i++)
+        //     printf(" ");
+        // printf("  Card Holder Name: %s\n", userName);
+
+        // space = (width - 15) / 2;
+        // for (int i = 0; i < space; i++)
+        //     printf(" ");
+        // printf(" Card Number: %ld\n", cardNum);
+
+        // space = (width - 13) / 2;
+        // for (int i = 0; i < space; i++)
+        //     printf(" ");
+        // printf(" Card - CVV: %d\n", cardCVV);
+
+        // space = (width - 19) / 2;
+        // for (int i = 0; i < space; i++)
+        //     printf(" ");
+        // printf("   Expire Date: %d-%d-%d\n", day, mon, year);
+
+        // space = (width - 24) / 2;
+        // for (int i = 0; i < space; i++)
+        //     printf(" ");
+        // printf("  Opening Balance: %d\n", balance);
+
         // Latest Data Send to allProduct-FILE
         // fp = fopen("Stock/all_product.txt", "w");
         // fclose(fp);
@@ -4254,4 +4388,3 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
-// ashata
