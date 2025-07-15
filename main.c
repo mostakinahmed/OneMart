@@ -3624,27 +3624,23 @@ void menuContact()
     printf("                                               # Shop Manager E-mail     : shop123&gmail.com\n\n");
     printf("                                               # Website                 : www.onemart.com.bd\n\n");
     printf("                                               # Operating time          : 8 AM to 10 PM\n\n");
-    // printf("                                          Close Only on Friday\n");
-    
+    printCentered("Close Only on Friday\n", 4);
 
-
-    /*
-    printf("\n\n");
-    printCentered("CONTACT", 11);
-    printCentered("================", 15);
-    printf("\n\n");
-    printCentered("#Organization Information", 9);
-    printCentered("==========================", 9);
-    printf("\n");
-    printCentered("#Name: OneMart Ltd.\n", 10);
-    printCentered("#Adress: 123 Business Road, Dhaka 1207, Bangladesh\n", 10);
-    //printCentered("#Contact Email Address(es):\n", 10);
-    printCentered("General Inquiries E-mail: contact123&gmail.com\n", 10);
-    printCentered("Customer Service E-mail: customer123&gmail.com\n", 10);
-    printCentered("Warehouse E-mail: warehouse123&gmail.com\n", 10);
-    printCentered("Admin E-mail: contact123&gmail.com\n", 10);
-    printCentered("Operating time: 8 AM to 10 PM\n", 10);
-    */
+    // printf("\n\n");
+    // printCentered("CONTACT", 11);
+    // printCentered("================", 15);
+    // printf("\n\n");
+    // printCentered("#Organization Information", 9);
+    // printCentered("==========================", 9);
+    // printf("\n");
+    // printCentered("#Name: OneMart Ltd.\n", 10);
+    // printCentered("#Adress: 123 Business Road, Dhaka 1207, Bangladesh\n", 10);
+    // // printCentered("#Contact Email Address(es):\n", 10);
+    // printCentered("General Inquiries E-mail: contact123&gmail.com\n", 10);
+    // printCentered("Customer Service E-mail: customer123&gmail.com\n", 10);
+    // printCentered("Warehouse E-mail: warehouse123&gmail.com\n", 10);
+    // printCentered("Admin E-mail: contact123&gmail.com\n", 10);
+    // printCentered("Operating time: 8 AM to 10 PM\n", 10);
 
     _getch();
     showUI();
