@@ -29,6 +29,7 @@ void adminLogOut();
 void menuContact();
 void menuAbout();
 void menuProfile();
+void customerLogOut();
 
 void adminPanelSales(); // 2. Admin Panel Sales - HOME
 void newSales();
@@ -80,6 +81,7 @@ char current_user_admin[25];
 char current_user_customer[25];
 int customerLoginStatus = 0;
 int adminLoginStatus = 0;
+int currentCustomerID = 0;
 
 /*-------Global Structure Section------*/
 // date structure
@@ -384,7 +386,7 @@ void adminSignIn()
 
     if (found) // user found
     {
-        adminPanelHome();
+        OnlineHome();
     }
 
     else if (found == 0) // user not found
@@ -473,9 +475,9 @@ void adminSignUp()
 void adminLogOut()
 {
     FILE *fp;
-    customerLoginStatus = 0;
+    adminLoginStatus = 0;
     fp = fopen("login_Logout_status/logData.txt", "w");
-    fprintf(fp, "%d", customerLoginStatus);
+    fprintf(fp, "%d", adminLoginStatus);
     fclose(fp);
     adminPanelAuthentication(); // for admin
 }
@@ -658,6 +660,7 @@ void customerSignIn()
 
     char current_user_customer2[20];
     int found = 0;
+    int cusID2;
     char userName[25];
     char userName1[25];
     char userPass[25];
@@ -665,9 +668,9 @@ void customerSignIn()
     char userEmail[30];
     char userEmail1[30];
 
-    printf("Enter UserName : ");
-    scanf("%s", userName);
-    printf("Enter Password : ");
+    printf("Customer ID       : ");
+    scanf("%d", &cusID2);
+    printf("Customer Password : ");
     scanf("%s", userPass);
 
     // encripted data here
@@ -677,60 +680,58 @@ void customerSignIn()
     fp = fopen("customer_data/customer_index.txt", "r");
     fscanf(fp, "%d", &index);
     fclose(fp);
-
+    int index2 = index;
     decripTech(customerData, index); // decripted data
 
     for (int i = 0; i < index; i++)
     {
-        if (strcmp(userName, customerData[i].Name) == 0 &&
+        if (cusID2 == customerData[i].id &&
             strcmp(userPass, customerData[i].Pass) == 0)
         {
             // update login status
-            // customerLoginStatus = 1;
-            // fp = fopen("login_Logout_status/logData_customer.txt", "w");
-            // fprintf(fp, "%d", adminLoginStatus);
-            // fclose(fp);
-            // update current customer name
-            strcpy(current_user_customer2, userName);
-            fp = fopen("customer_data/current_user_customer.txt", "w");
-            fprintf(fp, "%s", current_user_customer2);
+            customerLoginStatus = 1;
+            fp = fopen("login_Logout_status/logData_customer.txt", "w");
+            fprintf(fp, "%d", customerLoginStatus);
             fclose(fp);
+            // update current customer name
+
+            // find customer name
+            for (int i = 0; i < index2; i++)
+            {
+                if (cusID2 == customerData[i].id)
+                {
+                    strcpy(current_user_customer2, customerData[i].Name);
+                    fp = fopen("customer_data/current_user_customer.txt", "w");
+                    fprintf(fp, "%s", current_user_customer2);
+                    fclose(fp);
+
+                    fp = fopen("customer_data/current_user_customer_ID.txt", "w");
+                    fprintf(fp, "%d", cusID2);
+                    fclose(fp);
+                }
+            }
+
             found = 1;
             break;
         }
     }
-
-    // // data received from file and cheak user authencity
-    // FILE *fp;
-    // fp = fopen("customer_data/data.txt", "r");
-
-    // while (fscanf(fp, "%s %s %s", userName1, userPass1, userEmail1) != EOF)
-    // {
-    //     if (strcmp(userName, userName1) == 0 && strcmp(userPass, userPass1) == 0)
-    //     {
-    //         strcpy(current_user_customer, userName);
-    //         found = 1;
-    //         break;
-    //     }
-    // }
-    // fclose(fp);
 
     if (found) // user found
     {
         // use this function when we manage customer profile or order place
         printf("log in successfull\n");
         _getch();
-        adminPanelHome();
+        OnlineHome();
     }
 
     else if (found == 0) // user not found
     {
         printf("\n\n");
-        printCentered("Error userName or password.\n", 10);
-        printCentered("1. Try Again.", 10);
-        printCentered("    2. Reset Password.", 10);
-        printCentered("      3. Authenticate Home.", 10);
-        printCentered("  0. Exit Program.", 10);
+        printCentered("Error userName or password.\n", 4);
+        printCentered("1. Try Again.", 15);
+        printCentered("    2. Reset Password.", 15);
+        printCentered("      3. Authenticate Home.", 15);
+        printCentered("  0. Exit Program.", 4);
 
         int option;
         printf("\n\nEnter your choice: ");
@@ -759,15 +760,27 @@ void customerSignIn()
 //
 //
 //
+void customerLogOut()
+{
+
+    FILE *fp;
+    customerLoginStatus = 0;
+    fp = fopen("login_Logout_status/logData_customer.txt", "w");
+    fprintf(fp, "%d", customerLoginStatus);
+    fclose(fp);
+    OnlineHome(); // for custmer
+}
 /*-----------------ADMIN PANEL HOME START----------------------*/
 void adminPanelHome() // DashBoard
 {
     char headingName[20] = "ADMIN PANEL";
     menuUI(headingName);
+
     FILE *fp;
     fp = fopen("admin_data/current_user_admin.txt", "r");
     fscanf(fp, "%s", current_user_admin);
     fclose(fp);
+
     // 2nd menu ui
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
 
@@ -3681,13 +3694,14 @@ void cardData()
 {
     int index = 0, cusID2, cardNum2, cvv2, day2, mon2, year2;
     float balance2;
-    char cardHolderName[20];
+    char cardHolderName2[20];
 
     FILE *fp;
     // received data from file
     fp = fopen("payment_card/cardData.txt", "r");
-    while (fscanf(fp, "%d %d %d %d %d %d %f\n", &cusID2, &cardNum2, &cvv2, &day2, &mon2, &year2, &balance2) != EOF)
+    while (fscanf(fp, "%d %s %d %d %d %d %d %f\n", &cusID2, cardHolderName2, &cardNum2, &cvv2, &day2, &mon2, &year2, &balance2) != EOF)
     {
+        strcpy(card[index].cardHolderName, cardHolderName2);
         card[index].cusID = cusID2;
         card[index].cardNum = cardNum2;
         card[index].cvv = cvv2;
@@ -3703,33 +3717,6 @@ void cardData()
     fp = fopen("payment_card/card_index.txt", "w");
     fprintf(fp, "%d", index);
     fclose(fp);
-
-    // printCentered("Your Payment Card Info:", 9);
-    // printCentered("----------------------------", 9);
-    // space = (width - 26) / 2;
-    // for (int i = 0; i < space; i++)
-    //     printf(" ");
-    // printf("  Card Holder Name: %s\n", userName);
-
-    // space = (width - 15) / 2;
-    // for (int i = 0; i < space; i++)
-    //     printf(" ");
-    // printf(" Card Number: %ld\n", cardNum);
-
-    // space = (width - 13) / 2;
-    // for (int i = 0; i < space; i++)
-    //     printf(" ");
-    // printf(" Card - CVV: %d\n", cardCVV);
-
-    // space = (width - 19) / 2;
-    // for (int i = 0; i < space; i++)
-    //     printf(" ");
-    // printf("   Expire Date: %d-%d-%d\n", day, mon, year);
-
-    // space = (width - 24) / 2;
-    // for (int i = 0; i < space; i++)
-    //     printf(" ");
-    // printf("  Opening Balance: %d\n", balance);
 }
 /*---------------cardData end----------------*/
 //
@@ -3894,29 +3881,41 @@ void buyProduct()
         printCentered("                                                     ---------------------------", 4);
 
         printf("                                                                                           Subtotal        : %d.00\n", totalPrice);
-        int discount = 100, shipFee = 200, total = 15427;
-        float salesTax = 152.11;
+        int discount = 10, shipFee = 10;
+        float total, salesTax;
+        salesTax = 0.15 * totalPrice;
+        total = (totalPrice + shipFee + salesTax) - discount;
+
         printf("                                                                                           Discount (-)    : %d.00\n", discount);
         printf("                                                                                           Shipping fee    : %d.00\n", shipFee);
-        printf("                                                                                           Tax rate        : 15%\n");
-        printf("                                                                                           Sales Tax       : %2.f\n", salesTax);
+        printf("                                                                                           Tax rate        : 15%%\n");
+        printf("                                                                                           Sales Tax       : %.2f\n", salesTax);
         setColor(4);
         printf("                                                                                           Total           : %.2f\n\n", total);
         setColor(7);
 
         printCentered("press any key to use virtual card 'OnePay'....", 9);
+        _getch();
+
         printf("\n");
         printCentered("  Payment with 'OnePay'", 10);
         printCentered("  ----------------------", 10);
+
+        // get current customer id
+        // fp = fopen("customer_data/current_user_customer_ID.txt", "r");
+        // fscanf(fp, "%d", currentCustomerID);
+        // fclose(fp);
 
         // cardData(); // get all card data
 
         // printCentered(" Card Info:", 9);
         // printCentered("----------------------------", 9);
+
+        // //get index to find customer card
         // space = (width - 26) / 2;
         // for (int i = 0; i < space; i++)
         //     printf(" ");
-        // printf("  Card Holder Name: %s\n", userName);
+        // printf("  Card Holder Name: %s\n", card[].);
 
         // space = (width - 15) / 2;
         // for (int i = 0; i < space; i++)
@@ -4005,6 +4004,62 @@ void menuAbout()
 }
 void menuProfile()
 {
+    char headingName[10] = "OneMart";
+    menuUI(headingName);
+
+    listOfCustomerData(); // get customer latest data from array- customerData[]
+
+    printf("\n\n");
+    printCentered("PROFILE", 10);
+    printCentered(" -----------------------------", 10);
+
+    FILE *fp; // take customer index from file
+    int index, currentCustomerIndex = 0;
+    fp = fopen("customer_data/customer_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+    for (int i = 0; i < index; i++)
+    {
+        if (currentCustomerID == customerData[i].id)
+        {
+            currentCustomerIndex = i;
+            break;
+        }
+    }
+    printf("                                                                ID               : %d\n", customerData[currentCustomerIndex].id);
+    printf("                                                                Name             : %s\n", customerData[currentCustomerIndex].Name);
+    printf("                                                                Password         : xxxxxxxxx\n");
+    printf("                                                                Email            : %s\n", customerData[currentCustomerIndex].Email);
+    printf("                                                                Phone            : %s\n\n", customerData[currentCustomerIndex].phn);
+
+    printf("\n\n");
+    printCentered("Card Info", 10);
+    printCentered(" -----------------------------", 10);
+
+    cardData();                       // get all card details
+    int index2, currentCardIndex = 0; // take card index
+    fp = fopen("customer_data/customer_index.txt", "r");
+    fscanf(fp, "%d", &index2);
+    fclose(fp);
+    for (int i = 0; i < index2; i++)
+    {
+        if (currentCustomerID == card[i].cusID)
+        {
+            currentCardIndex = i;
+            break;
+        }
+    }
+
+    printf("                                                                Card Holder Name : %s\n", card[currentCardIndex].cardHolderName);
+    printf("                                                                Card Number      : %d\n", card[currentCardIndex].cardNum);
+    printf("                                                                Card - CVV       : %d\n", card[currentCardIndex].cvv);
+    printf("                                                                Expire Date      : %d-%d-%d\n", card[currentCardIndex].cardDate.day, card[currentCardIndex].cardDate.mon, card[currentCardIndex].cardDate.year);
+    printf("                                                                Balance          : %.2f\n\n", card[currentCardIndex].balance);
+
+    printf("\n\n");
+    printCentered("press any key to return HOME", 4);
+    _getch();
+    OnlineHome();
 }
 /*-----------------HOME START----------------------*/
 void OnlineHome()
@@ -4012,15 +4067,40 @@ void OnlineHome()
     char headingName[10] = "HOME";
     menuUI(headingName);
 
-    char userName[20] = "mostakin";
-    printCentered2(userName, "Home | Contact | About | Profile. ", 11);
+    cardData();
+
+    FILE *fp;
+    // take current customer name
+    fp = fopen("customer_data/current_user_customer.txt", "r");
+    fscanf(fp, "%s", current_user_customer);
+    fclose(fp);
+
+    // take current customer ID
+    fp = fopen("customer_data/current_user_customer_ID.txt", "r");
+    fscanf(fp, "%d", &currentCustomerID);
+    fclose(fp);
+
+    // get login status
+    char notLoggedIn[10] = "None";
+    fp = fopen("login_Logout_status/logData_customer.txt", "r");
+    fscanf(fp, "%d", &customerLoginStatus);
+    fclose(fp);
+
+    // for nav section
+    if (customerLoginStatus == 1)
+    {
+        printCentered2(current_user_customer, "Home | Contact | About | Profile. ", 11);
+    }
+    else if (customerLoginStatus == 0)
+    {
+        printCentered2(notLoggedIn, "Home | Contact | About | Profile. ", 11);
+    }
 
     printCentered("OneMart - Online Shopping", 10);
     printCentered("--------------------------", 10);
 
-    // take index num from file
+    // take all product index num from file
     int index, serNum = 1;
-    FILE *fp;
     fp = fopen("Stock/index/all_product_index.txt", "r");
     fscanf(fp, "%d", &index);
     fclose(fp);
@@ -4287,10 +4367,16 @@ void OnlineHome()
     printf("\n\n\n");
     printCentered("      1. Buy Product.", 10);
     printCentered("      2. Access Menu.", 10);
-    printCentered("0. Exit.", 12);
+    if (customerLoginStatus == 0)
+    {
+        printCentered("      3. Authentication Page.", 10);
+    }
+    else
+    {
+        printCentered("4. Logout.", 10);
+    }
+    printCentered("0. Exit.  ", 12);
 
-    // printCentered("Press 11 for customer panel.", 10);
-    // printCentered("Press 0 for Exits.", 10);
     int width, space;
     int option;
     width = getConsoleWidth();
@@ -4345,6 +4431,12 @@ void OnlineHome()
     case 0:
         system("cls");
         printCentered("Goodbye!", 12);
+        break;
+    case 3:
+        customerPanelAuthentication();
+        break;
+    case 4:
+        customerLogOut();
         break;
     default:
         printCentered("Invalid Choice!", 12);
