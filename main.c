@@ -3996,11 +3996,70 @@ void menuContact()
 
     _getch();
     OnlineHome();
-    // OnlineHome();
 }
 
 void menuAbout()
 {
+    char headingName[10] = "OneMart";
+    menuUI(headingName);
+    printf("\n\n");
+
+    printCentered(" ===========\n", 3);
+    printCentered("About\n", 3);
+    printCentered(" ===========\n", 3);
+    printf("\n");     //alinment does not match for \n\n 
+
+    printf("                                                      Version       : 1.0.0\n");
+    printf("                                                      Release Date  : August 2025\n");
+    printf("                                                      Developed By  : Najmus Sakib\n");
+    printf("                                                                    : Mostakin Ahmed\n");
+    printf("                                                                    : Shardil Shafat\n");
+    printf("                                                      Environment   : C Language, File Handling, CLI\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("Purpose:\n", 10);
+    printf("                                                      Efficiently manage stock levels, monitor inventory\n");
+    printf("                                                      changes, and support inventory operations for small\n");
+    printf("                                                      to medium-sized businesses.\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("Developer Contact:\n", 10);
+    printf("                                                      Dev-1\n");
+    printf("                                                      Name  : Najmus Sakib\n");
+    printf("                                                      Email : najmussakib528@gmail.com\n");
+    printf("                                                      GitHub: github.com/NajmusSakib367\n\n");
+    printf("                                                      Dev-2\n");
+    printf("                                                      Name  : Mostakin Ahmed\n");
+    printf("                                                      Email : mostakinahmed???@gmail.com\n");
+    printf("                                                      GitHub: github.com/mostakinahmed\n\n");
+    printf("                                                      Dev-3\n");
+    printf("                                                      Name  : Shadril Shafat\n");
+    printf("                                                      Email : shadrilshafat???@gmail.com\n");
+    printf("                                                      GitHub: github.com/shadril\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("Organization:\n", 10);
+    printf("                                                      Name   : Async Coders Ltd.\n");
+    printf("                                                      Address: 123 Business Road, Dhaka 1207, Bangladesh\n");
+    printf("                                                      Website: www.onemart.com.bd\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("License & Disclaimer:\n", 10);
+    printf("                                                      This software is for academic or internal use only.\n");
+    printf("                                                      Redistribution or commercial use is not permitted\n");
+    printf("                                                      without prior permission.\n");
+    printf("                                                      © 2025 . All Rights Reserved.\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("Need Help?\n", 10);
+    printf("                                                      Contact: support.onemart@onemart.bd\n\n");
+
+    printCentered("==============================================\n", 10);
+    printCentered("  Press any key to exit...\n", 10);
+    printCentered("==============================================\n", 10);
+
+    _getch();
+    OnlineHome();
 }
 void menuProfile()
 {
