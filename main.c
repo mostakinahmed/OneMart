@@ -49,6 +49,8 @@ void adminPanelOnlineStore(); // 4. Admin Panel Online Store - Home
 void orderPendingList();
 void orderDeliveredList();
 void OnePayManagement();
+void listOfCard();
+void rechargeCard();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -2205,16 +2207,94 @@ void adminPanelOnlineStore() // HOME
 //
 //
 //
+//*------------------Onepay Management Start----------------*/
 void OnePayManagement()
 {
-    char headingName[40] = "Admin Panel - Online Store";
+    char headingName[40] = "OnePay - Online Card";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("OnePay Maanagement", 15);
+    printCentered("-------------------------------", 15);
+    printCentered("     1. List OnePay Card", 15);
+    printCentered("          2. Recharge OnePay Card", 15);
+    printCentered("0. Admin-Home", 4);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        listOfCard();
+        break;
+    case 2:
+        rechargeCard();
+        break;
+        // yet not done
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        OnePayManagement();
+    }
+
     _getch();
 }
+//*------------------Onepay Management End------------------*/
+//
+//
+//
+//*------------------list of Onepay start------------------*/
+void listOfCard()
+{
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+
+    printCentered("All OnePay Card List", 9);
+    printCentered("  ------------------------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("    No.       Card-No:       Card Holder-Id:         Card Holder-Name:         CVV:            Balance:            Expire Date:", 15);
+    printCentered("  ------------------------------------------------------------------------------------------------------------------------------", 9);
+    cardData();
+
+    int index, serNum = 1;
+    FILE *fp;
+    fp = fopen("payment_card/card_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+    for (int i = 0; i < index; i++)
+    {
+        printf("                  %d         %d          %d               %s                 %d               %f Tk.          %d-%d-%d\n", serNum++, card[i].cardNum, card[i].cusID, card[i].cardHolderName, card[i].cvv, card[i].balance, card[i].cardDate.day, card[i].cardDate.mon, card[i].cardDate.year);
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.....", 10);
+    _getch();
+    adminPanelHome();
+}
+//*------------------list of Onepay End------------------*/
+//
+//
+//
+//*------------------Onepay Recharge start------------------*/
+void rechargeCard()
+{
+}
+//*------------------Onepay Management End------------------*/
+//
+//
+//
 //*---------------Admin Panel(Online Store) Order Pending List Start----------------*/
 void orderPendingList()
 {
@@ -2330,12 +2410,12 @@ void adminPanelSupplierManagement() // HOME
     printf("\n");
     printCentered("Supplier Management", 15);
     printCentered("------------------------", 15);
-    printCentered("   1. Add Supplier", 15);
+    printCentered("  1. Add Supplier", 15);
     printCentered("      2. Delete Supplier.", 15);
     printCentered("    3. Product Search", 15);
     printCentered("                 4. List Of Product by Supplier", 15);
     printCentered("   5. Supplier List", 15);
-    printCentered("  0. Admin-Home.", 4);
+    printCentered(" 0. Admin-Home.", 4);
     printf("\n\n\n");
 
     int option;
@@ -4007,7 +4087,7 @@ void menuAbout()
     printCentered(" ===========\n", 3);
     printCentered("About\n", 3);
     printCentered(" ===========\n", 3);
-    printf("\n");     //alinment does not match for \n\n 
+    printf("\n"); // alinment does not match for \n\n
 
     printf("                                                      Version       : 1.0.0\n");
     printf("                                                      Release Date  : August 2025\n");
@@ -4061,6 +4141,7 @@ void menuAbout()
     _getch();
     OnlineHome();
 }
+
 void menuProfile()
 {
     char headingName[10] = "OneMart";
