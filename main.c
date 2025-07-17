@@ -2281,7 +2281,7 @@ void listOfCard()
     printf("\n\n\n");
     printCentered("Press any key to return Home.....", 10);
     _getch();
-    adminPanelHome();
+    adminPanelOnlineStore();
 }
 //*------------------list of Onepay End------------------*/
 //
@@ -3978,74 +3978,54 @@ void buyProduct()
         _getch();
 
         printf("\n");
-        printCentered("  Payment with 'OnePay'", 10);
+        printCentered("  Your Card Info:", 10);
         printCentered("  ----------------------", 10);
 
-        // get current customer id
-        // fp = fopen("customer_data/current_user_customer_ID.txt", "r");
-        // fscanf(fp, "%d", currentCustomerID);
-        // fclose(fp);
+        cardData();                       // get all card data
+        int index2, currentCardIndex = 0; // take card index
+        fp = fopen("customer_data/customer_index.txt", "r");
+        fscanf(fp, "%d", &index2);
+        fclose(fp);
+        for (int i = 0; i < index2; i++)
+        {
+            if (currentCustomerID == card[i].cusID)
+            {
+                currentCardIndex = i;
+                break;
+            }
+        }
 
-        // cardData(); // get all card data
+        printf("                                                                Card Holder Name : %s\n", card[currentCardIndex].cardHolderName);
+        printf("                                                                Card Number      : %d\n", card[currentCardIndex].cardNum);
+        printf("                                                                Card - CVV       : %d\n", card[currentCardIndex].cvv);
+        printf("                                                                Expire Date      : %d-%d-%d\n", card[currentCardIndex].cardDate.day, card[currentCardIndex].cardDate.mon, card[currentCardIndex].cardDate.year);
+        printf("                                                                Balance          : %.2f\n\n", card[currentCardIndex].balance);
+        printf("\n\n");
 
-        // printCentered(" Card Info:", 9);
-        // printCentered("----------------------------", 9);
+        printCentered("  Input Card Data'", 10);
+        printCentered("  ----------------------", 10);
+        char cardHolderName2[20];
+        int cardNum2, cardCVV2, cardDate, day, mon, year;
+        // take input from customer
+        printf("                                                                Card Holder Name : ");
+        scanf("%s", cardHolderName2);
+        printf("                                                                Card Number      : ");
+        scanf("%d", &cardNum2);
+        printf("                                                                Card - CVV       : ");
+        scanf("%d", &cardCVV2);
+        printf("                                                                Expire Date      : ");
+        scanf("%d %d %d", &day, &mon, &year);
 
-        // //get index to find customer card
-        // space = (width - 26) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf("  Card Holder Name: %s\n", card[].);
-
-        // space = (width - 15) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf(" Card Number: %ld\n", cardNum);
-
-        // space = (width - 13) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf(" Card - CVV: %d\n", cardCVV);
-
-        // space = (width - 19) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf("   Expire Date: %d-%d-%d\n", day, mon, year);
-
-        // space = (width - 24) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf("  Opening Balance: %d\n", balance);
-
-        // Latest Data Send to allProduct-FILE
-        // fp = fopen("Stock/all_product.txt", "w");
-        // fclose(fp);
-        // fp = fopen("Stock/all_product.txt", "a");
-        // for (int j = 0; j < index; j++)
-        // {
-        //     fprintf(fp, "%d %d %s %d %d %s %d %d %d\n",
-        //             allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
-        // }
-        // fclose(fp);
-
-        // fp = fopen("Stock/index/all_product_index.txt", "w");
-        // fprintf(fp, "%d", index);
-        // fclose(fp);
-
-        // printf("\n\n");
-        // printCentered("'Product Deleted'....Press any key to return Home.", 10);
-        // _getch();
-        // adminPanelStock();
-
-        // printCentered("Deletation cancel!", 4);
-        // _getch();
-        // adminPanelStock();
-
-        // printCentered("     Porduct has not been found!", 4);
-        // printf("\n\n");
-        // printCentered("          Press any key to return Home.....", 10);
-        // _getch();
-        // adminPanelStock();
+        if (cardNum2 == card[currentCardIndex].cardNum && cardCVV2 == card[currentCardIndex].cvv &&
+            card[currentCardIndex].cardDate.day == day && card[currentCardIndex].cardDate.mon == mon && card[currentCardIndex].cardDate.year == year)
+        {
+            printCentered("payment done", 10);
+        }
+        else
+        {
+            printCentered("card info error", 10);
+        }
+        // just completed the checking
 
         _getch();
     }
