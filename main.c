@@ -49,6 +49,8 @@ void adminPanelOnlineStore(); // 4. Admin Panel Online Store - Home
 void orderPendingList();
 void orderDeliveredList();
 void OnePayManagement();
+void listOfCard();
+void rechargeCard();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -2205,16 +2207,94 @@ void adminPanelOnlineStore() // HOME
 //
 //
 //
+//*------------------Onepay Management Start----------------*/
 void OnePayManagement()
 {
-    char headingName[40] = "Admin Panel - Online Store";
+    char headingName[40] = "OnePay - Online Card";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
     printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("OnePay Maanagement", 15);
+    printCentered("-------------------------------", 15);
+    printCentered("     1. List OnePay Card", 15);
+    printCentered("          2. Recharge OnePay Card", 15);
+    printCentered("0. Admin-Home", 4);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        listOfCard();
+        break;
+    case 2:
+        rechargeCard();
+        break;
+        // yet not done
+    case 0:
+        adminPanelHome();
+        break;
+    default:
+        printCentered("Invalid Choice!", 12);
+        printCentered("Press any key", 10);
+        _getch();
+        OnePayManagement();
+    }
+
     _getch();
 }
+//*------------------Onepay Management End------------------*/
+//
+//
+//
+//*------------------list of Onepay start------------------*/
+void listOfCard()
+{
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+
+    printCentered("All OnePay Card List", 9);
+    printCentered("  ------------------------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("    No.       Card-No:       Card Holder-Id:         Card Holder-Name:         CVV:            Balance:            Expire Date:", 15);
+    printCentered("  ------------------------------------------------------------------------------------------------------------------------------", 9);
+    cardData();
+
+    int index, serNum = 1;
+    FILE *fp;
+    fp = fopen("payment_card/card_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+    for (int i = 0; i < index; i++)
+    {
+        printf("                  %d         %d          %d               %s                 %d               %f Tk.          %d-%d-%d\n", serNum++, card[i].cardNum, card[i].cusID, card[i].cardHolderName, card[i].cvv, card[i].balance, card[i].cardDate.day, card[i].cardDate.mon, card[i].cardDate.year);
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.....", 10);
+    _getch();
+    adminPanelOnlineStore();
+}
+//*------------------list of Onepay End------------------*/
+//
+//
+//
+//*------------------Onepay Recharge start------------------*/
+void rechargeCard()
+{
+}
+//*------------------Onepay Management End------------------*/
+//
+//
+//
 //*---------------Admin Panel(Online Store) Order Pending List Start----------------*/
 void orderPendingList()
 {
@@ -2330,12 +2410,12 @@ void adminPanelSupplierManagement() // HOME
     printf("\n");
     printCentered("Supplier Management", 15);
     printCentered("------------------------", 15);
-    printCentered("   1. Add Supplier", 15);
+    printCentered("  1. Add Supplier", 15);
     printCentered("      2. Delete Supplier.", 15);
     printCentered("    3. Product Search", 15);
     printCentered("                 4. List Of Product by Supplier", 15);
     printCentered("   5. Supplier List", 15);
-    printCentered("  0. Admin-Home.", 4);
+    printCentered(" 0. Admin-Home.", 4);
     printf("\n\n\n");
 
     int option;
@@ -3898,74 +3978,54 @@ void buyProduct()
         _getch();
 
         printf("\n");
-        printCentered("  Payment with 'OnePay'", 10);
+        printCentered("  Your Card Info:", 10);
         printCentered("  ----------------------", 10);
 
-        // get current customer id
-        // fp = fopen("customer_data/current_user_customer_ID.txt", "r");
-        // fscanf(fp, "%d", currentCustomerID);
-        // fclose(fp);
+        cardData();                       // get all card data
+        int index2, currentCardIndex = 0; // take card index
+        fp = fopen("customer_data/customer_index.txt", "r");
+        fscanf(fp, "%d", &index2);
+        fclose(fp);
+        for (int i = 0; i < index2; i++)
+        {
+            if (currentCustomerID == card[i].cusID)
+            {
+                currentCardIndex = i;
+                break;
+            }
+        }
 
-        // cardData(); // get all card data
+        printf("                                                                Card Holder Name : %s\n", card[currentCardIndex].cardHolderName);
+        printf("                                                                Card Number      : %d\n", card[currentCardIndex].cardNum);
+        printf("                                                                Card - CVV       : %d\n", card[currentCardIndex].cvv);
+        printf("                                                                Expire Date      : %d-%d-%d\n", card[currentCardIndex].cardDate.day, card[currentCardIndex].cardDate.mon, card[currentCardIndex].cardDate.year);
+        printf("                                                                Balance          : %.2f\n\n", card[currentCardIndex].balance);
+        printf("\n\n");
 
-        // printCentered(" Card Info:", 9);
-        // printCentered("----------------------------", 9);
+        printCentered("  Input Card Data'", 10);
+        printCentered("  ----------------------", 10);
+        char cardHolderName2[20];
+        int cardNum2, cardCVV2, cardDate, day, mon, year;
+        // take input from customer
+        printf("                                                                Card Holder Name : ");
+        scanf("%s", cardHolderName2);
+        printf("                                                                Card Number      : ");
+        scanf("%d", &cardNum2);
+        printf("                                                                Card - CVV       : ");
+        scanf("%d", &cardCVV2);
+        printf("                                                                Expire Date      : ");
+        scanf("%d %d %d", &day, &mon, &year);
 
-        // //get index to find customer card
-        // space = (width - 26) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf("  Card Holder Name: %s\n", card[].);
-
-        // space = (width - 15) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf(" Card Number: %ld\n", cardNum);
-
-        // space = (width - 13) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf(" Card - CVV: %d\n", cardCVV);
-
-        // space = (width - 19) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf("   Expire Date: %d-%d-%d\n", day, mon, year);
-
-        // space = (width - 24) / 2;
-        // for (int i = 0; i < space; i++)
-        //     printf(" ");
-        // printf("  Opening Balance: %d\n", balance);
-
-        // Latest Data Send to allProduct-FILE
-        // fp = fopen("Stock/all_product.txt", "w");
-        // fclose(fp);
-        // fp = fopen("Stock/all_product.txt", "a");
-        // for (int j = 0; j < index; j++)
-        // {
-        //     fprintf(fp, "%d %d %s %d %d %s %d %d %d\n",
-        //             allProduct[j].pID, allProduct[j].proSupID, allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day, allProduct[j].expDate.mon, allProduct[j].expDate.year);
-        // }
-        // fclose(fp);
-
-        // fp = fopen("Stock/index/all_product_index.txt", "w");
-        // fprintf(fp, "%d", index);
-        // fclose(fp);
-
-        // printf("\n\n");
-        // printCentered("'Product Deleted'....Press any key to return Home.", 10);
-        // _getch();
-        // adminPanelStock();
-
-        // printCentered("Deletation cancel!", 4);
-        // _getch();
-        // adminPanelStock();
-
-        // printCentered("     Porduct has not been found!", 4);
-        // printf("\n\n");
-        // printCentered("          Press any key to return Home.....", 10);
-        // _getch();
-        // adminPanelStock();
+        if (cardNum2 == card[currentCardIndex].cardNum && cardCVV2 == card[currentCardIndex].cvv &&
+            card[currentCardIndex].cardDate.day == day && card[currentCardIndex].cardDate.mon == mon && card[currentCardIndex].cardDate.year == year)
+        {
+            printCentered("payment done", 10);
+        }
+        else
+        {
+            printCentered("card info error", 10);
+        }
+        // just completed the checking
 
         _getch();
     }
@@ -3996,12 +4056,72 @@ void menuContact()
 
     _getch();
     OnlineHome();
-    // OnlineHome();
 }
 
 void menuAbout()
 {
+    char headingName[10] = "OneMart";
+    menuUI(headingName);
+    printf("\n\n");
+
+    printCentered(" ===========\n", 3);
+    printCentered("About\n", 3);
+    printCentered(" ===========\n", 3);
+    printf("\n"); // alinment does not match for \n\n
+
+    printf("                                                      Version       : 1.0.0\n");
+    printf("                                                      Release Date  : August 2025\n");
+    printf("                                                      Developed By  : Najmus Sakib\n");
+    printf("                                                                    : Mostakin Ahmed\n");
+    printf("                                                                    : Shardil Shafat\n");
+    printf("                                                      Environment   : C Language, File Handling, CLI\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("Purpose:\n", 10);
+    printf("                                                      Efficiently manage stock levels, monitor inventory\n");
+    printf("                                                      changes, and support inventory operations for small\n");
+    printf("                                                      to medium-sized businesses.\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("Developer Contact:\n", 10);
+    printf("                                                      Dev-1\n");
+    printf("                                                      Name  : Najmus Sakib\n");
+    printf("                                                      Email : najmussakib528@gmail.com\n");
+    printf("                                                      GitHub: github.com/NajmusSakib367\n\n");
+    printf("                                                      Dev-2\n");
+    printf("                                                      Name  : Mostakin Ahmed\n");
+    printf("                                                      Email : mostakinahmed???@gmail.com\n");
+    printf("                                                      GitHub: github.com/mostakinahmed\n\n");
+    printf("                                                      Dev-3\n");
+    printf("                                                      Name  : Shadril Shafat\n");
+    printf("                                                      Email : shadrilshafat???@gmail.com\n");
+    printf("                                                      GitHub: github.com/shadril\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("Organization:\n", 10);
+    printf("                                                      Name   : Async Coders Ltd.\n");
+    printf("                                                      Address: 123 Business Road, Dhaka 1207, Bangladesh\n");
+    printf("                                                      Website: www.onemart.com.bd\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("License & Disclaimer:\n", 10);
+    printf("                                                      This software is for academic or internal use only.\n");
+    printf("                                                      Redistribution or commercial use is not permitted\n");
+    printf("                                                      without prior permission.\n");
+    printf("                                                      © 2025 . All Rights Reserved.\n\n");
+
+    printCentered("----------------------------------------------\n", 10);
+    printCentered("Need Help?\n", 10);
+    printf("                                                      Contact: support.onemart@onemart.bd\n\n");
+
+    printCentered("==============================================\n", 10);
+    printCentered("  Press any key to exit...\n", 10);
+    printCentered("==============================================\n", 10);
+
+    _getch();
+    OnlineHome();
 }
+
 void menuProfile()
 {
     char headingName[10] = "OneMart";
