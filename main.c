@@ -15,6 +15,7 @@ void allProductData();
 void buyProduct();
 void dateTimeForExpireProduct();
 void cardData();
+void currentDateTime();
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -51,6 +52,7 @@ void orderDeliveredList();
 void OnePayManagement();
 void listOfCard();
 void rechargeCard();
+void generateTransactionNumber(char *transactionNum, int length);
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -105,8 +107,15 @@ struct product
     int pPrice;
     int pUnit;
     struct date expDate;
+    // for sales management
+    struct date SaleDate;
+    int customerID;
+    float totalPrice;
+    char storeLocation[10];
 };
 struct product allProduct[500];
+struct product allSalesProduct[500];
+
 // struct product allProductCatList[500];
 
 // for supplier only
@@ -159,6 +168,19 @@ int getConsoleWidth()
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     return csbi.srWindow.Right - csbi.srWindow.Left + 1;
+}
+
+// genarate random transection num
+void generateTransactionNumber(char *transactionNum, int length)
+{
+    char charset[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    int charsetSize = sizeof(charset) - 1;
+
+    for (int i = 0; i < length; i++)
+    {
+        transactionNum[i] = charset[rand() % charsetSize];
+    }
+    transactionNum[length] = '\0';
 }
 
 // Function to print centered text
@@ -251,7 +273,7 @@ void menuUI(char headingName[])
 //
 //
 /*------------Date Time Start---------*/
-void dateTime()
+void dateTime() // Admin Home
 {
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
@@ -292,6 +314,15 @@ void dateTimeForExpireProduct()
 }
 /*------------Date Time END---------*/
 //
+void currentDateTime()
+{
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+
+    currentDate.day = t->tm_mday;
+    currentDate.mon = t->tm_mon + 1;
+    currentDate.year = t->tm_year + 1900;
+}
 //
 //
 /*------------Admin Panel Authentication Start---------*/
@@ -3888,7 +3919,7 @@ void buyProduct()
     printCentered("=====================", 15);
     printf("\n\n");
 
-    int pID2, productID;
+    int pID2, productID = 0;
     char custAdrs[50];
     int width = getConsoleWidth();
     int space = (width - 18) / 2;
@@ -3946,6 +3977,7 @@ void buyProduct()
         for (int i = 0; i < space; i++)
             printf(" ");
         printf("Input Adress       : ");
+        // fgets(custAdrs, 30, stdin);
         scanf("%s", custAdrs);
         printf("\n\n");
 
@@ -3955,7 +3987,7 @@ void buyProduct()
 
         printCentered("  ID           Description:        Qty           Unit-Price        Total Price", 15);
         printCentered("  ------------------------------------------------------------------------------", 15);
-        printf("                                         %d         %s             %d      X       %d               %d.00\n",
+        printf("                                        %d         %s              %d      X       %d               %d.00\n",
                allProduct[productID].pID, allProduct[productID].pName, pUnit, allProduct[productID].pPrice, totalPrice);
         printCentered("  ------------------------------------------------------------------------------", 15);
         printCentered("                                                     ---------------------------", 4);
@@ -3986,6 +4018,8 @@ void buyProduct()
         fp = fopen("customer_data/customer_index.txt", "r");
         fscanf(fp, "%d", &index2);
         fclose(fp);
+
+        // current card index
         for (int i = 0; i < index2; i++)
         {
             if (currentCustomerID == card[i].cusID)
@@ -4019,14 +4053,65 @@ void buyProduct()
         if (cardNum2 == card[currentCardIndex].cardNum && cardCVV2 == card[currentCardIndex].cvv &&
             card[currentCardIndex].cardDate.day == day && card[currentCardIndex].cardDate.mon == mon && card[currentCardIndex].cardDate.year == year)
         {
-            printCentered("payment done", 10);
+            // take one random transectopn num
+            char transactionNum[15];
+            srand(time(NULL)); // send ran num
+            generateTransactionNumber(transactionNum, 12);
+            // take current date from this function
+            currentDateTime();
+            currentDate.day;
+            currentDate.mon;
+            currentDate.year;
+
+            printf("\n\n");
+            printCentered("||=====Payment Received=====||", 10);
+            printCentered("Press any key to get invoice........", 4);
+            printf("\n\n");
+            _getch();
+
+            char online[10] = "online";
+            // sales update
+            fp = fopen("sales/all_sales.txt", "a");
+            fprintf(fp, "%d %d %s %s %d %d %d %d %s %s %0.2f\n",
+                    currentCustomerID, allProduct[productID].pID, allProduct[productID].pName, allProduct[productID].pCat, pUnit,
+                    currentDate.day, currentDate.mon, currentDate.year, online, transactionNum, total);
+            fclose(fp);
+
+            char headingName[10] = "OneMart";
+            menuUI(headingName);
+            printf("\n\n");
+            // genarate invoice
+            printCentered("--------------------------------", 10);
+            printCentered("                 CUSTOMER INVOICE                 ", 10);
+            printCentered("--------------------------------", 10);
+            printf("                                                              Transaction No :     %s\n", transactionNum);
+            printf("                                                              Customer ID    :     %d\n", currentCustomerID);
+            printf("                                                              Customer Name  :     %s\n", current_user_customer);
+            printf("                                                              Date           :     %02d-%02d-%04d\n", currentDate.day, currentDate.mon, currentDate.year);
+            printf("                                                              Mode           :     %s\n", online);
+            printCentered("--------------------------------", 15);
+            printf("                                                              Product ID     :     %d\n", allProduct[productID].pID);
+            printf("                                                              Product Name   :     %s\n", allProduct[productID].pName);
+            printf("                                                              Category       :     %s\n", allProduct[productID].pCat);
+            printf("                                                              Quantity       :     %d\n", pUnit);
+            printCentered("--------------------------------", 10);
+            printf("                                                              TOTAL AMOUNT   :     %.2f\n", total);
+            printCentered("--------------------------------", 10);
+
+            printf("\n\n\n\n\n\n\n");
+
+            printCentered("Press Any Key to HOME......", 10);
+            _getch();
+            OnlineHome();
         }
+
         else
         {
-            printCentered("card info error", 10);
+            printCentered("Card Info Error", 4);
+            printCentered("Press Any Key to HOME......", 10);
+            _getch();
+            OnlineHome();
         }
-        // just completed the checking
-
         _getch();
     }
 }
@@ -4181,6 +4266,9 @@ void menuProfile()
     _getch();
     OnlineHome();
 }
+//
+//
+//
 /*-----------------HOME START----------------------*/
 void OnlineHome()
 {
@@ -4489,7 +4577,7 @@ void OnlineHome()
     printCentered("      2. Access Menu.", 10);
     if (customerLoginStatus == 0)
     {
-        printCentered("      3. Authentication Page.", 10);
+        printCentered("             3. Authentication Page.", 10);
     }
     else
     {
@@ -4510,7 +4598,19 @@ void OnlineHome()
     switch (option)
     {
     case 1:
-        buyProduct();
+        if (customerLoginStatus == 1)
+        {
+            buyProduct();
+        }
+        else
+        {
+            printf("\n");
+            printCentered("                      Please login first to continue.", 4);
+            printCentered("                 Press any key to login...\n", 10);
+            _getch();
+            customerSignIn();
+        }
+
         break;
     case 2:
         char optionMenu;
@@ -4538,7 +4638,18 @@ void OnlineHome()
             break;
 
         case 'p':
-            menuProfile();
+            if (customerLoginStatus == 1)
+            {
+                menuProfile();
+            }
+            else
+            {
+                printCentered("⚠️ Please login first to continue.\n", 4);
+                printCentered("Press any key to login...\n", 10);
+                _getch();
+                customerSignIn();
+            }
+
             break;
 
         default:
