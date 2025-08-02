@@ -2681,9 +2681,70 @@ void deleteSupplier()
 //
 //
 //*---------------Admin Panel (Supplier) Product Search Start----------------*/
-void productSearch()
+
+
+    void productSearch()
 {
+    char headingName[40] = "SUPPLIER MANAGEMENT";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("Search Product by Supplier", 15);
+    printCentered(" --------------------------", 9);
+
+    int inputSupID;
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Enter Supplier ID: ");
+    scanf("%d", &inputSupID);
+    printf("\n\n");
+
+    allProductData();
+
+    int index;
+    FILE *fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    int found = 0;
+    int serial = 1;
+    printCentered("Matching Products:", 10);
+    printCentered("  -----------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("     No.   Product-ID   Supplier-ID   Product-Name   Product-Price   Unit   Category   Expire-Date", 15);
+    printCentered("  -----------------------------------------------------------------------------------------------------------------", 9);
+
+    for (int i = 0; i < index; i++)
+    {
+        if (allProduct[i].proSupID == inputSupID)
+        {
+            printf("         %d       %d            %d          %s          %d.00TK       %d     %s     %02d-%02d-%04d\n",
+                   serial++, allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName,
+                   allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat,
+                   allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
+            found = 1;
+        }
+    }
+
+    if (!found)
+    {
+        printf("\n");
+        printCentered("No products found for this Supplier ID.", 4);
+    }
+
+    printf("\n\n");
+    printCentered("Press any key to return to Supplier Menu...", 10);
+    _getch();
+    adminPanelSupplierManagement();
 }
+
+
 //*---------------Admin Panel (Supplier) Product Search End----------------*/
 //
 //
