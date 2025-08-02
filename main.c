@@ -2682,8 +2682,7 @@ void deleteSupplier()
 //
 //*---------------Admin Panel (Supplier) Product Search Start----------------*/
 
-
-    void productSearch()
+void productSearch()
 {
     char headingName[40] = "SUPPLIER MANAGEMENT";
     menuUI(headingName);
