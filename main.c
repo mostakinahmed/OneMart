@@ -2681,9 +2681,106 @@ void deleteSupplier()
 //
 //
 //*---------------Admin Panel (Supplier) Product Search Start----------------*/
+
 void productSearch()
 {
+    char headingName[40] = "Product Search by Supplier";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printCentered("Search Supplier by Product ID", 14);
+    printCentered("------------------------", 10);
+
+    int pID2;
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++) printf(" ");
+    printf("Input Product ID: ");
+    scanf("%d", &pID2);
+    printf("\n\n");
+
+    FILE *fp;
+    int index;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    allProductData(); 
+    int found = 0;
+    int productIndex;
+
+    for (int i = 0; i < index; i++)
+    {
+        if (allProduct[i].pID == pID2)
+        {
+            productIndex = i;
+            found = 1;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        int supID = allProduct[productIndex].proSupID;
+
+        FILE *sf = fopen("supplier_data/supplier_list.txt", "r");
+        int supplierID;
+        char supName[20], supPhn[15], supCompName[25];
+        int foundSupplier = 0;
+
+        while (fscanf(sf, "%d %s %s %s", &supplierID, supName, supPhn, supCompName) != EOF)
+        {
+            if (supplierID == supID)
+            {
+                printf("\n");
+                printCentered("Supplier Information", 10);
+                printCentered("------------------------", 10);
+
+                printf("\n");
+                space = (width - 30) / 2;
+                for (int i = 0; i < space; i++) printf(" ");
+                printf("Supplier ID   : %d\n", supplierID);
+
+                for (int i = 0; i < space; i++) printf(" ");
+                printf("Name          : %s\n", supName);
+
+                for (int i = 0; i < space; i++) printf(" ");
+                printf("Phone Number  : %s\n", supPhn);
+
+                for (int i = 0; i < space; i++) printf(" ");
+                printf("Company Name  : %s\n", supCompName);
+
+                foundSupplier = 1;
+                break;
+            }
+        }
+        fclose(sf);
+
+        if (!foundSupplier)
+        {
+            printCentered("Supplier not found in supplier list file.", 4);
+        }
+
+        printf("\n\n");
+        printCentered("Press any key to return Home.....", 10);
+        _getch();
+        adminPanelSupplierManagement();
+    }
+    else
+    {
+        printCentered("Product not found!", 4);
+        printf("\n\n");
+        printCentered("Press any key to return Home.....", 10);
+        _getch();
+        adminPanelSupplierManagement();
+    }
 }
+
+
+
 //*---------------Admin Panel (Supplier) Product Search End----------------*/
 //
 //
