@@ -16,6 +16,7 @@ void buyProduct();
 void dateTimeForExpireProduct();
 void cardData();
 void currentDateTime();
+int getSalesData(int index);
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -108,10 +109,11 @@ struct product
     int pUnit;
     struct date expDate;
     // for sales management
-    struct date SaleDate;
+    struct date saleDate;
     int customerID;
     float totalPrice;
-    char storeLocation[10];
+    char saleMode[10];
+    char transactionNum[15];
 };
 struct product allProduct[500];
 struct product allSalesProduct[500];
@@ -419,7 +421,7 @@ void adminSignIn()
 
     if (found) // user found
     {
-        OnlineHome();
+        adminPanelHome();
     }
 
     else if (found == 0) // user not found
@@ -925,7 +927,7 @@ void adminPanelSales() // HOME
         adminPanelHome();
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         printCentered("Press any key", 10);
         _getch();
         adminPanelSales();
@@ -946,6 +948,31 @@ void newSales()
 //*---------------Admin Panel Sales History Start----------------*/
 void salesHistory()
 {
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+
+    printCentered("Sales History", 9);
+    printCentered("  ----------------------------------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("  S/N:  CustomerID:  Product-ID:    Product-Name:   Purchase-Date:   Sale-Mode:   Transaction-Num:  Product-Price:  Quantity:  Category:", 15);
+    printCentered("  ----------------------------------------------------------------------------------------------------------------------------------------", 9);
+
+    int index = getSalesData(0); // get all sales history data
+    for (int i = 0; i < index; i++)
+    {
+        printf("             %d     %d        %d          %s          %d-%d-%d       %s       %s       %0.2f        %d       %s\n",
+               i + 1, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year,
+               allSalesProduct[i].saleMode, allSalesProduct[i].transactionNum, allSalesProduct[i].totalPrice, allSalesProduct[i].pUnit, allSalesProduct[i].pCat);
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Sales.....", 10);
+    _getch();
+    adminPanelSales();
 }
 //*---------------Admin Panel Sales History End----------------*/
 //
@@ -2202,9 +2229,10 @@ void adminPanelOnlineStore() // HOME
     printf("\n");
     printCentered("Online Store", 15);
     printCentered("-------------------------------", 15);
-    printCentered("1. OnePay", 15);
-    printCentered("           2. Order Pending List", 15);
-    printCentered("             3. Order Delivered List", 15);
+    printCentered("     1. Oneline Home", 15);
+    printCentered("          2. OnePay Management", 15);
+    printCentered("           3. Order Pending List", 15);
+    printCentered("             4. Order Delivered List", 15);
     printCentered("   0. Admin-Home", 4);
     printf("\n\n\n");
 
@@ -2214,13 +2242,16 @@ void adminPanelOnlineStore() // HOME
     switch (option)
     {
     case 1:
-        OnePayManagement();
+        OnlineHome();
         break;
     case 2:
+        OnePayManagement();
+        break;
+    case 3:
         orderPendingList();
         break;
         // yet not done
-    case 3:
+    case 4:
         orderDeliveredList();
         break;
         // yet not done
@@ -2697,7 +2728,8 @@ void productSearch()
     int width = getConsoleWidth();
     int space = (width - 18) / 2;
     setColor(15);
-    for (int i = 0; i < space; i++) printf(" ");
+    for (int i = 0; i < space; i++)
+        printf(" ");
     printf("Input Product ID: ");
     scanf("%d", &pID2);
     printf("\n\n");
@@ -2708,7 +2740,7 @@ void productSearch()
     fscanf(fp, "%d", &index);
     fclose(fp);
 
-    allProductData(); 
+    allProductData();
     int found = 0;
     int productIndex;
 
@@ -2741,16 +2773,20 @@ void productSearch()
 
                 printf("\n");
                 space = (width - 30) / 2;
-                for (int i = 0; i < space; i++) printf(" ");
+                for (int i = 0; i < space; i++)
+                    printf(" ");
                 printf("Supplier ID   : %d\n", supplierID);
 
-                for (int i = 0; i < space; i++) printf(" ");
+                for (int i = 0; i < space; i++)
+                    printf(" ");
                 printf("Name          : %s\n", supName);
 
-                for (int i = 0; i < space; i++) printf(" ");
+                for (int i = 0; i < space; i++)
+                    printf(" ");
                 printf("Phone Number  : %s\n", supPhn);
 
-                for (int i = 0; i < space; i++) printf(" ");
+                for (int i = 0; i < space; i++)
+                    printf(" ");
                 printf("Company Name  : %s\n", supCompName);
 
                 foundSupplier = 1;
@@ -2778,8 +2814,6 @@ void productSearch()
         adminPanelSupplierManagement();
     }
 }
-
-
 
 //*---------------Admin Panel (Supplier) Product Search End----------------*/
 //
@@ -3929,6 +3963,42 @@ void cardData()
 /*---------------cardData end----------------*/
 //
 //
+//*------------Get Sales Data from file----------------*/
+int getSalesData(int index)
+{
+    int cusID, saleDay, saleMon, saleYear, proID, proUnit;
+    char proName[15], proCat[15], mode[15], transactionNum2[15];
+    float total;
+
+    FILE *fp;
+    fp = fopen("sales/all_sales.txt", "r");
+    // store all sales data to allSalesProduct function
+    while (fscanf(fp, "%d %d %s %s %d %d %d %d %s %s %f", &cusID, &proID, proName, proCat, &proUnit,
+                  &saleDay, &saleMon, &saleYear, mode, transactionNum2, &total) != EOF)
+    {
+        allSalesProduct[index].customerID = cusID;
+        allSalesProduct[index].pID = proID;
+        allSalesProduct[index].pUnit = proUnit;
+        allSalesProduct[index].saleDate.day = saleDay;
+        allSalesProduct[index].saleDate.mon = saleMon;
+        allSalesProduct[index].saleDate.year = saleYear;
+        allSalesProduct[index].totalPrice = total;
+        strcpy(allSalesProduct[index].pName, proName);
+        strcpy(allSalesProduct[index].pCat, proCat);
+        strcpy(allSalesProduct[index].saleMode, mode);
+        strcpy(allSalesProduct[index].transactionNum, transactionNum2);
+        index = index + 1;
+    }
+    fclose(fp);
+
+    // send index file into file to make track
+    fp = fopen("sales/index/allSalesProductIndex.txt", "w");
+    fprintf(fp, "%d", index);
+    fclose(fp);
+    return index;
+}
+//
+//
 //
 /*---------------Encripton Start----------------*/
 void encripTech(struct user Data[50], int index)
@@ -3973,20 +4043,19 @@ void home2() // Admin or not
     int option;
     printf("\n\n\nEnter your choice: ");
     scanf("%d", &option);
-    int adminLoginStatus2;
     FILE *fp;
     fp = fopen("login_Logout_status/logData.txt", "r");
-    fscanf(fp, "%d", &adminLoginStatus2);
+    fscanf(fp, "%d", &adminLoginStatus);
     fclose(fp);
     switch (option)
     {
     case 1:
 
-        if (adminLoginStatus2 == 1)
+        if (adminLoginStatus == 1)
         {
             adminPanelHome();
         }
-        else if (adminLoginStatus2 == 0)
+        else if (adminLoginStatus == 0)
         {
             adminPanelAuthentication();
         }
@@ -4678,9 +4747,10 @@ void OnlineHome()
     }
     else
     {
-        printCentered("4. Logout.", 10);
+        printCentered("4. Logout.", 4);
     }
-    printCentered("0. Exit.  ", 12);
+    printCentered("         5. Admin Dashboard.", 5);
+    printCentered("0. Exit.  ", 4);
 
     int width, space;
     int option;
@@ -4741,7 +4811,7 @@ void OnlineHome()
             }
             else
             {
-                printCentered("⚠️ Please login first to continue.\n", 4);
+                printCentered("Please login first to continue.\n", 4);
                 printCentered("Press any key to login...\n", 10);
                 _getch();
                 customerSignIn();
@@ -4765,6 +4835,16 @@ void OnlineHome()
         break;
     case 4:
         customerLogOut();
+        break;
+    case 5:
+        if (adminLoginStatus == 1)
+        {
+            adminPanelHome();
+        }
+        else if (adminLoginStatus == 0)
+        {
+            adminSignIn();
+        }
         break;
     default:
         printCentered("Invalid Choice!", 12);
