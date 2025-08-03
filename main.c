@@ -249,7 +249,7 @@ void showUI()
     printf("\n\n");
     printCentered(" [1] Start", 10); // Green
     printCentered("[2] Help", 14);   // Yellow
-    printCentered("[3] Exit", 12);   // Red
+    printCentered("[3] Exit", 4);    // Red
 
     printf("\n\n");
     drawBorderLine('=');
@@ -353,10 +353,10 @@ void adminPanelAuthentication()
         break;
     case 0:
         system("cls");
-        printCentered("Goodbye!", 12);
+        printCentered("Goodbye!", 4);
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         _getch();
         adminPanelAuthentication();
     }
@@ -427,7 +427,7 @@ void adminSignIn()
     else if (found == 0) // user not found
     {
         printf("\n\n");
-        printCentered("Error userName or password.\n", 12);
+        printCentered("Error userName or password.\n", 4);
         printCentered("1. Try Again.", 10);
         printCentered("      2. Reset Password.", 10);
         printCentered("        3. Authenticate Home.", 10);
@@ -446,10 +446,10 @@ void adminSignIn()
             break;
         case 0:
             system("cls");
-            printCentered("Goodbye!", 12);
+            printCentered("Goodbye!", 4);
             break;
         default:
-            printCentered("Invalid Choice!", 12);
+            printCentered("Invalid Choice!", 4);
             _getch();
             adminPanelAuthentication();
         }
@@ -544,10 +544,10 @@ void customerPanelAuthentication()
         break;
     case 0:
         system("cls");
-        printCentered("Goodbye!", 12);
+        printCentered("Goodbye!", 4);
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         _getch();
         customerPanelAuthentication();
     }
@@ -782,10 +782,10 @@ void customerSignIn()
             break;
         case 0:
             system("cls");
-            printCentered("Goodbye!", 12);
+            printCentered("Goodbye!", 4);
             break;
         default:
-            printCentered("Invalid Choice!", 12);
+            printCentered("Invalid Choice!", 4);
             _getch();
             customerPanelAuthentication();
         }
@@ -876,10 +876,10 @@ void adminPanelHome() // DashBoard
         break;
     case 11:
         system("cls");
-        printCentered("Goodbye!", 12);
+        printCentered("Goodbye!", 4);
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         _getch();
         adminPanelHome();
     }
@@ -958,7 +958,7 @@ void salesHistory()
 
     printCentered("Sales History", 9);
     printCentered("  ----------------------------------------------------------------------------------------------------------------------------------------", 9);
-    printCentered("  S/N:  CustomerID:  Product-ID:    Product-Name:   Purchase-Date:   Sale-Mode:   Transaction-Num:  Product-Price:  Quantity:  Category:", 15);
+    printCentered("  S/N:  CustomerID:  Product-ID:    Product-Name:      Sale-Date:   Sale-Mode:   Transaction-Num:  Product-Price:  Quantity:  Category:", 15);
     printCentered("  ----------------------------------------------------------------------------------------------------------------------------------------", 9);
 
     int index = getSalesData(0); // get all sales history data
@@ -1039,7 +1039,7 @@ void adminPanelStock() // HOME
         adminPanelHome();
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         printCentered("Press any key", 10);
         _getch();
         adminPanelStock();
@@ -1552,10 +1552,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "computer") == 0)
         {
             printf("\n\n");
-            printCentered("Computer", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Computer", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1575,10 +1575,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "books") == 0)
         {
             printf("\n\n");
-            printCentered("Books", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Books", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1598,10 +1598,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "medicine") == 0)
         {
             printf("\n\n");
-            printCentered("Medicine", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Medicine", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1621,10 +1621,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "camera") == 0)
         {
             printf("\n\n");
-            printCentered("Camera", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Camera", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1644,10 +1644,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "television") == 0)
         {
             printf("\n\n");
-            printCentered("Television", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Television", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1667,10 +1667,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "watches") == 0)
         {
             printf("\n\n");
-            printCentered("Watches", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Watches", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1690,10 +1690,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "fragrances") == 0)
         {
             printf("\n\n");
-            printCentered("Fragrances", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Fragrances", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1714,10 +1714,10 @@ void stockListByCategory()
         {
 
             printf("\n\n");
-            printCentered("Beverages", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Beverages", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1737,10 +1737,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "mobile") == 0)
         {
             printf("\n\n");
-            printCentered("Mobile", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Mobile", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1760,10 +1760,10 @@ void stockListByCategory()
         if (strcmp(allProduct[i].pCat, "software") == 0)
         {
             printf("\n\n");
-            printCentered("Software", 12);
-            printCentered("  ----------------------", 12);
+            printCentered("Software", 4);
+            printCentered("  ----------------------", 4);
             printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+            printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
             for (int j = i; j < index; j++)
             {
@@ -1824,10 +1824,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Computer", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Computer", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -1864,10 +1864,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Books", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Books", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -1904,10 +1904,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Medicine", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Medicine", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -1944,10 +1944,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Camera", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Camera", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -1984,10 +1984,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Television", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Television", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -2024,10 +2024,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Watches", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Watches", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -2064,10 +2064,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Fragrances", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Fragrances", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -2104,10 +2104,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Beverages", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Beverages", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -2144,10 +2144,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Mobile", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Mobile", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -2184,10 +2184,10 @@ void expireProductList()
                         (allProduct[j].expDate.year == currentDate.year && allProduct[j].expDate.mon == currentDate.mon && allProduct[j].expDate.day < currentDate.day))
                     {
                         printf("\n\n");
-                        printCentered("Software", 12);
-                        printCentered("  ----------------------", 12);
+                        printCentered("Software", 4);
+                        printCentered("  ----------------------", 4);
                         printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
-                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 12);
+                        printCentered("     --------------------------------------------------------------------------------------------------------------------------", 4);
 
                         for (int k = 0; k < index; k++)
                         {
@@ -2259,7 +2259,7 @@ void adminPanelOnlineStore() // HOME
         adminPanelHome();
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         printCentered("Press any key", 10);
         _getch();
         adminPanelSales();
@@ -2302,7 +2302,7 @@ void OnePayManagement()
         adminPanelHome();
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         printCentered("Press any key", 10);
         _getch();
         OnePayManagement();
@@ -2417,7 +2417,7 @@ void adminPanelAccounts() // HOME
         adminPanelHome();
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         printCentered("Press any key", 10);
         _getch();
         adminPanelSales();
@@ -2866,9 +2866,9 @@ void listOfProductBySupplier()
                     printf(" ");
                 }
                 printf("%s\n", supplierData[i].supName);
-                printCentered("  ----------------------", 12);
+                printCentered("  ----------------------", 4);
                 printCentered("      NO:     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:", 15);
-                printCentered("     -------------------------------------------------------------------------------------------------------", 12);
+                printCentered("     -------------------------------------------------------------------------------------------------------", 4);
 
                 for (int j = 0; j < pIndex; j++)
                 {
@@ -3029,7 +3029,7 @@ void adminPanelUserManagement() // HOME
         adminPanelHome();
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         printCentered("Press any key to return home..", 10);
         _getch();
         adminPanelUserManagement();
@@ -4038,7 +4038,7 @@ void home2() // Admin or not
     printf("\n\n\n\n\n\n\n\n");
     printCentered("Are you admin?", 15);
     printCentered(" 1. YES", 10);
-    printCentered("2. NO", 12);
+    printCentered("2. NO", 4);
 
     int option;
     printf("\n\n\nEnter your choice: ");
@@ -4065,7 +4065,7 @@ void home2() // Admin or not
         OnlineHome();
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         _getch();
         home2();
     }
@@ -4487,7 +4487,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "computer") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Computer\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4513,7 +4513,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "books") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Books\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4539,7 +4539,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "medicine") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Medicine\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4565,7 +4565,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "camera") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Camera\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4591,7 +4591,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "television") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Television\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4617,7 +4617,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "watches") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Watches\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4643,7 +4643,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "fragrances") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Fragrances\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4669,7 +4669,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "beverages") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Beverages\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4695,7 +4695,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "mobile") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Mobile\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4720,7 +4720,7 @@ void OnlineHome()
         if (strcmp(allProduct[i].pCat, "software") == 0)
         {
             printf("\n\n");
-            setColor(12);
+            setColor(4);
             printf("                              Software\n");
             setColor(7);
             printCentered("     ------------------------------------------------------------------------------------------------------", 9);
@@ -4820,7 +4820,7 @@ void OnlineHome()
             break;
 
         default:
-            printCentered("Invalid Choice! 2", 12);
+            printCentered("Invalid Choice! 2", 4);
             _getch();
             OnlineHome();
             break;
@@ -4828,7 +4828,7 @@ void OnlineHome()
         break;
     case 0:
         system("cls");
-        printCentered("Goodbye!", 12);
+        printCentered("Goodbye!", 4);
         break;
     case 3:
         customerPanelAuthentication();
@@ -4847,7 +4847,7 @@ void OnlineHome()
         }
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         _getch();
         OnlineHome();
     }
@@ -4878,10 +4878,10 @@ int main()
         break;
     case 3:
         system("cls");
-        printCentered("Goodbye!", 12);
+        printCentered("Goodbye!", 4);
         break;
     default:
-        printCentered("Invalid Choice!", 12);
+        printCentered("Invalid Choice!", 4);
         main();
     }
 
