@@ -2411,17 +2411,18 @@ void rechargeCard()
 
         printCentered("New Balance of Card:", 9);
         card[i].balance += rechargeAmount;
-        printf("                                                                       %f\n", card[i].balance);
+        printf("                                                                       %.2f\n", card[i].balance);
+
+        // send latest data to file
         FILE *fp;
         fp = fopen("payment_card/cardData.txt", "w");
         fclose(fp);
         fp = fopen("payment_card/cardData.txt", "a");
         for (int j = 0; j < index; j++)
         {
-            fprintf(fp, "%d %s %d %d %d %d %d %f\n", card[j].cusID, card[j].cardHolderName, card[j].cardNum, card[j].cvv, card[j].cardDate.day, card[j].cardDate.mon , card[j].cardDate.year, card[j].balance);
+            fprintf(fp, "%d %s %d %d %d %d %d %.2f\n", card[j].cusID, card[j].cardHolderName, card[j].cardNum, card[j].cvv, card[j].cardDate.day, card[j].cardDate.mon, card[j].cardDate.year, card[j].balance);
         }
         fclose(fp);
-
     }
     else
     {
