@@ -54,6 +54,7 @@ void OnePayManagement();
 void listOfCard();
 void rechargeCard();
 void generateTransactionNumber(char *transactionNum, int length);
+long long getNextInvoiceNumber();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -114,6 +115,7 @@ struct product
     float totalPrice;
     char saleMode[10];
     char transactionNum[15];
+    long long invoiceNum;
 };
 struct product allProduct[500];
 struct product allSalesProduct[500];
@@ -183,6 +185,22 @@ void generateTransactionNumber(char *transactionNum, int length)
         transactionNum[i] = charset[rand() % charsetSize];
     }
     transactionNum[length] = '\0';
+}
+
+// Function to get the next invoice number
+long long getInvoiceNumber()
+{
+    FILE *fp = fopen("sales/invoice_number.txt", "r");
+    long long number = 0;
+    fscanf(fp, "%llu", &number);
+    number++;
+
+    // Move to the beginning of the file and overwrite
+    freopen("sales/invoice_number.txt", "w", fp);
+    fprintf(fp, "%llu", number);
+    fclose(fp);
+
+    return number;
 }
 
 // Function to print centered text
@@ -940,7 +958,211 @@ void adminPanelSales() // HOME
 //*---------------Admin Panel New Sales Start----------------*/
 void newSales()
 {
+    char headingName[10] = "OneMart";
+    menuUI(headingName);
+    printf("\n\n");
+
+    printCentered("Purchase Product", 11);
+    printCentered("=====================", 15);
+    printf("\n\n");
+
+    int pID2, productID = 0;
+    char custAdrs[50];
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Product ID: ", 15);
+    scanf("%d", &pID2);
+    printf("\n");
+
+    // Picking product index number form file
+    int index;
+    FILE *fp;
+    fp = fopen("Stock/index/all_product_index.txt", "r");
+    fscanf(fp, "%d", &index);
+
+    // Finding Product
+    allProductData();
+    int i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+        if (allProduct[i].pID == pID2)
+        {
+            productID = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // Product
+    if (found)
+    {
+        printCentered("  Product Information:", 10);
+        printCentered("  ----------------------", 10);
+        printCentered("  Product-ID:        Product-Name:   Product-Price:        Unit:        Category:", 15);
+        printCentered("  --------------------------------------------------------------------------------", 9);
+        printf("                                        %d              %s         %d.00TK            %d (P)       %s\n",
+               allProduct[i].pID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat);
+        printf("\n");
+        int pUnit;
+
+        // input unit
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Input Product Unit : ", 15);
+        scanf("%d", &pUnit);
+
+        // input address
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Input Adress       : ");
+        // fgets(custAdrs, 30, stdin);
+        scanf("%s", custAdrs);
+        printf("\n\n");
+
+        int totalPrice = pUnit * allProduct[productID].pPrice;
+        printCentered("  Order Details:", 10);
+        printCentered("  ------------------------", 10);
+
+        printCentered("  ID           Description:        Qty           Unit-Price        Total Price", 15);
+        printCentered("  ------------------------------------------------------------------------------", 15);
+        printf("                                        %d         %s              %d      X       %d               %d.00\n",
+               allProduct[productID].pID, allProduct[productID].pName, pUnit, allProduct[productID].pPrice, totalPrice);
+        printCentered("  ------------------------------------------------------------------------------", 15);
+        printCentered("                                                     ---------------------------", 4);
+
+        printf("                                                                                           Subtotal        : %d.00\n", totalPrice);
+        int discount = 10, shipFee = 10;
+        float total, salesTax;
+        salesTax = 0.15 * totalPrice;
+        total = (totalPrice + shipFee + salesTax) - discount;
+
+        printf("                                                                                           Discount (-)    : %d.00\n", discount);
+        printf("                                                                                           Shipping fee    : %d.00\n", shipFee);
+        printf("                                                                                           Tax rate        : 15%%\n");
+        printf("                                                                                           Sales Tax       : %.2f\n", salesTax);
+        setColor(4);
+        printf("                                                                                           Total           : %.2f\n\n", total);
+        setColor(7);
+
+        printCentered("press any key to use virtual card 'OnePay'....", 9);
+        _getch();
+
+        printf("\n");
+        printCentered("  Your Card Info:", 10);
+        printCentered("  ----------------------", 10);
+
+        cardData();                       // get all card data
+        int index2, currentCardIndex = 0; // take card index
+        fp = fopen("customer_data/customer_index.txt", "r");
+        fscanf(fp, "%d", &index2);
+        fclose(fp);
+
+        // current card index
+        for (int i = 0; i < index2; i++)
+        {
+            if (currentCustomerID == card[i].cusID)
+            {
+                currentCardIndex = i;
+                break;
+            }
+        }
+
+        printf("                                                                Card Holder Name : %s\n", card[currentCardIndex].cardHolderName);
+        printf("                                                                Card Number      : %d\n", card[currentCardIndex].cardNum);
+        printf("                                                                Card - CVV       : %d\n", card[currentCardIndex].cvv);
+        printf("                                                                Expire Date      : %d-%d-%d\n", card[currentCardIndex].cardDate.day, card[currentCardIndex].cardDate.mon, card[currentCardIndex].cardDate.year);
+        printf("                                                                Balance          : %.2f\n\n", card[currentCardIndex].balance);
+        printf("\n\n");
+
+        printCentered("  Input Card Data'", 10);
+        printCentered("  ----------------------", 10);
+        char cardHolderName2[20];
+        int cardNum2, cardCVV2, cardDate, day, mon, year;
+        // take input from customer
+        printf("                                                                Card Holder Name : ");
+        scanf("%s", cardHolderName2);
+        printf("                                                                Card Number      : ");
+        scanf("%d", &cardNum2);
+        printf("                                                                Card - CVV       : ");
+        scanf("%d", &cardCVV2);
+        printf("                                                                Expire Date      : ");
+        scanf("%d %d %d", &day, &mon, &year);
+
+        if (cardNum2 == card[currentCardIndex].cardNum && cardCVV2 == card[currentCardIndex].cvv &&
+            card[currentCardIndex].cardDate.day == day && card[currentCardIndex].cardDate.mon == mon && card[currentCardIndex].cardDate.year == year)
+        {
+            // take one random transectopn num
+            char transactionNum[15];
+            srand(time(NULL)); // send ran num
+            generateTransactionNumber(transactionNum, 12);
+            // take current date from this function
+            currentDateTime();
+            currentDate.day;
+            currentDate.mon;
+            currentDate.year;
+
+            printf("\n\n");
+            printCentered("||=====Payment Received=====||", 10);
+            printCentered("Press any key to get invoice........", 4);
+            printf("\n\n");
+            _getch();
+
+            char online[10] = "online";
+            // sales update
+            fp = fopen("sales/all_sales.txt", "a");
+            fprintf(fp, "%d %d %s %s %d %d %d %d %s %s %0.2f\n",
+                    currentCustomerID, allProduct[productID].pID, allProduct[productID].pName, allProduct[productID].pCat, pUnit,
+                    currentDate.day, currentDate.mon, currentDate.year, online, transactionNum, total);
+            fclose(fp);
+
+            char headingName[10] = "OneMart";
+            menuUI(headingName);
+            printf("\n\n");
+            // genarate invoice
+            printCentered("--------------------------------", 10);
+            printCentered("                 CUSTOMER INVOICE                 ", 10);
+            printCentered("--------------------------------", 10);
+            printf("                                                              Transaction No :     %s\n", transactionNum);
+            printf("                                                              Customer ID    :     %d\n", currentCustomerID);
+            printf("                                                              Customer Name  :     %s\n", current_user_customer);
+            printf("                                                              Date           :     %02d-%02d-%04d\n", currentDate.day, currentDate.mon, currentDate.year);
+            printf("                                                              Mode           :     %s\n", online);
+            printCentered("--------------------------------", 15);
+            printf("                                                              Product ID     :     %d\n", allProduct[productID].pID);
+            printf("                                                              Product Name   :     %s\n", allProduct[productID].pName);
+            printf("                                                              Category       :     %s\n", allProduct[productID].pCat);
+            printf("                                                              Quantity       :     %d\n", pUnit);
+            printCentered("--------------------------------", 10);
+            printf("                                                              TOTAL AMOUNT   :     %.2f\n", total);
+            printCentered("--------------------------------", 10);
+
+            printf("\n\n\n\n\n\n\n");
+
+            printCentered("Press Any Key to HOME......", 10);
+            _getch();
+            OnlineHome();
+        }
+
+        else
+        {
+            printCentered("Card Info Error", 4);
+            printCentered("Press Any Key to HOME......", 10);
+            _getch();
+            OnlineHome();
+        }
+        _getch();
+    }
 }
+
 //*---------------Admin Panel New Sales End----------------*/
 //
 //
@@ -957,15 +1179,15 @@ void salesHistory()
     printf("\n\n");
 
     printCentered("Sales History", 9);
-    printCentered("  ----------------------------------------------------------------------------------------------------------------------------------------", 9);
-    printCentered("  S/N:  CustomerID:  Product-ID:    Product-Name:      Sale-Date:   Sale-Mode:   Transaction-Num:  Product-Price:  Quantity:  Category:", 15);
-    printCentered("  ----------------------------------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("  -------------------------------------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("  S/N:    Invoice:   CustomerID:  Product-ID:    Product-Name:      Sale-Date:   Sale-Mode:   Transaction-Num:  Price:  Quantity:  Category:", 15);
+    printCentered("  -------------------------------------------------------------------------------------------------------------------------------------------", 9);
 
     int index = getSalesData(0); // get all sales history data
     for (int i = 0; i < index; i++)
     {
-        printf("             %d     %d        %d          %s          %d-%d-%d       %s       %s       %0.2f        %d       %s\n",
-               i + 1, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year,
+        printf("           %d     %010llu    %d        %d          %s          %d-%d-%d       %s       %s    %0.2f    %d        %s\n",
+               i + 1, allSalesProduct[i].invoiceNum, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year,
                allSalesProduct[i].saleMode, allSalesProduct[i].transactionNum, allSalesProduct[i].totalPrice, allSalesProduct[i].pUnit, allSalesProduct[i].pCat);
     }
 
@@ -2411,7 +2633,7 @@ void rechargeCard()
 
         printCentered("New Balance of Card:", 9);
         card[i].balance += rechargeAmount;
-        printf("                                                                       %.2f\n", card[i].balance);
+        printf("                                                                       %f\n", card[i].balance);
 
         // send latest data to file
         FILE *fp;
@@ -4046,15 +4268,17 @@ void cardData()
 int getSalesData(int index)
 {
     int cusID, saleDay, saleMon, saleYear, proID, proUnit;
+    long long invoiceNum;
     char proName[15], proCat[15], mode[15], transactionNum2[15];
     float total;
 
     FILE *fp;
     fp = fopen("sales/all_sales.txt", "r");
     // store all sales data to allSalesProduct function
-    while (fscanf(fp, "%d %d %s %s %d %d %d %d %s %s %f", &cusID, &proID, proName, proCat, &proUnit,
+    while (fscanf(fp, "%llu %d %d %s %s %d %d %d %d %s %s %f", &invoiceNum, &cusID, &proID, proName, proCat, &proUnit,
                   &saleDay, &saleMon, &saleYear, mode, transactionNum2, &total) != EOF)
     {
+        allSalesProduct[index].invoiceNum = invoiceNum;
         allSalesProduct[index].customerID = cusID;
         allSalesProduct[index].pID = proID;
         allSalesProduct[index].pUnit = proUnit;
@@ -4308,6 +4532,9 @@ void buyProduct()
             currentDate.mon;
             currentDate.year;
 
+            // get unique invoice num
+            long long invoiceNum = getInvoiceNumber();
+
             printf("\n\n");
             printCentered("||=====Payment Received=====||", 10);
             printCentered("Press any key to get invoice........", 4);
@@ -4317,7 +4544,7 @@ void buyProduct()
             char online[10] = "online";
             // sales update
             fp = fopen("sales/all_sales.txt", "a");
-            fprintf(fp, "%d %d %s %s %d %d %d %d %s %s %0.2f\n",
+            fprintf(fp, "%010llu %d %d %s %s %d %d %d %d %s %s %0.2f\n", invoiceNum,
                     currentCustomerID, allProduct[productID].pID, allProduct[productID].pName, allProduct[productID].pCat, pUnit,
                     currentDate.day, currentDate.mon, currentDate.year, online, transactionNum, total);
             fclose(fp);
@@ -4329,6 +4556,7 @@ void buyProduct()
             printCentered("--------------------------------", 10);
             printCentered("                 CUSTOMER INVOICE                 ", 10);
             printCentered("--------------------------------", 10);
+            printf("                                                              Invoice No     :     %010llu\n", invoiceNum);
             printf("                                                              Transaction No :     %s\n", transactionNum);
             printf("                                                              Customer ID    :     %d\n", currentCustomerID);
             printf("                                                              Customer Name  :     %s\n", current_user_customer);

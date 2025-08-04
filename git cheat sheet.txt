@@ -22,4 +22,5 @@ terminal
 folder back    -  cd ..
 folder forward -  cd folderName  (for multiple folder name use string)
 
-
+collaps all = ctrl k + j
+expand all = ctrl k + 0
