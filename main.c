@@ -2297,7 +2297,6 @@ void OnePayManagement()
     case 2:
         rechargeCard();
         break;
-        // yet not done
     case 0:
         adminPanelHome();
         break;
@@ -2352,6 +2351,85 @@ void listOfCard()
 //*------------------Onepay Recharge start------------------*/
 void rechargeCard()
 {
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("  OnePay Card Recharge", 9);
+    printCentered("   -------------------------------------", 9);
+
+    int cardNum2, rechargeAmount;
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input Card ID: ");
+    scanf("%d", &cardNum2);
+    printf("\n\n");
+
+    cardData();
+
+    int index;
+    FILE *fp;
+    fp = fopen("payment_card/card_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    int i;
+    int found = 0;
+    for (i = 0; i < index; i++)
+    {
+        if (card[i].cardNum == cardNum2)
+        {
+            found = 1;
+            break;
+        }
+    }
+    if (found)
+    {
+        printCentered("Card Details:\n", 9);
+        printCentered("------------------", 9);
+        printf("                                                                Card Holder Name  :  %s\n", card[i].cardHolderName);
+        printf("                                                                Customer ID       :  %d\n", card[i].cusID);
+        printf("                                                                Card Number       :  %d\n", card[i].cardNum);
+        printf("                                                                Card CVV          :  %d\n", card[i].cvv);
+        printf("                                                                Expired Date      :  %d-%d-%d\n", card[i].cardDate.day, card[i].cardDate.mon, card[i].cardDate.year);
+        printf("                                                             Balance           :  %.2f\n\n\n", card[i].balance);
+
+        int width = getConsoleWidth();
+        int space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Input Recharge Amount: ");
+        scanf("%d", &rechargeAmount);
+        printf("\n\n");
+
+        printCentered("New Balance of Card:", 9);
+        card[i].balance += rechargeAmount;
+        printf("                                                                       %f\n", card[i].balance);
+        FILE *fp;
+        fp = fopen("payment_card/cardData.txt", "w");
+        fclose(fp);
+        fp = fopen("payment_card/cardData.txt", "a");
+        for (int j = 0; j < index; j++)
+        {
+            fprintf(fp, "%d %s %d %d %d %d %d %f\n", card[j].cusID, card[j].cardHolderName, card[j].cardNum, card[j].cvv, card[j].cardDate.day, card[j].cardDate.mon , card[j].cardDate.year, card[j].balance);
+        }
+        fclose(fp);
+
+    }
+    else
+    {
+        printCentered("        Card Number don't match!\n", 4);
+    }
+    printf("\n\n\n");
+    printCentered("Press Any key to exit......", 2);
+    _getch();
 }
 //*------------------Onepay Management End------------------*/
 //
