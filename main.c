@@ -2664,6 +2664,7 @@ void rechargeCard()
 
     cardData();
 
+    // Get the index from the file
     int index;
     FILE *fp;
     fp = fopen("payment_card/card_index.txt", "r");
@@ -2689,7 +2690,7 @@ void rechargeCard()
         printf("                                                                Card Number       :  %d\n", card[i].cardNum);
         printf("                                                                Card CVV          :  %d\n", card[i].cvv);
         printf("                                                                Expired Date      :  %d-%d-%d\n", card[i].cardDate.day, card[i].cardDate.mon, card[i].cardDate.year);
-        printf("                                                             Balance           :  %.2f\n\n\n", card[i].balance);
+        printf("                                                                Balance           :  %.2f\n\n\n", card[i].balance);
 
         int width = getConsoleWidth();
         int space = (width - 18) / 2;
@@ -2700,7 +2701,7 @@ void rechargeCard()
         scanf("%d", &rechargeAmount);
         printf("\n\n");
 
-        printCentered("New Balance of Card:", 9);
+        printCentered("      New Balance of Card:", 9);
         card[i].balance += rechargeAmount;
         printf("                                                                       %f\n", card[i].balance);
 
@@ -2722,6 +2723,7 @@ void rechargeCard()
     printf("\n\n\n");
     printCentered("Press Any key to exit......", 2);
     _getch();
+    adminPanelOnlineStore(); // HOME
 }
 //*------------------Onepay Management End------------------*/
 //
@@ -3113,8 +3115,9 @@ void productSearch()
     allProductData();
     int found = 0;
     int productIndex;
+    int i;
 
-    for (int i = 0; i < index; i++)
+    for (i = 0; i < index; i++)
     {
         if (allProduct[i].pID == pID2)
         {
@@ -3126,6 +3129,14 @@ void productSearch()
 
     if (found)
     {
+        printCentered("Product Details", 9);
+        printCentered("  ------------------------------------------------------------------------------------------------------------------------------", 9);
+        printCentered("     Product-ID:     Supplier-ID      Product-Name:     Product-Price:        Unit:       Category:        Expire Date:", 15);
+        printCentered("  ------------------------------------------------------------------------------------------------------------------------------", 9);
+
+        printf("                        %d          %d             %s           %d.00TK           %d (P)        %s         %d-%d-%d\n", allProduct[i].pID, allProduct[i].proSupID, allProduct[i].pName, allProduct[i].pPrice, allProduct[i].pUnit, allProduct[i].pCat, allProduct[i].expDate.day, allProduct[i].expDate.mon, allProduct[i].expDate.year);
+        printf("\n\n");
+
         int supID = allProduct[productIndex].proSupID;
 
         FILE *sf = fopen("supplier_data/supplier_list.txt", "r");
@@ -3145,19 +3156,19 @@ void productSearch()
                 space = (width - 30) / 2;
                 for (int i = 0; i < space; i++)
                     printf(" ");
-                printf("Supplier ID   : %d\n", supplierID);
+                printf("    Supplier ID   : %d\n", supplierID);
 
                 for (int i = 0; i < space; i++)
                     printf(" ");
-                printf("Name          : %s\n", supName);
+                printf("    Name          : %s\n", supName);
 
                 for (int i = 0; i < space; i++)
                     printf(" ");
-                printf("Phone Number  : %s\n", supPhn);
+                printf("    Phone Number  : %s\n", supPhn);
 
                 for (int i = 0; i < space; i++)
                     printf(" ");
-                printf("Company Name  : %s\n", supCompName);
+                printf("    Company Name  : %s\n", supCompName);
 
                 foundSupplier = 1;
                 break;
