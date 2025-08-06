@@ -55,6 +55,7 @@ void listOfCard();
 void rechargeCard();
 void generateTransactionNumber(char *transactionNum, int length);
 long long getNextInvoiceNumber();
+void userRechargeCard();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -2725,6 +2726,37 @@ void rechargeCard()
     _getch();
     adminPanelOnlineStore(); // HOME
 }
+//*------------------User Recharge Card - Start ----------------*/
+//
+//
+void userRechargeCard()
+{
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("  OnePay Card Recharge", 9);
+    printCentered("   -------------------------------------", 9);
+    printf("\n");
+    printCentered("1. Bkash ", 15);
+    printCentered("2. Nogod ", 15);
+    printCentered("3. Rocket", 15);
+    printCentered("4. Card  ", 15);
+    printCentered("0. Return to Profile", 4);
+
+    int option;
+    printf("\n\n");
+    printf("Enter Choice: ");
+    scanf("%d", &option);
+
+    _getch();
+}
+//
+//
+//*------------------User Recharge Card - Start ----------------*/
 //*------------------Onepay Management End------------------*/
 //
 //
@@ -4832,7 +4864,7 @@ void menuProfile()
         break;
 
         case 2:
-        //Recharge 
+        userRechargeCard();
         break;
 
         case 0:
