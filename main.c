@@ -4815,9 +4815,37 @@ void menuProfile()
     printf("                                                                Balance          : %.2f\n\n", card[currentCardIndex].balance);
 
     printf("\n\n");
-    printCentered("press any key to return HOME", 4);
-    _getch();
-    OnlineHome();
+
+    printCentered("1. History      ", 15);
+    printCentered("2. Recharge Card", 15);
+    printCentered("0. Online Store ", 4);
+
+    int option;
+    printf("\n\n");
+    printf("Enter Choice: ");
+    scanf("%d", &option);
+
+    switch(option)
+    {
+        case 1:
+        //History
+        break;
+
+        case 2:
+        //Recharge 
+        break;
+
+        case 0:
+        OnlineHome();
+        break;
+
+        default:
+        menuProfile();
+        break;
+    }
+    // printCentered("press any key to return HOME", 4);
+    // _getch();
+    // OnlineHome();
 }
 //
 //
