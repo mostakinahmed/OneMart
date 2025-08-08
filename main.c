@@ -1046,11 +1046,16 @@ void newSales()
         char transactionNum[15];
         srand(time(NULL)); // send ran num
         generateTransactionNumber(transactionNum, 12);
-        // take current date from this function
-        currentDateTime();
-        currentDate.day;
-        currentDate.mon;
-        currentDate.year;
+
+        // take current date from the admin
+        int day, mon, year;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Input Current Date : ", 15);
+        scanf("%d %d %d", &day, &mon, &year);
 
         // get unique invoice num
         long long invoiceNum = getInvoiceNumber();
@@ -1081,7 +1086,7 @@ void newSales()
             fp = fopen("sales/all_sales.txt", "a");
             fprintf(fp, "%010llu %d %d %s %s %d %d %d %d %s %s %0.2f\n", invoiceNum,
                     oflineCustomerID, allProduct[productIndex].pID, allProduct[productIndex].pName, allProduct[productIndex].pCat, pUnit,
-                    currentDate.day, currentDate.mon, currentDate.year, offline, oflineTransactionNum, total);
+                    day, mon, year, offline, oflineTransactionNum, total);
             fclose(fp);
             printf("\n\n");
 
@@ -1097,7 +1102,7 @@ void newSales()
             printf("                                                              Transaction No :     %s\n", oflineTransactionNum);
             printf("                                                              Customer ID    :     %d\n", oflineCustomerID);
             printf("                                                              Customer Name  :     %s\n", oflineCustomerName);
-            printf("                                                              Date           :     %02d-%02d-%04d\n", currentDate.day, currentDate.mon, currentDate.year);
+            printf("                                                              Date           :     %02d-%02d-%04d\n", day, mon, year);
             printf("                                                              Mode           :     %s\n", offline);
             printCentered("--------------------------------", 15);
             printf("                                                              Product ID     :     %d\n", allProduct[productIndex].pID);
