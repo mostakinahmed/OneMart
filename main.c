@@ -55,6 +55,7 @@ void listOfCard();
 void rechargeCard();
 void generateTransactionNumber(char *transactionNum, int length);
 long long getNextInvoiceNumber();
+void userRechargeCard();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -1045,11 +1046,16 @@ void newSales()
         char transactionNum[15];
         srand(time(NULL)); // send ran num
         generateTransactionNumber(transactionNum, 12);
-        // take current date from this function
-        currentDateTime();
-        currentDate.day;
-        currentDate.mon;
-        currentDate.year;
+
+        // take current date from the admin
+        int day, mon, year;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Input Current Date : ", 15);
+        scanf("%d %d %d", &day, &mon, &year);
 
         // get unique invoice num
         long long invoiceNum = getInvoiceNumber();
@@ -1080,7 +1086,7 @@ void newSales()
             fp = fopen("sales/all_sales.txt", "a");
             fprintf(fp, "%010llu %d %d %s %s %d %d %d %d %s %s %0.2f\n", invoiceNum,
                     oflineCustomerID, allProduct[productIndex].pID, allProduct[productIndex].pName, allProduct[productIndex].pCat, pUnit,
-                    currentDate.day, currentDate.mon, currentDate.year, offline, oflineTransactionNum, total);
+                    day, mon, year, offline, oflineTransactionNum, total);
             fclose(fp);
             printf("\n\n");
 
@@ -1096,7 +1102,7 @@ void newSales()
             printf("                                                              Transaction No :     %s\n", oflineTransactionNum);
             printf("                                                              Customer ID    :     %d\n", oflineCustomerID);
             printf("                                                              Customer Name  :     %s\n", oflineCustomerName);
-            printf("                                                              Date           :     %02d-%02d-%04d\n", currentDate.day, currentDate.mon, currentDate.year);
+            printf("                                                              Date           :     %02d-%02d-%04d\n", day, mon, year);
             printf("                                                              Mode           :     %s\n", offline);
             printCentered("--------------------------------", 15);
             printf("                                                              Product ID     :     %d\n", allProduct[productIndex].pID);
@@ -2725,6 +2731,37 @@ void rechargeCard()
     _getch();
     adminPanelOnlineStore(); // HOME
 }
+//*------------------User Recharge Card - Start ----------------*/
+//
+//
+void userRechargeCard()
+{
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("  OnePay Card Recharge", 9);
+    printCentered("   -------------------------------------", 9);
+    printf("\n");
+    printCentered("1. Bkash ", 15);
+    printCentered("2. Nogod ", 15);
+    printCentered("3. Rocket", 15);
+    printCentered("4. Card  ", 15);
+    printCentered("0. Return to Profile", 4);
+
+    int option;
+    printf("\n\n");
+    printf("Enter Choice: ");
+    scanf("%d", &option);
+
+    _getch();
+}
+//
+//
+//*------------------User Recharge Card - Start ----------------*/
 //*------------------Onepay Management End------------------*/
 //
 //
@@ -4815,9 +4852,37 @@ void menuProfile()
     printf("                                                                Balance          : %.2f\n\n", card[currentCardIndex].balance);
 
     printf("\n\n");
-    printCentered("press any key to return HOME", 4);
-    _getch();
-    OnlineHome();
+
+    printCentered("1. History      ", 15);
+    printCentered("2. Recharge Card", 15);
+    printCentered("0. Online Store ", 4);
+
+    int option;
+    printf("\n\n");
+    printf("Enter Choice: ");
+    scanf("%d", &option);
+
+    switch(option)
+    {
+        case 1:
+        //History
+        break;
+
+        case 2:
+        userRechargeCard();
+        break;
+
+        case 0:
+        OnlineHome();
+        break;
+
+        default:
+        menuProfile();
+        break;
+    }
+    // printCentered("press any key to return HOME", 4);
+    // _getch();
+    // OnlineHome();
 }
 //
 //
@@ -5275,4 +5340,3 @@ int main()
     return 0;
 }
 /*-----------------MAIN FUNCTION END----------------------*/
-// tonmoy
