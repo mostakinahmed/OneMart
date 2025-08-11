@@ -2859,7 +2859,6 @@ void dailyIncome()
     printf("\n\n");
     int index = getSalesData(0);
 
-    // printf("%d\n", index);
     int i, found = 0;
     for (i = 0; i < index; i++)
     {
@@ -2876,12 +2875,8 @@ void dailyIncome()
         float sumTotal = 0, profit = 0;
         printCentered("Sales Details", 7);
         printCentered("----------------", 7);
-        // &invoiceNum, &cusID, &proID, proName, proCat, &proUnit, &saleDay, &saleMon, &saleYear, mode, transactionNum2, &total
-
         printCentered("Invoice NO.:       Customer-ID:        Product-ID:       Product-Name:        Category:         Unit:         Date:        Total:        Type:", 15);
         printCentered("-----------------------------------------------------------------------------------------------------------------------------------------------", 9);
-
-        // printf("%d\n", )
 
         for (int i = 0; i < index; i++)
         {
@@ -2913,14 +2908,14 @@ void dailyIncome()
         printf("     %.2f", sumTotal * 0.15);
         printf("\n\n");
     }
-
-    else{
+    else
+    {
         printCentered("No product sold!", 4);
         printf("\n\n");
     }
+    printCentered("   Press any key to exit....", 4);
     _getch();
     adminPanelAccounts();
-    
 }
 //*---------------Admin Panel (Accounts) Daily Income End----------------*/
 //
@@ -2929,6 +2924,90 @@ void dailyIncome()
 //*---------------Admin Panel (Accounts) Monthly Income Start----------------*/
 void monthlyIncome()
 {
+    char headingName[40] = "Accounts";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered(" Monthly Income", 15);
+    printCentered(" --------------------------", 15);
+    currentDateTime();
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    // for space - 2 the reason is to make it align in center
+    for (int i = 0; i < space - 2; i++)
+        printf(" ");
+    printf("Current Date: %d-%d-%d", currentDate.day, currentDate.mon, currentDate.year);
+    printf("\n\n");
+    currentDate.mon++;
+    currentDate.mon--;
+    if (currentDate.mon == 1)
+    {
+        currentDate.mon == 12;
+        currentDate.year--;
+    }
+    int index = getSalesData(0);
+
+    int i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+        if (currentDate.mon == allSalesProduct[i].saleDate.mon && currentDate.year == allSalesProduct[i].saleDate.year)
+        {
+            found = 1;
+            break;
+        }
+    }
+    printf("\n\n");
+
+    if (found)
+    {
+        float sumTotal = 0, profit = 0;
+        printCentered("Sales Details", 7);
+        printCentered("----------------", 7);
+        printCentered("Invoice NO.:       Customer-ID:        Product-ID:       Product-Name:        Category:         Unit:         Date:        Total:        Type:", 15);
+        printCentered("-----------------------------------------------------------------------------------------------------------------------------------------------", 9);
+
+        for (int i = 0; i < index; i++)
+        {
+            if (currentDate.mon == allSalesProduct[i].saleDate.mon && currentDate.year == allSalesProduct[i].saleDate.year)
+            {
+                printf("       %010llu            %d             %d            %s               %s              %d         %d-%d-%d      %.2f      %s\n", allSalesProduct[i].invoiceNum, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].pCat, allSalesProduct[i].pUnit, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year, allSalesProduct[i].totalPrice, allSalesProduct[i].saleMode);
+                sumTotal += allSalesProduct[i].totalPrice;
+            }
+        }
+        printf("\n\n");
+
+        // total sales update
+        printCentered("Total Sales:", 3);
+        printCentered("--------------", 3);
+        int width = getConsoleWidth();
+        int space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal);
+        printf("\n\n");
+
+        // total profit
+        printCentered("Total Profit:", 10);
+        printCentered("--------------", 10);
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal * 0.15);
+        printf("\n\n");
+    }
+    else
+    {
+        printCentered("No product sold!", 4);
+        printf("\n\n");
+    }
+    printCentered("   Press any key to exit....", 4);
+    _getch();
+    adminPanelAccounts();
 }
 //*---------------Admin Panel (Accounts) Monthly Income End----------------*/
 //
