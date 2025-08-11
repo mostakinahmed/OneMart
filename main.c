@@ -3107,7 +3107,7 @@ void dailyIncome()
         }
         printf("\n\n");
 
-        // total sales
+        // total sales update
         printCentered("Total Sales:", 3);
         printCentered("--------------", 3);
         int width = getConsoleWidth();
