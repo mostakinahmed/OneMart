@@ -4743,9 +4743,66 @@ int getMobileBankingData(int index)
 //
 //
 //
- void userOrderHistory(){
-    // Implementation for user order history
- }
+
+    void userOrderHistory() {
+    char headingName[40] = "YOUR ORDER HISTORY";
+    menuUI(headingName);
+
+    FILE *fp;
+    fp = fopen("customer_data/current_user_customer.txt", "r");
+    fscanf(fp, "%s", current_user_customer);
+    fclose(fp);
+
+    fp = fopen("customer_data/current_user_customer_ID.txt", "r");
+    fscanf(fp, "%d", &currentCustomerID);
+    fclose(fp);
+
+    printCentered2(current_user_customer, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+
+    printCentered("Your Order History", 9);
+    printCentered("  -------------------------------------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("  S/N:    Invoice:   Product-ID:   Product-Name:    Order-Date:   Mode:   Transaction-Num:  Price:  Quantity:  Category:", 15);
+    printCentered("  -------------------------------------------------------------------------------------------------------------------------------------------", 9);
+
+    int index = getSalesData(0); // load all sales into allSalesProduct[]
+    int serNum = 1;
+    int found = 0;
+
+    for (int i = 0; i < index; i++) {
+        if (allSalesProduct[i].customerID == currentCustomerID) {
+            found = 1;
+            printf("   %3d  %010llu     %d       %-12s  %02d-%02d-%04d   %-7s  %-15s  %7.2f   %5d     %-10s\n",
+                   serNum++,
+                   allSalesProduct[i].invoiceNum,
+                   allSalesProduct[i].pID,
+                   allSalesProduct[i].pName,
+                   allSalesProduct[i].saleDate.day,
+                   allSalesProduct[i].saleDate.mon,
+                   allSalesProduct[i].saleDate.year,
+                   allSalesProduct[i].saleMode,
+                   allSalesProduct[i].transactionNum,
+                   allSalesProduct[i].totalPrice,
+                   allSalesProduct[i].pUnit,
+                   allSalesProduct[i].pCat);
+        }
+    }
+
+    if (!found) {
+        printf("\n");
+        printCentered("No orders found in your history.", 4);
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Home.....", 10);
+    _getch();
+    OnlineHome();
+}
+
+ 
 /*---------------Encripton Start----------------*/
 void encripTech(struct user Data[50], int index)
 {
