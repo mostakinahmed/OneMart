@@ -2873,7 +2873,7 @@ void dailyIncome()
 
     if (found)
     {
-        long double sumTotal = 0, profit = 0;
+        float sumTotal = 0, profit = 0;
         printCentered("Sales Details", 7);
         printCentered("----------------", 7);
         // &invoiceNum, &cusID, &proID, proName, proCat, &proUnit, &saleDay, &saleMon, &saleYear, mode, transactionNum2, &total
@@ -2901,7 +2901,7 @@ void dailyIncome()
         setColor(15);
         for (int i = 0; i < space; i++)
             printf(" ");
-        printf("     %.2Lf", sumTotal);
+        printf("     %.2f", sumTotal);
         printf("\n\n");
 
         // total profit
@@ -2910,7 +2910,7 @@ void dailyIncome()
         setColor(15);
         for (int i = 0; i < space; i++)
             printf(" ");
-        printf("     %.2Lf", sumTotal * 0.15);
+        printf("     %.2f", sumTotal * 0.15);
         printf("\n\n");
     }
 
