@@ -60,6 +60,7 @@ void userRechargeMobileBanking();
 void userRechargeBankCard();
 int getMobileBankingData(int index);
 void rechargeByMobileAndCard(const char payOption[15]);
+void userOrderHistory();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -4742,6 +4743,9 @@ int getMobileBankingData(int index)
 //
 //
 //
+ void userOrderHistory(){
+    // Implementation for user order history
+ }
 /*---------------Encripton Start----------------*/
 void encripTech(struct user Data[50], int index)
 {
@@ -5187,7 +5191,7 @@ void menuProfile()
     switch (option)
     {
     case 1:
-        // History
+        userOrderHistory();
         break;
 
     case 2:
