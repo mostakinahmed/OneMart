@@ -55,7 +55,11 @@ void listOfCard();
 void rechargeCard();
 void generateTransactionNumber(char *transactionNum, int length);
 long long getNextInvoiceNumber();
-void userRechargeCard();
+void userRecharge();
+void userRechargeMobileBanking();
+void userRechargeBankCard();
+int getMobileBankingData(int index);
+void rechargeByMobileAndCard(const char payOption[15]);
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -71,7 +75,7 @@ void listOfProductBySupplier();
 void supplierList();
 void supplierLatestData();
 
-void adminPanelUserManagement(); // 6. Admin Panel User Management- Home
+void adminPanelUserManagement(); // 7. Admin Panel User Management- Home
 void addAdmin();
 void deleteAdmin();
 void adminPasswordReset();
@@ -156,8 +160,16 @@ struct card
     float balance;
 };
 struct card card[100];
-// mark
-//
+
+// Mobile Banking
+struct mobileBanking
+{
+    char accountNumber[20];
+    char bankName[20];
+    int pin;
+    float balance;
+};
+struct mobileBanking mobileBanking[200];
 //
 //
 /*------------------------This is for welcome page-----------------------------------------------*/
@@ -2734,7 +2746,7 @@ void rechargeCard()
 //*------------------User Recharge Card - Start ----------------*/
 //
 //
-void userRechargeCard()
+void userRecharge()
 {
     char headingName[40] = "OnePay - Online Card";
     menuUI(headingName);
@@ -2746,10 +2758,8 @@ void userRechargeCard()
     printCentered("  OnePay Card Recharge", 9);
     printCentered("   -------------------------------------", 9);
     printf("\n");
-    printCentered("1. Bkash ", 15);
-    printCentered("2. Nogod ", 15);
-    printCentered("3. Rocket", 15);
-    printCentered("4. Card  ", 15);
+    printCentered("1. Mobile Banking   ", 15);
+    printCentered("2. Bank Card        ", 15);
     printCentered("0. Return to Profile", 4);
 
     int option;
@@ -2757,7 +2767,211 @@ void userRechargeCard()
     printf("Enter Choice: ");
     scanf("%d", &option);
 
+    switch (option)
+    {
+    case 1:
+        userRechargeMobileBanking();
+        break;
+    case 2:
+        userRechargeBankCard();
+        break;
+    case 0:
+        menuProfile();
+        break;
+
+    default:
+        printCentered("Invalid Choice!", 4);
+        break;
+    }
     _getch();
+}
+//
+//
+//-------------*------------------User Recharge - Mobile Banking ----------------*/
+void userRechargeMobileBanking()
+{
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered("  OnePay Card Recharge - Mobile Banking", 9);
+    printCentered("   -------------------------------------", 9);
+    printf("\n");
+    printCentered("1. Bkash            ", 15);
+    printCentered("2. Nagad            ", 15);
+    printCentered("3. Rocket           ", 15);
+    printCentered("0. Return to Profile", 4);
+
+    int option;
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        rechargeByMobileAndCard("bkash");
+        break;
+    case 2:
+        rechargeByMobileAndCard("nagad");
+        break;
+    case 3:
+        rechargeByMobileAndCard("rocket");
+        break;
+    case 0:
+        menuProfile();
+        break;
+    default:
+        printCentered("Invalid Choice!", 4);
+        break;
+    }
+
+    _getch();
+}
+//
+//
+//---------------User Recharge - Mobile Banking ----------------//
+void rechargeByMobileAndCard(const char payOption[15])
+{
+
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printf("                                                              Welcome to %s Payment Gateway: \n", payOption);
+    printCentered("----------------------------------------", 10);
+    printf("\n");
+
+    char accountNumber2[20];
+    int rechargeAmount2;
+    int pin2;
+    int errorAccount = 0;
+
+    int width = getConsoleWidth();
+    int space = (width - 30) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Enter your account number  : ");
+    scanf("%s", accountNumber2);
+
+    if (strlen(accountNumber2) != 11 || accountNumber2[0] != '0' || accountNumber2[1] != '1')
+    {
+        printf("\n\n\n\n\n\n");
+        printCentered("Invalid account number. Please enter a valid 11-digit number starting with 01.\n", 4);
+        printCentered("Press any key to try again......", 4);
+        _getch();
+        rechargeByMobileAndCard(payOption);
+    }
+    else
+    {
+        width = getConsoleWidth();
+        space = (width - 30) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Enter your recharge amount : ");
+        scanf("%d", &rechargeAmount2);
+
+        width = getConsoleWidth();
+        space = (width - 30) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Enter your pin             : ");
+        scanf("%d", &pin2);
+
+        // find card
+        cardData();
+        // Get the index from the file
+        int indexForCard = 0;
+        FILE *fp;
+        fp = fopen("payment_card/card_index.txt", "r");
+        fscanf(fp, "%d", &indexForCard);
+        fclose(fp);
+
+        int i;
+        int cardIndex = 0;
+        for (i = 0; i < indexForCard; i++)
+        {
+            if (card[i].cusID == currentCustomerID)
+            {
+                cardIndex = i;
+                break;
+            }
+        }
+
+        int index = getMobileBankingData(0);
+        for (int i = 0; i < index; i++)
+        {
+            if (strcmp(mobileBanking[i].accountNumber, accountNumber2) == 0 && (strcmp(mobileBanking[i].bankName, payOption) == 0))
+            {
+                errorAccount = 1;
+                if (mobileBanking[i].pin == pin2)
+                {
+
+                    card[cardIndex].balance += rechargeAmount2;
+
+                    // send latest data to file
+                    fp = fopen("payment_card/cardData.txt", "w");
+                    fclose(fp);
+                    fp = fopen("payment_card/cardData.txt", "a");
+                    for (int j = 0; j < indexForCard; j++)
+                    {
+                        fprintf(fp, "%d %s %d %d %d %d %d %.2f\n",
+                                card[j].cusID, card[j].cardHolderName, card[j].cardNum, card[j].cvv,
+                                card[j].cardDate.day, card[j].cardDate.mon, card[j].cardDate.year, card[j].balance);
+                    }
+                    fclose(fp);
+
+                    printf("\n\n\n\n\n");
+                    width = getConsoleWidth();
+                    space = (width - 40) / 2;
+                    for (int k = 0; k < space; k++)
+                    {
+                        printf(" ");
+                    }
+                    printf("Recharge of %d Taka to card %d is successful.", rechargeAmount2, card[cardIndex].cardNum);
+
+                    printf("\n\n");
+                    width = getConsoleWidth();
+                    space = (width - 28) / 2;
+                    for (int h = 0; h < space; h++)
+                        printf(" ");
+                    printf("Thank you for using %s\n", payOption);
+
+                    printCentered("   Press any key for profile......", 4);
+                    _getch();
+                    menuProfile();
+                }
+                else
+                {
+                    printCentered("Recharge failed. Pin is incorrect.\n", 4);
+                    printCentered("Press any key to try again......", 4);
+                    _getch();
+                    rechargeByMobileAndCard(payOption);
+                }
+            }
+        }
+    }
+    if (errorAccount == 0)
+    {
+        printf("\n\n\n\n\n\n");
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(40);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Account number %s is not registered with %s.\n", accountNumber2, payOption);
+        printCentered("Press any key to try again......", 4);
+        _getch();
+        rechargeByMobileAndCard(payOption);
+    }
+}
+//
+//------------------User Recharge- Bank Card ----------------*/
+void userRechargeBankCard()
+{
 }
 //
 //
@@ -4493,12 +4707,38 @@ int getSalesData(int index)
     }
     fclose(fp);
 
-    // send index file into file to make track
-    fp = fopen("sales/index/allSalesProductIndex.txt", "w");
-    fprintf(fp, "%d", index);
-    fclose(fp);
     return index;
+    // // send index file into file to make track
+    // fp = fopen("sales/index/allSalesProductIndex.txt", "w");
+    // fprintf(fp, "%d", index);
+    // fclose(fp);
 }
+
+//
+//-----------Mobile Banking Data--------------
+int getMobileBankingData(int index)
+{
+    char accountNumber2[12];
+    char bankName2[10];
+    int pin2;
+    float balance2;
+
+    FILE *fp;
+    fp = fopen("mobile_banking/all_account.txt", "r");
+
+    while (fscanf(fp, "%s %d %f %s", accountNumber2, &pin2, &balance2, bankName2) != EOF)
+    {
+        strcpy(mobileBanking[index].accountNumber, accountNumber2);
+        strcpy(mobileBanking[index].bankName, bankName2);
+        mobileBanking[index].pin = pin2;
+        mobileBanking[index].balance = balance2;
+        index++;
+    }
+    fclose(fp);
+    return index; // send update index
+}
+//
+//
 //
 //
 //
@@ -4935,9 +5175,9 @@ void menuProfile()
 
     printf("\n\n");
 
-    printCentered("1. History      ", 15);
+    printCentered("1. Order History", 15);
     printCentered("2. Recharge Card", 15);
-    printCentered("0. Online Store ", 4);
+    printCentered("0. Home         ", 4);
 
     int option;
     printf("\n\n");
@@ -4951,7 +5191,7 @@ void menuProfile()
         break;
 
     case 2:
-        userRechargeCard();
+        userRecharge();
         break;
 
     case 0:
