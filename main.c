@@ -3239,6 +3239,87 @@ void HalfYearlyIncome()
 //*---------------Admin Panel (Accounts) Yearly Income Start----------------*/
 void yearlyIncome()
 {
+    char headingName[40] = "Accounts";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered(" Yearly Income", 15);
+    printCentered(" --------------------------", 15);
+    currentDateTime();
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    // for space - 2 the reason is to make it align in center
+    for (int i = 0; i < space - 2; i++)
+        printf(" ");
+    printf("Current Date: %d-%d-%d", currentDate.day, currentDate.mon, currentDate.year);
+    printf("\n\n");
+    
+    // to get pervoius year
+    currentDate.year--;
+
+    int index = getSalesData(0);
+    int i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+        if (currentDate.year == allSalesProduct[i].saleDate.year)
+        {
+            found = 1;
+            break;
+        }
+    }
+    printf("\n\n");
+
+    if (found)
+    {
+        float sumTotal = 0, profit = 0;
+        printCentered("Sales Details", 7);
+        printCentered("----------------", 7);
+        printCentered("Invoice NO.:       Customer-ID:        Product-ID:       Product-Name:        Category:         Unit:         Date:        Total:        Type:", 15);
+        printCentered("-----------------------------------------------------------------------------------------------------------------------------------------------", 9);
+
+        for (int i = 0; i < index; i++)
+        {
+            if (currentDate.year == allSalesProduct[i].saleDate.year)
+            {
+                printf("       %010llu            %d             %d            %s               %s              %d         %d-%d-%d      %.2f      %s\n", allSalesProduct[i].invoiceNum, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].pCat, allSalesProduct[i].pUnit, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year, allSalesProduct[i].totalPrice, allSalesProduct[i].saleMode);
+                sumTotal += allSalesProduct[i].totalPrice;
+            }
+        }
+        printf("\n\n");
+
+        // total sales update
+        printCentered("Total Sales:", 3);
+        printCentered("--------------", 3);
+        int width = getConsoleWidth();
+        int space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal);
+        printf("\n\n");
+
+        // total profit
+        printCentered("Total Profit:", 10);
+        printCentered("--------------", 10);
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal * 0.15);
+        printf("\n\n");
+    }
+    else
+    {
+        printCentered("No product sold!", 4);
+        printf("\n\n");
+    }
+
+    printCentered("   Press any key to exit....", 4);
+    _getch();
+    adminPanelAccounts();
 }
 //*---------------Admin Panel (Accounts) Yearly Income End----------------*/
 //
@@ -4823,7 +4904,8 @@ int getMobileBankingData(int index)
 //
 //
 
-    void userOrderHistory() {
+void userOrderHistory()
+{
     char headingName[40] = "YOUR ORDER HISTORY";
     menuUI(headingName);
 
@@ -4851,8 +4933,10 @@ int getMobileBankingData(int index)
     int serNum = 1;
     int found = 0;
 
-    for (int i = 0; i < index; i++) {
-        if (allSalesProduct[i].customerID == currentCustomerID) {
+    for (int i = 0; i < index; i++)
+    {
+        if (allSalesProduct[i].customerID == currentCustomerID)
+        {
             found = 1;
             printf("   %3d  %010llu     %d       %-12s  %02d-%02d-%04d   %-7s  %-15s  %7.2f   %5d     %-10s\n",
                    serNum++,
@@ -4870,7 +4954,8 @@ int getMobileBankingData(int index)
         }
     }
 
-    if (!found) {
+    if (!found)
+    {
         printf("\n");
         printCentered("No orders found in your history.", 4);
     }
@@ -4881,7 +4966,6 @@ int getMobileBankingData(int index)
     OnlineHome();
 }
 
- 
 /*---------------Encripton Start----------------*/
 void encripTech(struct user Data[50], int index)
 {
