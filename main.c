@@ -61,6 +61,7 @@ void userRechargeBankCard();
 int getMobileBankingData(int index);
 void rechargeByMobileAndCard(const char payOption[15]);
 void userOrderHistory();
+void getBankCardData();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -161,6 +162,7 @@ struct card
     float balance;
 };
 struct card card[100];
+struct card bankCard[100];
 
 // Mobile Banking
 struct mobileBanking
@@ -2973,6 +2975,90 @@ void rechargeByMobileAndCard(const char payOption[15])
 //------------------User Recharge- Bank Card ----------------*/
 void userRechargeBankCard()
 {
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("Card Recharge:", 10);
+    printCentered("--------------------------", 10);
+    printf("\n");
+    getBankCardData();
+
+    int cardNum, cvv, expireMon, expireYear;
+    float rechargeAmount;
+
+    int width = getConsoleWidth();
+    int space = (width - 30) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Enter your card number  : ");
+    scanf("%d", &cardNum);
+    printf("\n\n");
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Enter your card CVV number  : ");
+    scanf("%d", &cvv);
+    printf("\n\n");
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Enter your card expire date  : ");
+    scanf("%d %d", &expireMon, &expireYear);
+    printf("\n\n");
+
+    int found = 0, i;
+
+    for (i = 0; i < 100; i++)
+    {
+        if (cardNum == bankCard[i].cardNum && cvv == bankCard[i].cvv && expireMon == bankCard[i].cardDate.mon && expireYear == bankCard[i].cardDate.year)
+        {
+            found = 1;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        printCentered("Card Details:", 2);
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Input rechanrge amount: ");
+        scanf("%f", &rechargeAmount);
+
+        bankCard[i].balance += rechargeAmount;
+
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("New Balance: %.2f", bankCard[i].balance);
+
+        FILE *fp;
+        fp = fopen("bank_card/all_bank_card.txt", "w");
+
+        for (int i = 0; i < 100; i++)
+        {
+            fprintf(fp, "%d %d %d %d %s %f\n",
+                    bankCard[i].cardNum,
+                    bankCard[i].cvv,
+                    bankCard[i].cardDate.mon,
+                    bankCard[i].cardDate.year,
+                    bankCard[i].cardHolderName, 
+                    bankCard[i].balance);
+        }
+        fclose(fp);
+    }
+    else
+    {
+        printCentered("Card not found!", 4);
+    }
+    printf("\n\n\n");
+
+    printCentered("Press any key to exit......", 4);
+    _getch();
+    menuProfile();
 }
 //
 //
@@ -3257,7 +3343,7 @@ void yearlyIncome()
         printf(" ");
     printf("Current Date: %d-%d-%d", currentDate.day, currentDate.mon, currentDate.year);
     printf("\n\n");
-    
+
     // to get pervoius year
     currentDate.year--;
 
@@ -4835,6 +4921,37 @@ void cardData()
     fprintf(fp, "%d", index);
     fclose(fp);
 }
+//
+//
+/*--------------- Bank cardData start----------------*/
+//
+//
+void getBankCardData()
+{
+    int i = 0, cardNum2, cvv2, mon2, year2;
+    float balance2;
+    char cardHolderName2[20];
+
+    FILE *fp;
+    // received data from file
+    fp = fopen("bank_card/all_bank_card.txt", "r");
+    while (fscanf(fp, "%d %d %d %d %s %f\n", &cardNum2, &cvv2, &mon2, &year2, cardHolderName2, &balance2) != EOF)
+    {
+        strcpy(bankCard[i].cardHolderName, cardHolderName2);
+        bankCard[i].cardNum = cardNum2;
+        bankCard[i].cvv = cvv2;
+        bankCard[i].cardDate.mon = mon2;
+        bankCard[i].cardDate.year = year2;
+        bankCard[i].balance = balance2;
+        i++;
+    }
+    fclose(fp);
+}
+//
+//
+/*---------------Bank cardData end----------------*/
+//
+//
 /*---------------cardData end----------------*/
 //
 //
