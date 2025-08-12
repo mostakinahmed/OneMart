@@ -95,6 +95,9 @@ char current_user_customer[25];
 int customerLoginStatus = 0;
 int adminLoginStatus = 0;
 int currentCustomerID = 0;
+/*-------Global Indexing------*/
+int allProIndex = 0;
+int adminIndex = 0;
 
 /*-------Global Structure Section------*/
 // date structure
@@ -368,8 +371,8 @@ void adminPanelAuthentication()
     menuUI(headingName);
     printf("\n\n");
     printCentered("1. Sign In.", 10);
-    printCentered("2. Sign Up.", 10);
-    printCentered("  3. Home Page.", 10);
+    // printCentered("2. Sign Up.", 10);
+    printCentered("  2. Home Page.", 10);
     printCentered("     0. Exit Program.", 4);
     int option;
     printf("\n\nEnter your choice: ");
@@ -379,10 +382,10 @@ void adminPanelAuthentication()
     case 1:
         adminSignIn();
         break;
+    // case 2:
+    //     adminSignUp();
+    //     break;
     case 2:
-        adminSignUp();
-        break;
-    case 3:
         OnlineHome();
         break;
     case 0:
@@ -408,38 +411,55 @@ void adminSignIn()
     printCentered("------------------------", 10);
 
     int found = 0;
-    char userName[25];
+    //  char userName[25];
     char userName1[25];
     char userPass[25];
     char userPass1[25];
     char userEmail[30];
     char userEmail1[30];
     char current_user_admin2[25];
-    setColor(11);
-    printf("Enter UserName : ");
-    setColor(7);
-    scanf("%s", userName);
-    setColor(11);
-    printf("Enter Password : ");
-    setColor(7);
-    scanf("%s", userPass);
+
+    // for userName
+    char userName[50];
+    int i = 0;
+    char ch;
+    printf("Enter Username: ");
+
+    while ((ch = getch()) != 13)
+    {
+        if (i < sizeof(userName) - 1)
+        {
+            userName[i++] = ch;
+            printf("*");
+        }
+    }
+    userName[i] = '\0';
+
+    // for userPass
+    i = 0;
+    printf("\nEnter Password: ");
+    while ((ch = getch()) != 13)
+    {
+        if (i < sizeof(userPass) - 1)
+        {
+            userPass[i++] = ch;
+            printf("*");
+        }
+    }
+    userPass[i] = '\0';
 
     listOfAdminData(); // encripted data here
-    FILE *fp;
-    int index;
-    fp = fopen("admin_data/admin_index.txt", "r");
-    fscanf(fp, "%d", &index);
-    fclose(fp);
+    // adminIndex from global variable
+    decripTech(adminData, adminIndex); // decripted data
 
-    decripTech(adminData, index); // decripted data
-
-    for (int i = 0; i < index; i++)
+    for (int i = 0; i < adminIndex; i++)
     {
         if (strcmp(userName, adminData[i].Name) == 0 &&
             strcmp(userPass, adminData[i].Pass) == 0)
         {
             // update login status
             adminLoginStatus = 1;
+            FILE *fp;
             fp = fopen("login_Logout_status/logData.txt", "w");
             fprintf(fp, "%d", adminLoginStatus);
             fclose(fp);
@@ -465,7 +485,7 @@ void adminSignIn()
         printCentered("1. Try Again.", 10);
         printCentered("      2. Reset Password.", 10);
         printCentered("        3. Authenticate Home.", 10);
-        printCentered("   0. Exit Program.", 10);
+        printCentered("   0. Exit Program.", 4);
 
         int option;
         printf("\n\nEnter your choice: ");
@@ -494,49 +514,49 @@ void adminSignIn()
 //
 //
 /*----------------Admin Sign Up Start---------------*/
-void adminSignUp()
-{
-    char headingName[40] = "ADMIN PANEL AUTHENTICATION SYSTEM";
-    menuUI(headingName);
-    printCentered("Registration", 10);
-    printCentered("------------------------", 10);
+// void adminSignUp()
+// {
+//     char headingName[40] = "ADMIN PANEL AUTHENTICATION SYSTEM";
+//     menuUI(headingName);
+//     printCentered("Registration", 10);
+//     printCentered("------------------------", 10);
 
-    char userName[25];
-    char userPass[25];
-    char userEmail[30];
+//     char userName[25];
+//     char userPass[25];
+//     char userEmail[30];
 
-    setColor(11);
-    printf("Enter UserName : ");
-    setColor(7);
-    scanf("%s", userName);
-    setColor(11);
-    printf("Enter Password : ");
-    setColor(7);
-    scanf("%s", userPass);
-    setColor(11);
-    printf("Enter Email    : ");
-    setColor(7);
-    scanf("%s", userEmail);
+//     setColor(11);
+//     printf("Enter UserName : ");
+//     setColor(7);
+//     scanf("%s", userName);
+//     setColor(11);
+//     printf("Enter Password : ");
+//     setColor(7);
+//     scanf("%s", userPass);
+//     setColor(11);
+//     printf("Enter Email    : ");
+//     setColor(7);
+//     scanf("%s", userEmail);
 
-    // using caesar cypher
-    for (int i = 0; (i < 100 && userPass[i] != '\0'); i++)
-    {
-        userPass[i] = userPass[i] + 5;
-    }
+//     // using caesar cypher
+//     for (int i = 0; (i < 100 && userPass[i] != '\0'); i++)
+//     {
+//         userPass[i] = userPass[i] + 5;
+//     }
 
-    // User data send to file
-    FILE *fp;
-    fp = fopen("admin_data/data.txt", "a");
-    fprintf(fp, "%s %s %s\n", userName, userPass, userEmail);
-    fclose(fp);
-    printf("\n\n");
-    printCentered("Registration is successfull.", 10);
-    printCentered("press any key to login......", 10);
+//     // User data send to file
+//     FILE *fp;
+//     fp = fopen("admin_data/data.txt", "a");
+//     fprintf(fp, "%s %s %s\n", userName, userPass, userEmail);
+//     fclose(fp);
+//     printf("\n\n");
+//     printCentered("Registration is successfull.", 10);
+//     printCentered("press any key to login......", 10);
 
-    listOfAdminData();
-    _getch(); // to hold user
-    adminSignIn();
-}
+//     listOfAdminData();
+//     _getch(); // to hold user
+//     adminSignIn();
+// }
 /*---------------Admin Sign Up END-------------*/
 //
 //
@@ -3148,12 +3168,31 @@ void adminPanelAccounts() // HOME
     char headingName[40] = "Admin Panel - Accounts";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
-    printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
-    printf("\n");
+    printf("\n\n\n");
     printCentered("Accounts", 15);
     printCentered("------------------------", 15);
+
+    int saleIndex = getSalesData(0);
+    allProductData();
+
+    float totalInventoryValue = 0, totalSales = 0, totalProfit = 0;
+    for (int i = 0; i < saleIndex; i++)
+    {
+        totalSales += allSalesProduct[i].totalPrice;
+    }
+
+    for (int i = 0; i < allProIndex; i++)
+    {
+        totalInventoryValue += (allProduct[i].pPrice * allProduct[i].pUnit);
+    }
+    totalProfit = totalSales * 0.15;
+    printCentered("---------------------------------------------------------------------------------------------------", 10);
+    printf("                            Total Inventory Value: %.2f    ||    Total Sales: %.2f    ||    Total Profit: %.2f\n", totalInventoryValue, totalSales, totalProfit);
+    printCentered("---------------------------------------------------------------------------------------------------", 10);
+
+    printf("\n\n");
     printCentered("    1. Daily Income", 15);
     printCentered("     2. Monthly Income", 15);
     printCentered("          3. Half Yearly Income", 15);
@@ -3162,7 +3201,7 @@ void adminPanelAccounts() // HOME
     printf("\n\n\n");
 
     int option;
-    printf("\n\nEnter your choice: ");
+    printf("\n\n\n\n                                                                        Enter your choice: ");
     scanf("%d", &option);
     switch (option)
     {
@@ -4117,17 +4156,6 @@ void addAdmin()
     fprintf(fp, "%s %s %s\n", adName, adPass, adEmail);
     fclose(fp);
 
-    // admin index send to file
-    fp = fopen("admin_data/admin_index.txt", "r");
-    fscanf(fp, "%d", &adIndex);
-    fclose(fp);
-
-    adIndex = adIndex + 1;
-
-    fp = fopen("admin_data/admin_index.txt", "w");
-    fprintf(fp, "%d", adIndex);
-    fclose(fp);
-
     printf("\n\n\n");
     printCentered("'Admin Added'....Press any key to return Home.", 10);
     _getch();
@@ -4163,13 +4191,10 @@ void deleteAdmin()
 
     listOfAdminData(); // get latest Admin data
     FILE *fp;
-    fp = fopen("admin_data/admin_index.txt", "r");
-    fscanf(fp, "%d", &index); // get Admin Name
-    fclose(fp);
 
     // find del position
     int deletePos, i, found = 0;
-    for (i = 0; i < index; i++)
+    for (i = 0; i < adminIndex - 1; i++)
     {
 
         if (strcmp(adminData[i].Name, Admin_Name) == 0)
@@ -4183,12 +4208,13 @@ void deleteAdmin()
     // if Admin found
     if (found)
     {
-        printCentered("Admin Found...", 10);
-        printCentered("-----------------------", 10);
-        printCentered("   Name:            Email:    ", 15);
-        printCentered("----------------------------------------------------------------", 9);
+        printf("\n");
+        printCentered("  Admin Found...", 10);
+        printCentered("-----------------------------------", 9);
+        printCentered("     Name:                 Email:    ", 15);
+        printCentered("-----------------------------------", 9);
 
-        printf("                                        %s             %s\n", adminData[deletePos].Name, adminData[deletePos].Email);
+        printf("                                                               %s             %s\n", adminData[deletePos].Name, adminData[deletePos].Email);
         printf("\n\n\n\n\n");
         printCentered("     Are you sure you want to delete?", 15);
         printCentered("     1. YES", 10);
@@ -4208,25 +4234,20 @@ void deleteAdmin()
         switch (option)
         {
         case 1:
-            for (int j = deletePos; j < index; j++)
+            for (int j = deletePos; j < adminIndex - 1; j++)
             {
                 adminData[j] = adminData[j + 1];
             }
-            index = index - 1;
+            adminIndex = adminIndex - 1;
 
             // Latest Data Send to Admin - FILE
-            fp = fopen("admin_data/data.txt", "w"); // reset previous data
+            fp = fopen("admin_data/data.txt", "w");
             fclose(fp);
             fp = fopen("admin_data/data.txt", "a");
-            for (int j = 0; j < index; j++)
+            for (int j = 0; j < adminIndex - 1; j++)
             {
                 fprintf(fp, "%s %s %s\n", adminData[j].Name, adminData[j].Pass, adminData[j].Email);
             }
-            fclose(fp);
-
-            // send index to admin index
-            fp = fopen("admin_data/admin_index.txt", "w");
-            fprintf(fp, "%d", index);
             fclose(fp);
 
             printf("\n\n");
@@ -4269,17 +4290,12 @@ void adminPasswordReset()
     printCentered(" --------------------------", 9);
     printf("\n\n");
 
-    int index;
     char adPass[20];
     char adName[30];
 
-    FILE *fp;
-    fp = fopen("admin_data/admin_index.txt", "r");
-    fscanf(fp, "%d", &index);
-    fclose(fp);
-
     listOfAdminData(); // encripted data
-    decripTech(adminData, index);
+    // adminIndex from global variable
+    decripTech(adminData, adminIndex);
 
     int width = getConsoleWidth();
     int space = (width - 18) / 2;
@@ -4291,7 +4307,7 @@ void adminPasswordReset()
     printf("\n");
 
     int pass, i, found = 0;
-    for (i = 0; i < index; i++)
+    for (i = 0; i < adminIndex - 1; i++)
     {
 
         if (strcmp(adminData[i].Name, adName) == 0)
@@ -4339,13 +4355,14 @@ void adminPasswordReset()
 
             strcpy(adminData[pass].Pass, adPass); // pass copy to another variable
 
-            encripTech(adminData, index); // again encript all data before sending to file
+            encripTech(adminData, adminIndex); // again encript all data before sending to file
 
             // Latest Data Send to Admin - FILE
+            FILE *fp;
             fp = fopen("admin_data/data.txt", "w"); // delete previous data
             fclose(fp);
             fp = fopen("admin_data/data.txt", "a");
-            for (int j = 0; j < index; j++)
+            for (int j = 0; j < adminIndex - 1; j++)
             {
                 fprintf(fp, "%s %s %s\n", adminData[j].Name, adminData[j].Pass, adminData[j].Email);
             }
@@ -4386,24 +4403,20 @@ void listOfAdmin()
     char headingName[40] = "Admin Management";
     menuUI(headingName);
     printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
-    printf("\n\n");
     printCentered("OneMart", 10);
     printCentered("------------------------", 10);
     printf("\n\n");
     printCentered("List of Admins", 9);
-    printCentered("-----------------------------------------------------------", 9);
-    printCentered("|    Name:          Password:            Email:             |", 9);
-    printCentered("============================================================", 9);
+    printCentered("-------------------------------------------------------------", 15);
+    printCentered("|    Name:          Password:            Email:             |", 15);
+    printCentered("=============================================================", 15);
 
-    FILE *fp;
-    fp = fopen("admin_data/admin_index.txt", "r");
-    fscanf(fp, "%d", &index);
-    fclose(fp);
-
-    decripTech(adminData, index); // decript data
-    for (int i = 0; i < index; i++)
+    // adminIndex from global variable;
+    decripTech(adminData, adminIndex); // decript data
+    for (int i = 0; i < adminIndex - 1; i++)
     {
-        printf("                                                  %s           %s            %s\n", adminData[i].Name, adminData[i].Pass, adminData[i].Email);
+        printf("                                                   %s            %s           %s\n", adminData[i].Name, adminData[i].Pass, adminData[i].Email);
+        printCentered("-------------------------------------------------------------", 9);
     }
 
     printf("\n\n\n");
@@ -4886,6 +4899,8 @@ void allProductData()
         strcpy(allProduct[index].pCat, pCat2);
         index++;
     }
+
+    allProIndex = index;
     fclose(fp);
     fp = fopen("Stock/index/all_product_index.txt", "w");
     fprintf(fp, "%d", index);
@@ -4913,9 +4928,14 @@ void listOfAdminData()
         index++;
     }
     fclose(fp);
-    fp = fopen("admin_data/admin_index.txt", "w");
-    fprintf(fp, "%d", index);
+    fp = fopen("admin_data/primaryAdmin.txt", "r");
+    fscanf(fp, "%s %s %s", adminName, adminPass, adminEmail);
+    strcpy(adminData[index].Name, adminName);
+    strcpy(adminData[index].Pass, adminPass);
+    strcpy(adminData[index].Email, adminEmail);
+    index++;
     fclose(fp);
+    adminIndex = index;
 }
 //*---------------ALL Admin from FILE - End----------------*/
 //
@@ -5160,12 +5180,18 @@ void encripTech(struct user Data[50], int index)
 //*---------------Decripton Start----------------*/
 void decripTech(struct user Data[100], int index)
 {
+    int lastIndex = 0;
     for (int j = 0; j < index; j++)
     {
         for (int i = 0; (i < 100 && Data[j].Pass[i] != '\0'); i++)
         {
             Data[j].Pass[i] = Data[j].Pass[i] - 5;
         }
+        lastIndex = j;
+    }
+    for (int i = 0; (i < 100 && Data[lastIndex].Name[i] != '\0'); i++)
+    {
+        Data[lastIndex].Name[i] = Data[lastIndex].Name[i] - 5;
     }
 }
 //*---------------Decripton End----------------*/
