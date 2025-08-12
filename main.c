@@ -20,6 +20,7 @@ int getSalesData(int index);
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
+void decripTech2(struct user Data[100], int index); // For Customer
 
 void adminSignIn(); // 1. Authorization & Authentication
 void adminSignUp();
@@ -770,7 +771,7 @@ void customerSignIn()
     fscanf(fp, "%d", &index);
     fclose(fp);
     int index2 = index;
-    decripTech(customerData, index); // decripted data
+    decripTech2(customerData, index); // decripted data
 
     for (int i = 0; i < index; i++)
     {
@@ -782,23 +783,14 @@ void customerSignIn()
             fp = fopen("login_Logout_status/logData_customer.txt", "w");
             fprintf(fp, "%d", customerLoginStatus);
             fclose(fp);
+
             // update current customer name
-
-            // find customer name
-            for (int i = 0; i < index2; i++)
-            {
-                if (cusID2 == customerData[i].id)
-                {
-                    strcpy(current_user_customer2, customerData[i].Name);
-                    fp = fopen("customer_data/current_user_customer.txt", "w");
-                    fprintf(fp, "%s", current_user_customer2);
-                    fclose(fp);
-
-                    fp = fopen("customer_data/current_user_customer_ID.txt", "w");
-                    fprintf(fp, "%d", cusID2);
-                    fclose(fp);
-                }
-            }
+            fp = fopen("customer_data/current_user_customer.txt", "w");
+            fprintf(fp, "%s", current_user_customer);
+            fclose(fp);
+            fp = fopen("customer_data/current_user_customer_ID.txt", "w");
+            fprintf(fp, "%d", cusID2);
+            fclose(fp);
 
             found = 1;
             break;
@@ -3124,7 +3116,7 @@ void userRechargeBankCard()
                     bankCard[i].cvv,
                     bankCard[i].cardDate.mon,
                     bankCard[i].cardDate.year,
-                    bankCard[i].cardHolderName, 
+                    bankCard[i].cardHolderName,
                     bankCard[i].balance);
         }
         fclose(fp);
@@ -5194,50 +5186,62 @@ void decripTech(struct user Data[100], int index)
         Data[lastIndex].Name[i] = Data[lastIndex].Name[i] - 5;
     }
 }
+void decripTech2(struct user Data[100], int index)
+{
+    int lastIndex = 0;
+    for (int j = 0; j < index; j++)
+    {
+        for (int i = 0; (i < 100 && Data[j].Pass[i] != '\0'); i++)
+        {
+            Data[j].Pass[i] = Data[j].Pass[i] - 5;
+        }
+        lastIndex = j;
+    }
+}
 //*---------------Decripton End----------------*/
 //
 //
 //
 ///*-----------------2nd HOME START----------------------*/
-void home2() // Admin or not
-{
-    char headingName[10] = "OneMart";
-    menuUI(headingName);
-    printf("\n\n\n\n\n\n\n\n");
-    printCentered("Are you admin?", 15);
-    printCentered(" 1. YES", 10);
-    printCentered("2. NO", 4);
+// void home2() // Admin or not
+// {
+//     char headingName[10] = "OneMart";
+//     menuUI(headingName);
+//     printf("\n\n\n\n\n\n\n\n");
+//     printCentered("Are you admin?", 15);
+//     printCentered(" 1. YES", 10);
+//     printCentered("2. NO", 4);
 
-    int option;
-    printf("\n\n\nEnter your choice: ");
-    scanf("%d", &option);
-    FILE *fp;
-    fp = fopen("login_Logout_status/logData.txt", "r");
-    fscanf(fp, "%d", &adminLoginStatus);
-    fclose(fp);
-    switch (option)
-    {
-    case 1:
+//     int option;
+//     printf("\n\n\nEnter your choice: ");
+//     scanf("%d", &option);
+//     FILE *fp;
+//     fp = fopen("login_Logout_status/logData.txt", "r");
+//     fscanf(fp, "%d", &adminLoginStatus);
+//     fclose(fp);
+//     switch (option)
+//     {
+//     case 1:
 
-        if (adminLoginStatus == 1)
-        {
-            adminPanelHome();
-        }
-        else if (adminLoginStatus == 0)
-        {
-            adminPanelAuthentication();
-        }
+//         if (adminLoginStatus == 1)
+//         {
+//             adminPanelHome();
+//         }
+//         else if (adminLoginStatus == 0)
+//         {
+//             adminPanelAuthentication();
+//         }
 
-        break;
-    case 2:
-        OnlineHome();
-        break;
-    default:
-        printCentered("Invalid Choice!", 4);
-        _getch();
-        home2();
-    }
-}
+//         break;
+//     case 2:
+//         OnlineHome();
+//         break;
+//     default:
+//         printCentered("Invalid Choice!", 4);
+//         _getch();
+//         home2();
+//     }
+// }
 //*-----------------2nd HOME END----------------------*/
 //
 //
@@ -6095,7 +6099,7 @@ int main()
     {
     case 1:
         system("cls");
-        home2();
+        OnlineHome();
         break;
     case 2:
         system("cls");
