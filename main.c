@@ -61,6 +61,7 @@ void userRechargeBankCard();
 int getMobileBankingData(int index);
 void rechargeByMobileAndCard(const char payOption[15]);
 void userOrderHistory();
+void getBankCardData();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -164,6 +165,7 @@ struct card
     float balance;
 };
 struct card card[100];
+struct card bankCard[100];
 
 // Mobile Banking
 struct mobileBanking
@@ -3052,6 +3054,90 @@ void rechargeByMobileAndCard(const char payOption[15])
 //------------------User Recharge- Bank Card ----------------*/
 void userRechargeBankCard()
 {
+    char headingName[40] = "OnePay - Online Card";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n\n");
+    printCentered("Card Recharge:", 10);
+    printCentered("--------------------------", 10);
+    printf("\n");
+    getBankCardData();
+
+    int cardNum, cvv, expireMon, expireYear;
+    float rechargeAmount;
+
+    int width = getConsoleWidth();
+    int space = (width - 30) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Enter your card number  : ");
+    scanf("%d", &cardNum);
+    printf("\n\n");
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Enter your card CVV number  : ");
+    scanf("%d", &cvv);
+    printf("\n\n");
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Enter your card expire date  : ");
+    scanf("%d %d", &expireMon, &expireYear);
+    printf("\n\n");
+
+    int found = 0, i;
+
+    for (i = 0; i < 100; i++)
+    {
+        if (cardNum == bankCard[i].cardNum && cvv == bankCard[i].cvv && expireMon == bankCard[i].cardDate.mon && expireYear == bankCard[i].cardDate.year)
+        {
+            found = 1;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        printCentered("Card Details:", 2);
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Input rechanrge amount: ");
+        scanf("%f", &rechargeAmount);
+
+        bankCard[i].balance += rechargeAmount;
+
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("New Balance: %.2f", bankCard[i].balance);
+
+        FILE *fp;
+        fp = fopen("bank_card/all_bank_card.txt", "w");
+
+        for (int i = 0; i < 100; i++)
+        {
+            fprintf(fp, "%d %d %d %d %s %f\n",
+                    bankCard[i].cardNum,
+                    bankCard[i].cvv,
+                    bankCard[i].cardDate.mon,
+                    bankCard[i].cardDate.year,
+                    bankCard[i].cardHolderName, 
+                    bankCard[i].balance);
+        }
+        fclose(fp);
+    }
+    else
+    {
+        printCentered("Card not found!", 4);
+    }
+    printf("\n\n\n");
+
+    printCentered("Press any key to exit......", 4);
+    _getch();
+    menuProfile();
 }
 //
 //
@@ -3337,6 +3423,87 @@ void HalfYearlyIncome()
 //*---------------Admin Panel (Accounts) Yearly Income Start----------------*/
 void yearlyIncome()
 {
+    char headingName[40] = "Accounts";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered(" Yearly Income", 15);
+    printCentered(" --------------------------", 15);
+    currentDateTime();
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    // for space - 2 the reason is to make it align in center
+    for (int i = 0; i < space - 2; i++)
+        printf(" ");
+    printf("Current Date: %d-%d-%d", currentDate.day, currentDate.mon, currentDate.year);
+    printf("\n\n");
+
+    // to get pervoius year
+    currentDate.year--;
+
+    int index = getSalesData(0);
+    int i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+        if (currentDate.year == allSalesProduct[i].saleDate.year)
+        {
+            found = 1;
+            break;
+        }
+    }
+    printf("\n\n");
+
+    if (found)
+    {
+        float sumTotal = 0, profit = 0;
+        printCentered("Sales Details", 7);
+        printCentered("----------------", 7);
+        printCentered("Invoice NO.:       Customer-ID:        Product-ID:       Product-Name:        Category:         Unit:         Date:        Total:        Type:", 15);
+        printCentered("-----------------------------------------------------------------------------------------------------------------------------------------------", 9);
+
+        for (int i = 0; i < index; i++)
+        {
+            if (currentDate.year == allSalesProduct[i].saleDate.year)
+            {
+                printf("       %010llu            %d             %d            %s               %s              %d         %d-%d-%d      %.2f      %s\n", allSalesProduct[i].invoiceNum, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].pCat, allSalesProduct[i].pUnit, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year, allSalesProduct[i].totalPrice, allSalesProduct[i].saleMode);
+                sumTotal += allSalesProduct[i].totalPrice;
+            }
+        }
+        printf("\n\n");
+
+        // total sales update
+        printCentered("Total Sales:", 3);
+        printCentered("--------------", 3);
+        int width = getConsoleWidth();
+        int space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal);
+        printf("\n\n");
+
+        // total profit
+        printCentered("Total Profit:", 10);
+        printCentered("--------------", 10);
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal * 0.15);
+        printf("\n\n");
+    }
+    else
+    {
+        printCentered("No product sold!", 4);
+        printf("\n\n");
+    }
+
+    printCentered("   Press any key to exit....", 4);
+    _getch();
+    adminPanelAccounts();
 }
 //*---------------Admin Panel (Accounts) Yearly Income End----------------*/
 //
@@ -4833,6 +5000,37 @@ void cardData()
     fprintf(fp, "%d", index);
     fclose(fp);
 }
+//
+//
+/*--------------- Bank cardData start----------------*/
+//
+//
+void getBankCardData()
+{
+    int i = 0, cardNum2, cvv2, mon2, year2;
+    float balance2;
+    char cardHolderName2[20];
+
+    FILE *fp;
+    // received data from file
+    fp = fopen("bank_card/all_bank_card.txt", "r");
+    while (fscanf(fp, "%d %d %d %d %s %f\n", &cardNum2, &cvv2, &mon2, &year2, cardHolderName2, &balance2) != EOF)
+    {
+        strcpy(bankCard[i].cardHolderName, cardHolderName2);
+        bankCard[i].cardNum = cardNum2;
+        bankCard[i].cvv = cvv2;
+        bankCard[i].cardDate.mon = mon2;
+        bankCard[i].cardDate.year = year2;
+        bankCard[i].balance = balance2;
+        i++;
+    }
+    fclose(fp);
+}
+//
+//
+/*---------------Bank cardData end----------------*/
+//
+//
 /*---------------cardData end----------------*/
 //
 //
