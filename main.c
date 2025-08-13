@@ -784,6 +784,7 @@ void customerSignIn()
             fprintf(fp, "%d", customerLoginStatus);
             fclose(fp);
 
+            strcpy(current_user_customer, customerData[i].Name);
             // update current customer name
             fp = fopen("customer_data/current_user_customer.txt", "w");
             fprintf(fp, "%s", current_user_customer);
@@ -5206,14 +5207,12 @@ void decripTech(struct user Data[100], int index)
 }
 void decripTech2(struct user Data[100], int index)
 {
-    int lastIndex = 0;
     for (int j = 0; j < index; j++)
     {
         for (int i = 0; (i < 100 && Data[j].Pass[i] != '\0'); i++)
         {
             Data[j].Pass[i] = Data[j].Pass[i] - 5;
         }
-        lastIndex = j;
     }
 }
 //*---------------Decripton End----------------*/
