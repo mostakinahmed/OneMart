@@ -5689,6 +5689,10 @@ void OnlineHome()
     fscanf(fp, "%d", &customerLoginStatus);
     fclose(fp);
 
+    fp = fopen("login_Logout_status/logData.txt", "r");
+    fscanf(fp, "%d", &adminLoginStatus);
+    fclose(fp);
+
     // for nav section
     if (customerLoginStatus == 1)
     {
@@ -5989,6 +5993,7 @@ void OnlineHome()
     printf("\n");
     for (int i = 0; i < space; i++)
         printf(" ");
+
     printf("   Choose Option: ");
     scanf("%d", &option);
     switch (option)
@@ -6066,6 +6071,7 @@ void OnlineHome()
         customerLogOut();
         break;
     case 5:
+
         if (adminLoginStatus == 1)
         {
             adminPanelHome();
