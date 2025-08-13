@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 onemart
-=======
-m
->>>>>>> 891b3e5842f3bfb9a484ce1e5eb9b9932ceec849
