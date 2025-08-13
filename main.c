@@ -3054,6 +3054,7 @@ void userRechargeBankCard()
     printCentered("--------------------------", 10);
     printf("\n");
     getBankCardData();
+    cardData();
 
     int cardNum, cvv, expireMon, expireYear;
     float rechargeAmount;
@@ -3092,32 +3093,49 @@ void userRechargeBankCard()
 
     if (found)
     {
-        printCentered("Card Details:", 2);
-        setColor(15);
-        for (int i = 0; i < space; i++)
-            printf(" ");
-        printf("Input rechanrge amount: ");
-        scanf("%f", &rechargeAmount);
-
-        bankCard[i].balance += rechargeAmount;
-
-        setColor(15);
-        for (int i = 0; i < space; i++)
-            printf(" ");
-        printf("New Balance: %.2f", bankCard[i].balance);
-
+        printCentered("Card Found", 2);
+        int cardIndex;
         FILE *fp;
-        fp = fopen("bank_card/all_bank_card.txt", "w");
+        fp = fopen("payment_card/card_index.txt", "r");
+        fscanf(fp, "%d", &cardIndex);
+        fclose(fp);
 
-        for (int i = 0; i < 100; i++)
+        int j = 0;
+        while (j < cardIndex)
         {
-            fprintf(fp, "%d %d %d %d %s %f\n",
-                    bankCard[i].cardNum,
-                    bankCard[i].cvv,
-                    bankCard[i].cardDate.mon,
-                    bankCard[i].cardDate.year,
-                    bankCard[i].cardHolderName,
-                    bankCard[i].balance);
+            if (currentCustomerID == card[j].cusID)
+            {
+                break;
+            }
+            j++;
+        }
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Input recharge amount: ");
+        scanf("%f", &rechargeAmount);
+        printf("\n\n");
+
+        card[j].balance += rechargeAmount;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("New Balance: %.2f\n", card[j].balance);
+
+        // push the data to the file
+        fp = fopen("payment_card/cardData.txt", "w");
+
+        for (int i = 0; i < cardIndex; i++)
+        {
+            fprintf(fp, "%d %s %d %d %d %d %d %f\n",
+                    card[i].cusID,
+                    card[i].cardHolderName,
+                    card[i].cvv,
+                    card[i].cardDate.day,
+                    card[i].cardDate.mon,
+                    card[i].cardDate.mon,
+                    card[i].cardDate.year,
+                    card[i].balance);
         }
         fclose(fp);
     }
