@@ -17,6 +17,7 @@ void dateTimeForExpireProduct();
 void cardData();
 void currentDateTime();
 int getSalesData(int index);
+int getOfferData(int index);
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -49,7 +50,7 @@ void stockListByCategory();
 void expireProductList();
 
 void adminPanelOnlineStore(); // 4. Admin Panel Online Store - Home
-void orderPendingList();
+void onlineOfferManagement();
 void orderDeliveredList();
 void OnePayManagement();
 void listOfCard();
@@ -63,6 +64,10 @@ int getMobileBankingData(int index);
 void rechargeByMobileAndCard(const char payOption[15]);
 void userOrderHistory();
 void getBankCardData();
+void createOffer();
+void updateOffer();
+void deleteOffer();
+void offerList();
 
 void adminPanelAccounts(); // 5. Admin Panel Accounts - Home
 void dailyIncome();
@@ -177,8 +182,17 @@ struct mobileBanking
     float balance;
 };
 struct mobileBanking mobileBanking[200];
-//
-//
+
+// struct for offer
+struct offer
+{
+    char offerName[50];
+    char promoCode[10];
+    int discount;
+    struct date startDate;
+    struct date endDate;
+};
+struct offer offerData[100];
 /*------------------------This is for welcome page-----------------------------------------------*/
 // Function to set text color
 void setColor(int color)
@@ -236,17 +250,17 @@ void printCentered(const char *text, int color)
     printf("%s\n", text);
     setColor(7); // Reset color
 }
-
-void printCenteredID(const int id, int color)
+// centerted except new Line
+void printCenteredExceptNewLine(const char *text, int color)
 {
     int width = getConsoleWidth();
-    // int len = strlen(id);
-    int space = (width - 5) / 2;
+    int len = strlen(text);
+    int space = (width - len) / 2;
 
     setColor(color);
     for (int i = 0; i < space; i++)
         printf(" ");
-    printf("SKU   : %d\n", id);
+    printf("%s", text);
     setColor(7); // Reset color
 }
 
@@ -784,6 +798,7 @@ void customerSignIn()
             fprintf(fp, "%d", customerLoginStatus);
             fclose(fp);
 
+            strcpy(current_user_customer, customerData[i].Name);
             // update current customer name
             fp = fopen("customer_data/current_user_customer.txt", "w");
             fprintf(fp, "%s", current_user_customer);
@@ -2584,9 +2599,9 @@ void adminPanelOnlineStore() // HOME
     printf("\n");
     printCentered("Online Store", 15);
     printCentered("-------------------------------", 15);
-    printCentered("     1. Oneline Home", 15);
+    printCentered("     1. Online Home", 15);
     printCentered("          2. OnePay Management", 15);
-    printCentered("           3. Order Pending List", 15);
+    printCentered("      3. Online Offer", 15);
     printCentered("             4. Order Delivered List", 15);
     printCentered("   0. Admin-Home", 4);
     printf("\n\n\n");
@@ -2603,21 +2618,19 @@ void adminPanelOnlineStore() // HOME
         OnePayManagement();
         break;
     case 3:
-        orderPendingList();
+        onlineOfferManagement();
         break;
-        // yet not done
     case 4:
         orderDeliveredList();
         break;
-        // yet not done
     case 0:
         adminPanelHome();
         break;
     default:
         printCentered("Invalid Choice!", 4);
-        printCentered("Press any key", 10);
+        printCentered("Press any key to return to Online Store.....", 10);
         _getch();
-        adminPanelSales();
+        adminPanelOnlineStore();
     }
 }
 //*---------------Admin Panel  Online Store End ----------------*/
@@ -2638,7 +2651,8 @@ void OnePayManagement()
     printCentered("-------------------------------", 15);
     printCentered("     1. List OnePay Card", 15);
     printCentered("          2. Recharge OnePay Card", 15);
-    printCentered("0. Admin-Home", 4);
+    printf("\n");
+    printCentered("<-- Back_0", 4);
     printf("\n\n\n");
 
     int option;
@@ -2653,7 +2667,7 @@ void OnePayManagement()
         rechargeCard();
         break;
     case 0:
-        adminPanelHome();
+        adminPanelOnlineStore();
         break;
     default:
         printCentered("Invalid Choice!", 4);
@@ -3157,8 +3171,144 @@ void userRechargeBankCard()
 //
 //
 //*---------------Admin Panel(Online Store) Order Pending List Start----------------*/
-void orderPendingList()
+void onlineOfferManagement()
 {
+    char headingName[40] = "Admin Panel - Online Store";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+
+    printCentered("Online Offers - Management", 9);
+    printCentered("------------------------------", 9);
+    printCentered("     1. Create Offer", 15);
+    printCentered("      2. Update Offer", 15);
+    printCentered("      3. Delete Offer", 15);
+    printCentered("   4. Offer List", 15);
+    printf("\n");
+    printCentered("<-- Back_0", 4);
+    printf("\n\n\n");
+
+    int option;
+    printf("\n\nEnter your choice: ");
+    scanf("%d", &option);
+    switch (option)
+    {
+    case 1:
+        createOffer();
+        break;
+    case 2:
+        updateOffer();
+        break;
+    case 3:
+        deleteOffer();
+        break;
+        // yet not done
+    case 4:
+        offerList();
+        break;
+        // yet not done
+    case 0:
+        adminPanelOnlineStore();
+        break;
+    default:
+        printCentered("Invalid Choice!", 4);
+        printCentered("Press any key to return to Offer Management.....", 10);
+        _getch();
+        onlineOfferManagement();
+    }
+}
+
+void createOffer()
+{
+    char headingName[40] = "Admin Panel - Online Store";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+
+    printCentered("Create Offer", 15);
+    printCentered("------------------------", 15);
+    printf("\n\n");
+    printCentered("Enter offer details: ", 15);
+    printCentered("------------------------", 15);
+    printCenteredExceptNewLine("Offer Name             : ", 9);
+    scanf("%s", offerData->offerName);
+    printCenteredExceptNewLine("Promocode              : ", 9);
+    scanf("%s", offerData->promoCode);
+    printCenteredExceptNewLine("Discount Percentage    : ", 9);
+    scanf("%d", &offerData->discount);
+    printCenteredExceptNewLine("Start Date (dd mm yyyy): ", 9);
+    scanf("%d %d %d", &offerData->startDate.day, &offerData->startDate.mon, &offerData->startDate.year);
+    printCenteredExceptNewLine("End Date (dd mm yyyy)   : ", 9);
+    scanf("%d %d %d", &offerData->endDate.day, &offerData->endDate.mon, &offerData->endDate.year);
+
+    // send data to file
+    FILE *fp;
+    fp = fopen("offer/offerData.txt", "a");
+    fprintf(fp, "%s %s %d %d %d %d %d %d %d\n",
+            offerData->offerName,
+            offerData->promoCode,
+            offerData->discount,
+            offerData->startDate.day,
+            offerData->startDate.mon,
+            offerData->startDate.year,
+            offerData->endDate.day,
+            offerData->endDate.mon,
+            offerData->endDate.year);
+    fclose(fp);
+    printf("\n\n\n");
+    printCentered("Offer created successfully!", 10);
+    printCentered("press any key to back...", 4);
+    _getch();
+    onlineOfferManagement();
+}
+void updateOffer()
+{
+
+    // Implementation for updating an offer
+}
+void deleteOffer()
+{
+    // Implementation for deleting an offer
+}
+void offerList()
+{
+
+    char headingName[40] = "Admin Panel - Online Store";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+
+    printCentered("Offer List", 9);
+    printCentered("-----------------------------------", 9);
+    printCentered("  Offer Name:    Promo Code:   Discount:   Start Date:   End Date:", 15);
+    printCentered("  -----------------------------------------------------------------", 9);
+    int index = getOfferData(0);
+    for (int i = 0; i < index; i++)
+    {
+        printf("                                                %s          %s         %d       %d-%d-%d    %d-%d-%d\n",
+               offerData[i].offerName,
+               offerData[i].promoCode,
+               offerData[i].discount,
+               offerData[i].startDate.day,
+               offerData[i].startDate.mon,
+               offerData[i].startDate.year,
+               offerData[i].endDate.day,
+               offerData[i].endDate.mon,
+               offerData[i].endDate.year);
+    }
+    printf("\n\n\n");
+    printCentered("press any key to back...", 4);
+    _getch();
+    onlineOfferManagement();
 }
 //*---------------Admin Panel (Online Store) Order Pending List End----------------*/
 //
@@ -3167,6 +3317,34 @@ void orderPendingList()
 //*---------------Admin Panel (Online Store) Order Delivered List Start----------------*/
 void orderDeliveredList()
 {
+    char headingName[40] = "Stock / Product";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+
+    printCentered("Online Sales History", 9);
+    printCentered("  -------------------------------------------------------------------------------------------------------------------------------------------", 9);
+    printCentered("  S/N:    Invoice:   CustomerID:  Product-ID:    Product-Name:      Sale-Date:   Sale-Mode:   Transaction-Num:  Price:  Quantity:  Category:", 15);
+    printCentered("  -------------------------------------------------------------------------------------------------------------------------------------------", 9);
+
+    int index = getSalesData(0); // get all sales history data
+    for (int i = 0; i < index; i++)
+    {
+        if (strcmp(allSalesProduct[i].saleMode, "online") == 0)
+        {
+            printf("           %d     %010llu    %d        %d          %s          %d-%d-%d       %s       %s    %0.2f    %d        %s\n",
+                   i + 1, allSalesProduct[i].invoiceNum, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year,
+                   allSalesProduct[i].saleMode, allSalesProduct[i].transactionNum, allSalesProduct[i].totalPrice, allSalesProduct[i].pUnit, allSalesProduct[i].pCat);
+        }
+    }
+
+    printf("\n\n\n");
+    printCentered("Press any key to return Sales.....", 10);
+    _getch();
+    adminPanelOnlineStore();
 }
 //*---------------Admin Panel (Online Store) Order Delivered List End----------------*/
 //
@@ -5080,7 +5258,41 @@ int getSalesData(int index)
     // fprintf(fp, "%d", index);
     // fclose(fp);
 }
+int getOfferData(int index)
+{
+    char offerName[50];
+    char promoCode[20];
+    int discount, startDateDay, startDateMon, startDateYear, endDateDay, endDateMon, endDateYear;
 
+    FILE *fp;
+    fp = fopen("offer/offerData.txt", "r");
+    while (fscanf(fp, "%s %s %d %d %d %d %d %d %d\n",
+                  offerName,
+                  promoCode,
+                  &discount,
+                  &startDateDay,
+                  &startDateMon,
+                  &startDateYear,
+                  &endDateDay,
+                  &endDateMon,
+                  &endDateYear) != EOF)
+    {
+        // Update offer data
+        strcpy(offerData[index].offerName, offerName);
+        strcpy(offerData[index].promoCode, promoCode);
+        offerData[index].discount = discount;
+        offerData[index].startDate.day = startDateDay;
+        offerData[index].startDate.mon = startDateMon;
+        offerData[index].startDate.year = startDateYear;
+        offerData[index].endDate.day = endDateDay;
+        offerData[index].endDate.mon = endDateMon;
+        offerData[index].endDate.year = endDateYear;
+        index++;
+    }
+    fclose(fp);
+
+    return index;
+}
 //
 //-----------Mobile Banking Data--------------
 int getMobileBankingData(int index)
@@ -5206,14 +5418,12 @@ void decripTech(struct user Data[100], int index)
 }
 void decripTech2(struct user Data[100], int index)
 {
-    int lastIndex = 0;
     for (int j = 0; j < index; j++)
     {
         for (int i = 0; (i < 100 && Data[j].Pass[i] != '\0'); i++)
         {
             Data[j].Pass[i] = Data[j].Pass[i] - 5;
         }
-        lastIndex = j;
     }
 }
 //*---------------Decripton End----------------*/
@@ -5723,6 +5933,33 @@ void OnlineHome()
 
     printCentered("OneMart - Online Shopping", 10);
     printCentered("--------------------------", 10);
+    printf("\n");
+    // Offer Section
+    int offerIndex = getOfferData(0);
+    if (offerIndex > 0)
+    {
+        printCentered("     -------------------------------------------Available Offers---------------------------------------------", 4);
+        setColor(4);
+        for (int i = 0; i < offerIndex; i++)
+        {
+            printf("                            Big %s Savings! Use promo code %s to get %d%% off. || Special Offer: 10%% off with ABC Bank payment\n",
+                   offerData[i].offerName,
+                   offerData[i].promoCode,
+                   offerData[i].discount);
+        }
+        setColor(7);
+        printCentered("     --------------------------------------------------------------------------------------------------------", 4);
+        printf("\n");
+    }
+    else
+    {
+        printCentered("     -------------------------------------------Available Offers---------------------------------------------", 4);
+        setColor(4);
+        printf("                                                     Big Special Offer: 10%% off with ABC Bank payment\n");
+        setColor(7);
+        printCentered("     --------------------------------------------------------------------------------------------------------", 4);
+    }
+    // End Offer Section
 
     // take all product index num from file
     int index, serNum = 1;
