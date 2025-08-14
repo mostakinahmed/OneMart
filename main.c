@@ -18,6 +18,7 @@ void cardData();
 void currentDateTime();
 int getSalesData(int index);
 int getOfferData(int index);
+void getUserLenaDena();
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -104,6 +105,47 @@ int currentCustomerID = 0;
 /*-------Global Indexing------*/
 int allProIndex = 0;
 int adminIndex = 0;
+
+// From Lenadena
+
+// lenadena bank user
+struct bankUser
+{
+    int accountNumber;
+    char name[50];
+    char address[100];
+    char phone[15];
+    float balance;
+    float loanAmount;
+    float interest;
+    char password[20];
+    time_t creationDate;
+    int loginAttempts;
+    time_t lastLogin;
+};
+struct bankUser lenaDenaUsers[100];
+int lenaDenaAccountCount = 0;
+float INTEREST_RATE = 0.03f;
+typedef struct
+{
+    float rate;
+    time_t timestamp;
+} InterestRateHistory;
+
+// Structure to hold login history
+typedef struct
+{
+    int accountNumber;
+    char status[20]; // "Success" or "Failed"
+    time_t timestamp;
+} LoginHistory;
+
+InterestRateHistory rateHistory[100];
+LoginHistory loginHistory[1000];
+int accountCount = 0;
+int transactionCount = 0;
+int rateHistoryCount = 0;
+int loginHistoryCount = 0;
 
 /*-------Global Structure Section------*/
 // date structure
@@ -3310,6 +3352,55 @@ void offerList()
     _getch();
     onlineOfferManagement();
 }
+//
+//
+//
+void getUserLenaDena()
+{
+
+    FILE *fp = fopen("LenaDena/accounts.txt", "r");
+    if (fp == NULL)
+    {
+        printf("No saved accounts file found.\n");
+        return;
+    }
+
+    fscanf(fp, "%d\n", &lenaDenaAccountCount);
+
+    for (int i = 0; i < lenaDenaAccountCount; i++)
+    {
+        fscanf(fp, "%d|%49[^|]|%99[^|]|%14[^|]|%f|%f|%f|%19[^|]|%ld|%d|%ld\n",
+               &lenaDenaUsers[i].accountNumber,
+               lenaDenaUsers[i].name,
+               lenaDenaUsers[i].address,
+               lenaDenaUsers[i].phone,
+               &lenaDenaUsers[i].balance,
+               &lenaDenaUsers[i].loanAmount,
+               &lenaDenaUsers[i].interest,
+               lenaDenaUsers[i].password,
+               (long *)&lenaDenaUsers[i].creationDate,
+               &lenaDenaUsers[i].loginAttempts,
+               (long *)&lenaDenaUsers[i].lastLogin);
+    }
+    fscanf(fp, "%f\n", &INTEREST_RATE);
+    fscanf(fp, "%d\n", &rateHistoryCount);
+    if (rateHistoryCount > 100)
+        rateHistoryCount = 0;
+
+    for (int i = 0; i < rateHistoryCount; i++)
+    {
+        fscanf(fp, "%f|%ld\n", &rateHistory[i].rate, (long *)&rateHistory[i].timestamp);
+    }
+
+    for (int i = 0; i < rateHistoryCount; i++)
+    {
+        fscanf(fp, "%f|%ld\n", &rateHistory[i].rate, (long *)&rateHistory[i].timestamp);
+    }
+
+    fclose(fp);
+    // Implementation for getting user data
+}
+
 //*---------------Admin Panel (Online Store) Order Pending List End----------------*/
 //
 //
@@ -3529,7 +3620,7 @@ void monthlyIncome()
         printf(" ");
     printf("Current Date: %d-%d-%d", currentDate.day, currentDate.mon, currentDate.year);
     printf("\n\n");
-    currentDate.mon++;
+    // currentDate.mon++;
     currentDate.mon--;
     if (currentDate.mon == 1)
     {
@@ -3603,8 +3694,131 @@ void monthlyIncome()
 //*---------------Admin Panel (Accounts) Half Yearly Income Start----------------*/
 void HalfYearlyIncome()
 {
+    char headingName[40] = "Accounts";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered(" Half Yearly Income", 15);
+    printCentered(" --------------------------", 15);
+    currentDateTime();
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    // for space - 2 the reason is to make it align in center
+    for (int i = 0; i < space - 2; i++)
+        printf(" ");
+    printf("Current Date: %d-%d-%d", currentDate.day, currentDate.mon, currentDate.year);
+    printf("\n\n");
+
+    int half;
+    // to get pervoius 6 mounths date
+    if (currentDate.mon > 6)
+    {
+        half = 1;
+    }
+    else
+    {
+        half = 0;
+        currentDate.year--;
+    }
+
+    int index = getSalesData(0);
+    int i, found = 0;
+
+    if (half)
+    {
+        for (i = 0; i < index; i++)
+        {
+            if (allSalesProduct[i].saleDate.mon >= 1 && allSalesProduct[i].saleDate.mon <= 6 && currentDate.year == allSalesProduct[i].saleDate.year)
+            {
+                found = 1;
+                break;
+            }
+        }
+    }
+    else
+    {
+        for (i = 0; i < index; i++)
+        {
+            if (allSalesProduct[i].saleDate.mon >= 12 && allSalesProduct[i].saleDate.mon <= 6 && currentDate.year == allSalesProduct[i].saleDate.year)
+            {
+                found = 1;
+                break;
+            }
+        }
+    }
+    printf("\n\n");
+
+    if (found)
+    {
+        float sumTotal = 0, profit = 0;
+        printCentered("Sales Details", 7);
+        printCentered("----------------", 7);
+        printCentered("Invoice NO.:       Customer-ID:        Product-ID:       Product-Name:        Category:         Unit:         Date:        Total:        Type:", 15);
+        printCentered("-----------------------------------------------------------------------------------------------------------------------------------------------", 9);
+
+        if (half)
+        {
+            for (int i = 0; i < index; i++)
+            {
+                if (allSalesProduct[i].saleDate.mon >= 1 && allSalesProduct[i].saleDate.mon <= 6 && currentDate.year == allSalesProduct[i].saleDate.year)
+                {
+                    printf("       %010llu            %d             %d            %s               %s              %d         %d-%d-%d      %.2f      %s\n", allSalesProduct[i].invoiceNum, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].pCat, allSalesProduct[i].pUnit, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year, allSalesProduct[i].totalPrice, allSalesProduct[i].saleMode);
+                    sumTotal += allSalesProduct[i].totalPrice;
+                }
+            }
+        }
+        else
+        {
+            for (i = 0; i < index; i++)
+            {
+                if (allSalesProduct[i].saleDate.mon >= 12 && allSalesProduct[i].saleDate.mon <= 6 && currentDate.year == allSalesProduct[i].saleDate.year)
+                {
+                    printf("       %010llu            %d             %d            %s               %s              %d         %d-%d-%d      %.2f      %s\n", allSalesProduct[i].invoiceNum, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].pCat, allSalesProduct[i].pUnit, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year, allSalesProduct[i].totalPrice, allSalesProduct[i].saleMode);
+                    sumTotal += allSalesProduct[i].totalPrice;
+                }
+            }
+        }
+        printf("\n\n");
+
+        // total sales update
+        printCentered("Total Sales:", 3);
+        printCentered("--------------", 3);
+        int width = getConsoleWidth();
+        int space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal);
+        printf("\n\n");
+
+        // total profit
+        printCentered("Total Profit:", 10);
+        printCentered("--------------", 10);
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal * 0.15);
+        printf("\n\n");
+    }
+    else
+    {
+        printCentered("No product sold!", 4);
+        printf("\n\n");
+    }
+
+    printCentered("   Press any key to exit....", 4);
+    _getch();
+    adminPanelAccounts();
 }
-//*---------------Admin Panel (Accounts) Half Yearly Income End----------------*/
+//---------------Admin Panel (Accounts) Half Yearly Income End----------------/
+//
+//
+//
+//*---------------Admin Panel (Accounts) Yearly Income start----------------*/
 //
 //
 //
@@ -5347,7 +5561,7 @@ void userOrderHistory()
     printCentered("  S/N:    Invoice:   Product-ID:   Product-Name:    Order-Date:   Mode:   Transaction-Num:  Price:  Quantity:  Category:", 15);
     printCentered("  -------------------------------------------------------------------------------------------------------------------------------------------", 9);
 
-    int index = getSalesData(0); // load all sales into allSalesProduct[]
+    int index = getSalesData(0); 
     int serNum = 1;
     int found = 0;
 
@@ -5588,8 +5802,171 @@ void buyProduct()
             printf("                                                                                           Total           : %.2f\n\n", total);
             setColor(7);
 
-            printCentered("press any key to use virtual card 'OnePay'....", 9);
+            int optionForPromo;
+            printCentered("Have a promo code?", 10);
+            printCentered("  1. Yes", 10);
+            printCentered("  2. No", 10);
+            printCentered("Choose Option: ", 10);
+            scanf("%d", &optionForPromo);
+            if (optionForPromo == 1)
+            {
+                char promoCode[20];
+                printf("\n");
+                width = getConsoleWidth();
+                space = (width - 18) / 2;
+                setColor(15);
+                for (int i = 0; i < space; i++)
+                    printf(" ");
+                printf("Input Promo Code: ");
+                scanf("%s", promoCode);
+                printf("\n\n");
+
+                // Check promo code
+                if (strcmp(promoCode, "PROMO10") == 0)
+                {
+                    total = total - (total * 0.15);
+
+                    printf("       Prev total : %.2f               Total           : %.2f\n\n", total + (total * 0.15), total);
+                    printf("Promo code applied! New total: %.2f\n", total);
+                }
+                else
+                {
+                    printf("Invalid promo code!\n");
+                    printf("Total remains: %.2f\n", total);
+                }
+            }
+
+            printf("\n");
+            printCentered("Press any key to continue for payment....", 9);
             _getch();
+
+            // show offer here ..
+
+            printf("\n");
+            printCentered("Press any key to continue for payment....", 9);
+            _getch();
+
+            // show offer here ..
+
+            printf("\n");
+            printCentered("Payment Method List: ", 10);
+            printCentered("  1. OnePay Card", 10);
+            printCentered("  2. LenaDena   ", 10);
+            int optionForPay;
+            scanf("%d", &optionForPay);
+
+            if (optionForPay == 1)
+            {
+                printf("You have selected OnePay Card:\n");
+                printCentered("  Your Card Info:", 10);
+                printCentered("  ----------------------", 10);
+
+                cardData();                       // get all card data
+                int index2, currentCardIndex = 0; // take card index
+                fp = fopen("customer_data/customer_index.txt", "r");
+                fscanf(fp, "%d", &index2);
+                fclose(fp);
+
+                // current card index
+                for (int i = 0; i < index2; i++)
+                {
+                    if (currentCustomerID == card[i].cusID)
+                    {
+                        currentCardIndex = i;
+                        break;
+                    }
+                }
+
+                printf("                                                                Card Holder Name : %s\n", card[currentCardIndex].cardHolderName);
+                printf("                                                                Card Number      : %d\n", card[currentCardIndex].cardNum);
+                printf("                                                                Card - CVV       : %d\n", card[currentCardIndex].cvv);
+                printf("                                                                Expire Date      : %d-%d-%d\n", card[currentCardIndex].cardDate.day, card[currentCardIndex].cardDate.mon, card[currentCardIndex].cardDate.year);
+                printf("                                                                Balance          : %.2f\n\n", card[currentCardIndex].balance);
+                printf("\n\n");
+
+                printCentered("  Input Card Data'", 10);
+                printCentered("  ----------------------", 10);
+                char cardHolderName2[20];
+                int cardNum2, cardCVV2, cardDate, day, mon, year;
+                char transactionNum[15];
+                srand(time(NULL)); // send ran num
+                generateTransactionNumber(transactionNum, 12);
+                // take current date from this function
+                currentDateTime();
+                currentDate.day;
+                currentDate.mon;
+                currentDate.year;
+                // take input from customer
+                printf("                                                                Card Holder Name : ");
+                scanf("%s", cardHolderName2);
+                printf("                                                                Card Number      : ");
+                scanf("%d", &cardNum2);
+                printf("                                                                Card - CVV       : ");
+                scanf("%d", &cardCVV2);
+                printf("                                                                Expire Date      : ");
+                scanf("%d %d %d", &day, &mon, &year);
+
+                if (cardNum2 == card[currentCardIndex].cardNum && cardCVV2 == card[currentCardIndex].cvv &&
+                    card[currentCardIndex].cardDate.day == day && card[currentCardIndex].cardDate.mon == mon && card[currentCardIndex].cardDate.year == year)
+                {
+
+                    // update product unit
+                    allProduct[productID].pUnit -= pUnit;
+                    fp = fopen("Stock/all_product.txt", "w");
+                    fclose(fp);
+
+                    fp = fopen("Stock/all_product.txt", "a");
+                    for (int j = 0; j < index; j++)
+                    {
+                        fprintf(fp, " %d %d %s %d %d %s %d %d %d\n", allProduct[j].pID, allProduct[j].proSupID,
+                                allProduct[j].pName, allProduct[j].pPrice, allProduct[j].pUnit, allProduct[j].pCat, allProduct[j].expDate.day,
+                                allProduct[j].expDate.mon, allProduct[j].expDate.year);
+                    }
+                    fclose(fp);
+                    printf("\n\n");
+                    printCentered("||=====Payment Received=====||", 10);
+                    printCentered("Press any key to get invoice........", 4);
+                    printf("\n\n");
+                    _getch();
+                }
+
+                long long invoiceNum = getInvoiceNumber();
+                char online[10] = "online";
+                // sales update
+                fp = fopen("sales/all_sales.txt", "a");
+                fprintf(fp, "%010llu %d %d %s %s %d %d %d %d %s %s %0.2f\n", invoiceNum,
+                        currentCustomerID, allProduct[productID].pID, allProduct[productID].pName, allProduct[productID].pCat, pUnit,
+                        currentDate.day, currentDate.mon, currentDate.year, online, transactionNum, total);
+                fclose(fp);
+
+                char headingName[10] = "OneMart";
+                menuUI(headingName);
+                printf("\n\n");
+                // genarate invoice
+                printCentered("--------------------------------", 10);
+                printCentered("                 CUSTOMER INVOICE                 ", 10);
+                printCentered("--------------------------------", 10);
+                printf("                                                              Invoice No     :     %010llu\n", invoiceNum);
+                printf("                                                              Transaction No :     %s\n", transactionNum);
+                printf("                                                              Customer ID    :     %d\n", currentCustomerID);
+                printf("                                                              Customer Name  :     %s\n", current_user_customer);
+                printf("                                                              Date           :     %02d-%02d-%04d\n", currentDate.day, currentDate.mon, currentDate.year);
+                printf("                                                              Mode           :     %s\n", online);
+                printCentered("--------------------------------", 15);
+                printf("                                                              Product ID     :     %d\n", allProduct[productID].pID);
+                printf("                                                              Product Name   :     %s\n", allProduct[productID].pName);
+                printf("                                                              Category       :     %s\n", allProduct[productID].pCat);
+                printf("                                                              Quantity       :     %d\n", pUnit);
+                printCentered("--------------------------------", 10);
+                printf("                                                              TOTAL AMOUNT   :     %.2f\n", total);
+                printCentered("--------------------------------", 10);
+
+                printf("\n\n\n\n\n\n\n");
+
+                printCentered("Press Any Key to HOME......", 10);
+                _getch();
+                OnlineHome();
+            }
 
             printf("\n");
             printCentered("  Your Card Info:", 10);
