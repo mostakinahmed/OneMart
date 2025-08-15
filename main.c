@@ -6958,6 +6958,7 @@ int main()
 {
     showUI(); // for welcome page only
 
+    
     int choice;
     printf("\n\nEnter your choice: ");
     scanf("%d", &choice);
