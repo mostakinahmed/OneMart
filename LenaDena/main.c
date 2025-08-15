@@ -1,0 +1,1375 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <time.h>
+
+void saveAccountsToFile();
+int authenticate(int accNo, const char *password);
+
+#define MAX_ACCOUNTS 1000
+#define MAX_TRANSACTIONS 10000
+#define MIN_PASSWORD_LEN 8
+#define MAX_PASSWORD_LEN 20
+#define MIN_PHONE_LEN 10
+#define MAX_PHONE_LEN 15
+#define MIN_DEPOSIT 100.0
+#define MAX_LOAN_AMOUNT 100000.0
+#define LOAN_INTEREST_RATE 0.05f
+#define MAX_LOGIN_ATTEMPTS 3
+
+// Global interest rate variable (initially set to 3%)
+float INTEREST_RATE = 0.03f;
+
+// Structure to hold account details
+typedef struct
+{
+    int accountNumber;
+    char name[50];
+    char address[100];
+    char phone[15];
+    float balance;
+    float loanAmount;
+    float interest;
+    char password[20];
+    time_t creationDate;
+    int loginAttempts;
+    time_t lastLogin;
+} Account;
+
+// Structure to hold transaction details
+typedef struct
+{
+    int accountNumber;
+    char type[20];
+    float amount;
+    time_t timestamp;
+} Transaction;
+
+// Structure to hold interest rate history
+typedef struct
+{
+    float rate;
+    time_t timestamp;
+} InterestRateHistory;
+
+// Structure to hold login history
+typedef struct
+{
+    int accountNumber;
+    char status[20]; // "Success" or "Failed"
+    time_t timestamp;
+} LoginHistory;
+
+Account accounts[MAX_ACCOUNTS];
+Transaction transactions[MAX_TRANSACTIONS];
+InterestRateHistory rateHistory[100];
+LoginHistory loginHistory[1000];
+int accountCount = 0;
+int transactionCount = 0;
+int rateHistoryCount = 0;
+int loginHistoryCount = 0;
+
+// Function to clear input buffer
+void clearInputBuffer()
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
+}
+
+// Helper function to validate string input
+int isValidString(const char *str, int maxLen)
+{
+    int len = strlen(str);
+    if (len == 0 || len >= maxLen)
+        return 0;
+    for (int i = 0; i < len; i++)
+    {
+        if (!isprint(str[i]))
+            return 0;
+    }
+    return 1;
+}
+
+// Function to validate phone number
+int isValidPhone(const char *phone)
+{
+    int len = strlen(phone);
+    if (len < MIN_PHONE_LEN || len > MAX_PHONE_LEN)
+    {
+        return 0;
+    }
+    for (int i = 0; i < len; i++)
+    {
+        if (!isdigit(phone[i]))
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// Function to validate password strength
+int isStrongPassword(const char *password)
+{
+    int len = strlen(password);
+    if (len < MIN_PASSWORD_LEN || len > MAX_PASSWORD_LEN)
+    {
+        return 0;
+    }
+    int hasUpper = 0, hasLower = 0, hasDigit = 0, hasSpecial = 0;
+    for (int i = 0; i < len; i++)
+    {
+        if (isupper(password[i]))
+            hasUpper = 1;
+        else if (islower(password[i]))
+            hasLower = 1;
+        else if (isdigit(password[i]))
+            hasDigit = 1;
+        else
+            hasSpecial = 1;
+    }
+    return hasUpper && hasLower && hasDigit && hasSpecial;
+}
+
+// Function to generate unique account number
+int generateAccountNumber()
+{
+    static int base = 1000;
+    return base + accountCount;
+}
+
+// Function to pause and wait for user input
+void waitForEnter()
+{
+    printf("\nPress Enter to continue...");
+    clearInputBuffer();
+    getchar();
+}
+
+// Function to get current timestamp as string
+char *getTimeString(time_t timestamp)
+{
+    static char timeStr[26];
+    char *result = ctime(&timestamp);
+    strncpy(timeStr, result, 26);
+    timeStr[24] = '\0'; // Remove newline
+    return timeStr;
+}
+
+// Custom function to parse date in YYYY-MM-DD format
+int parseDate(const char *dateStr, struct tm *tm)
+{
+    int year, month, day;
+    if (sscanf(dateStr, "%d-%d-%d", &year, &month, &day) != 3)
+    {
+        return 0; // Invalid format
+    }
+    if (year < 1900 || month < 1 || month > 12 || day < 1 || day > 31)
+    {
+        return 0; // Invalid date
+    }
+    tm->tm_year = year - 1900;
+    tm->tm_mon = month - 1;
+    tm->tm_mday = day;
+    tm->tm_hour = 0;
+    tm->tm_min = 0;
+    tm->tm_sec = 0;
+    tm->tm_isdst = -1; // Let mktime determine DST
+    return 1;
+}
+
+// Function to authenticate user credentials
+int authenticate(int accNo, const char *password)
+{
+    for (int i = 0; i < accountCount; i++)
+    {
+        if (accounts[i].accountNumber == accNo)
+        {
+            if (accounts[i].loginAttempts >= MAX_LOGIN_ATTEMPTS)
+            {
+                printf("Account is locked due to too many failed login attempts.\n");
+                return -1;
+            }
+            if (strcmp(accounts[i].password, password) == 0)
+            {
+                accounts[i].loginAttempts = 0; // Reset attempts on success
+                accounts[i].lastLogin = time(NULL);
+                saveAccountsToFile();
+                return i;
+            }
+            else
+            {
+                accounts[i].loginAttempts++;
+                saveAccountsToFile();
+                return -1;
+            }
+        }
+    }
+    return -1;
+}
+
+// Function to log login attempts
+void logLoginAttempt(int accNo, const char *status)
+{
+    if (loginHistoryCount >= 1000)
+        return;
+    LoginHistory lh;
+    lh.accountNumber = accNo;
+    strncpy(lh.status, status, sizeof(lh.status) - 1);
+    lh.status[sizeof(lh.status) - 1] = '\0';
+    lh.timestamp = time(NULL);
+    loginHistory[loginHistoryCount++] = lh;
+
+    FILE *fp = fopen("login_history.txt", "a");
+    if (fp == NULL)
+        return;
+    fprintf(fp, "Acc#%d | %s | %s\n", accNo, status, getTimeString(lh.timestamp));
+    fclose(fp);
+}
+
+// Function to save accounts to file
+void saveAccountsToFile()
+{
+    FILE *fp = fopen("accounts.txt", "w");
+    if (fp == NULL)
+    {
+        printf("Error: Cannot open accounts file for writing.\n");
+        return;
+    }
+
+    // Save number of accounts
+    fprintf(fp, "%d\n", accountCount);
+
+    // Save account details
+    for (int i = 0; i < accountCount; i++)
+    {
+        fprintf(fp,
+                "%d|%s|%s|%s|%.2f|%.2f|%.2f|%s|%ld|%d|%ld\n",
+                accounts[i].accountNumber,
+                accounts[i].name,
+                accounts[i].address,
+                accounts[i].phone,
+                accounts[i].balance,
+                accounts[i].loanAmount,
+                accounts[i].interest,
+                accounts[i].password,
+                (long)accounts[i].creationDate,
+                accounts[i].loginAttempts,
+                (long)accounts[i].lastLogin);
+    }
+
+    // Save interest rate
+    fprintf(fp, "%.4f\n", INTEREST_RATE);
+
+    // Save interest rate history count
+    fprintf(fp, "%d\n", rateHistoryCount);
+
+    // Save each history record
+    for (int i = 0; i < rateHistoryCount; i++)
+    {
+        fprintf(fp, "%.4f|%ld\n", rateHistory[i].rate, (long)rateHistory[i].timestamp);
+    }
+
+    fclose(fp);
+}
+
+// Function to load accounts from file
+void loadAccountsFromFile()
+{
+    FILE *fp = fopen("accounts.txt", "r");
+    if (fp == NULL)
+    {
+        printf("No saved accounts file found.\n");
+        return;
+    }
+
+    fscanf(fp, "%d\n", &accountCount);
+    if (accountCount > MAX_ACCOUNTS)
+    {
+        printf("Error: Account count exceeds limit.\n");
+        accountCount = 0;
+        fclose(fp);
+        return;
+    }
+
+    for (int i = 0; i < accountCount; i++)
+    {
+        fscanf(fp, "%d|%49[^|]|%99[^|]|%14[^|]|%f|%f|%f|%19[^|]|%ld|%d|%ld\n",
+               &accounts[i].accountNumber,
+               accounts[i].name,
+               accounts[i].address,
+               accounts[i].phone,
+               &accounts[i].balance,
+               &accounts[i].loanAmount,
+               &accounts[i].interest,
+               accounts[i].password,
+               (long *)&accounts[i].creationDate,
+               &accounts[i].loginAttempts,
+               (long *)&accounts[i].lastLogin);
+    }
+
+    fscanf(fp, "%f\n", &INTEREST_RATE);
+    fscanf(fp, "%d\n", &rateHistoryCount);
+    if (rateHistoryCount > 100)
+        rateHistoryCount = 0;
+
+    for (int i = 0; i < rateHistoryCount; i++)
+    {
+        fscanf(fp, "%f|%ld\n", &rateHistory[i].rate, (long *)&rateHistory[i].timestamp);
+    }
+
+    fclose(fp);
+}
+
+// Function to log a transaction
+void logTransaction(int accNo, const char *type, float amount)
+{
+    if (transactionCount >= MAX_TRANSACTIONS)
+    {
+        printf("Error: Transaction limit reached.\n");
+        return;
+    }
+    Transaction t;
+    t.accountNumber = accNo;
+    strncpy(t.type, type, sizeof(t.type) - 1);
+    t.type[sizeof(t.type) - 1] = '\0';
+    t.amount = amount;
+    t.timestamp = time(NULL);
+    transactions[transactionCount++] = t;
+
+    FILE *fp = fopen("transactions.txt", "a");
+    if (fp == NULL)
+    {
+        printf("Error: Cannot open transactions file.\n");
+        return;
+    }
+    fprintf(fp, "Acc#%d | %s | %.2f | %s\n", accNo, type, amount, getTimeString(t.timestamp));
+    fclose(fp);
+}
+
+// Function to filter transactions by date
+void filterTransactionsByDate(int accNo, time_t start, time_t end)
+{
+    FILE *fp = fopen("transactions.txt", "r");
+    if (!fp)
+    {
+        printf("No transaction history found.\n");
+        waitForEnter();
+        return;
+    }
+    printf("\n--- Transactions for Acc#%d from %s to %s ---\n", accNo, getTimeString(start), getTimeString(end));
+    char line[200];
+    char accStr[20];
+    sprintf(accStr, "Acc#%d", accNo);
+    int found = 0;
+    while (fgets(line, sizeof(line), fp))
+    {
+        if (strstr(line, accStr))
+        {
+            char *timestampStr = strrchr(line, '|');
+            if (timestampStr)
+            {
+                timestampStr += 2; // Skip "| "
+                // Parse the timestamp manually
+                struct tm tm = {0};
+                // Expected format: "Wed Apr 12 14:30:00 2023"
+                int day, year;
+                char monthStr[4];
+                int hour, min, sec;
+                if (sscanf(timestampStr, "%*s %s %d %d:%d:%d %d", monthStr, &day, &hour, &min, &sec, &year) != 6)
+                {
+                    continue; // Skip invalid timestamp
+                }
+                tm.tm_year = year - 1900;
+                tm.tm_mday = day;
+                tm.tm_hour = hour;
+                tm.tm_min = min;
+                tm.tm_sec = sec;
+                // Map month string to number
+                if (strcmp(monthStr, "Jan") == 0)
+                    tm.tm_mon = 0;
+                else if (strcmp(monthStr, "Feb") == 0)
+                    tm.tm_mon = 1;
+                else if (strcmp(monthStr, "Mar") == 0)
+                    tm.tm_mon = 2;
+                else if (strcmp(monthStr, "Apr") == 0)
+                    tm.tm_mon = 3;
+                else if (strcmp(monthStr, "May") == 0)
+                    tm.tm_mon = 4;
+                else if (strcmp(monthStr, "Jun") == 0)
+                    tm.tm_mon = 5;
+                else if (strcmp(monthStr, "Jul") == 0)
+                    tm.tm_mon = 6;
+                else if (strcmp(monthStr, "Aug") == 0)
+                    tm.tm_mon = 7;
+                else if (strcmp(monthStr, "Sep") == 0)
+                    tm.tm_mon = 8;
+                else if (strcmp(monthStr, "Oct") == 0)
+                    tm.tm_mon = 9;
+                else if (strcmp(monthStr, "Nov") == 0)
+                    tm.tm_mon = 10;
+                else if (strcmp(monthStr, "Dec") == 0)
+                    tm.tm_mon = 11;
+                else
+                    continue; // Invalid month
+                time_t txTime = mktime(&tm);
+                if (txTime >= start && txTime <= end)
+                {
+                    printf("%s", line);
+                    found = 1;
+                }
+            }
+        }
+    }
+    if (!found)
+    {
+        printf("No transactions found in this date range.\n");
+    }
+    fclose(fp);
+    waitForEnter();
+}
+
+// Function to filter transactions by type
+void filterTransactionsByType(int accNo, const char *type)
+{
+    FILE *fp = fopen("transactions.txt", "r");
+    if (!fp)
+    {
+        printf("No transaction history found.\n");
+        waitForEnter();
+        return;
+    }
+    printf("\n--- %s Transactions for Acc#%d ---\n", type, accNo);
+    char line[200];
+    char accStr[20];
+    sprintf(accStr, "Acc#%d", accNo);
+    int found = 0;
+    while (fgets(line, sizeof(line), fp))
+    {
+        if (strstr(line, accStr) && strstr(line, type))
+        {
+            printf("%s", line);
+            found = 1;
+        }
+    }
+    if (!found)
+    {
+        printf("No %s transactions found.\n", type);
+    }
+    fclose(fp);
+    waitForEnter();
+}
+
+// Function to show transaction summary
+void showTransactionSummary(int accNo)
+{
+    FILE *fp = fopen("transactions.txt", "r");
+    if (!fp)
+    {
+        printf("No transaction history found.\n");
+        waitForEnter();
+        return;
+    }
+    float totalDeposits = 0, totalWithdrawals = 0, totalInterest = 0, totalLoans = 0, totalRepayments = 0;
+    int depositCount = 0, withdrawalCount = 0, interestCount = 0, loanCount = 0, repaymentCount = 0;
+    char line[200];
+    char accStr[20];
+    sprintf(accStr, "Acc#%d", accNo);
+
+    while (fgets(line, sizeof(line), fp))
+    {
+        if (strstr(line, accStr))
+        {
+            float amount;
+            sscanf(line, "Acc#%*d | %*s | %f |", &amount);
+            if (strstr(line, "Deposit"))
+            {
+                totalDeposits += amount;
+                depositCount++;
+            }
+            else if (strstr(line, "Withdraw"))
+            {
+                totalWithdrawals += amount;
+                withdrawalCount++;
+            }
+            else if (strstr(line, "Interest Applied"))
+            {
+                totalInterest += amount;
+                interestCount++;
+            }
+            else if (strstr(line, "Loan Taken"))
+            {
+                totalLoans += amount;
+                loanCount++;
+            }
+            else if (strstr(line, "Loan Repayment"))
+            {
+                totalRepayments += amount;
+                repaymentCount++;
+            }
+        }
+    }
+
+    printf("\n--- Transaction Summary for Acc#%d ---\n", accNo);
+    printf("Total Deposits    : %.2f (%d transactions)\n", totalDeposits, depositCount);
+    printf("Total Withdrawals : %.2f (%d transactions)\n", totalWithdrawals, withdrawalCount);
+    printf("Total Interest    : %.2f (%d applications)\n", totalInterest, interestCount);
+    printf("Total Loans Taken : %.2f (%d loans)\n", totalLoans, loanCount);
+    printf("Total Repayments  : %.2f (%d repayments)\n", totalRepayments, repaymentCount);
+    fclose(fp);
+    waitForEnter();
+}
+
+// Function to display transaction history with options
+void showTransactionHistory(int accNo)
+{
+    int choice;
+    do
+    {
+        printf("\n--- Transaction History Menu for Acc#%d ---\n", accNo);
+        printf("1. View All Transactions\n");
+        printf("2. Filter by Date Range\n");
+        printf("3. Filter by Transaction Type\n");
+        printf("4. View Transaction Summary\n");
+        printf("5. Back\n");
+        printf("Choose an option: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+        {
+            FILE *fp = fopen("transactions.txt", "r");
+            if (!fp)
+            {
+                printf("No transaction history found.\n");
+                waitForEnter();
+                break;
+            }
+            printf("\n--- All Transactions for Acc#%d ---\n", accNo);
+            char line[200];
+            char accStr[20];
+            sprintf(accStr, "Acc#%d", accNo);
+            int found = 0;
+            while (fgets(line, sizeof(line), fp))
+            {
+                if (strstr(line, accStr))
+                {
+                    printf("%s", line);
+                    found = 1;
+                }
+            }
+            if (!found)
+            {
+                printf("No transactions found for this account.\n");
+            }
+            fclose(fp);
+            waitForEnter();
+            break;
+        }
+        case 2:
+        {
+            char startDate[20], endDate[20];
+            printf("Enter start date (YYYY-MM-DD): ");
+            scanf("%s", startDate);
+            printf("Enter end date (YYYY-MM-DD): ");
+            scanf("%s", endDate);
+            struct tm startTm = {0}, endTm = {0};
+            if (!parseDate(startDate, &startTm) || !parseDate(endDate, &endTm))
+            {
+                printf("Error: Invalid date format. Use YYYY-MM-DD.\n");
+                waitForEnter();
+                break;
+            }
+            time_t start = mktime(&startTm);
+            time_t end = mktime(&endTm);
+            if (start == -1 || end == -1 || start > end)
+            {
+                printf("Error: Invalid date range.\n");
+                waitForEnter();
+                break;
+            }
+            filterTransactionsByDate(accNo, start, end);
+            break;
+        }
+        case 3:
+        {
+            char type[20];
+            printf("Enter transaction type (Deposit/Withdraw/Interest/Loan/Repayment): ");
+            scanf("%s", type);
+            if (strcmp(type, "Deposit") == 0 || strcmp(type, "Withdraw") == 0 ||
+                strcmp(type, "Interest") == 0 || strcmp(type, "Loan") == 0 ||
+                strcmp(type, "Repayment") == 0)
+            {
+                if (strcmp(type, "Interest") == 0)
+                {
+                    filterTransactionsByType(accNo, "Interest Applied");
+                }
+                else if (strcmp(type, "Loan") == 0)
+                {
+                    filterTransactionsByType(accNo, "Loan Taken");
+                }
+                else if (strcmp(type, "Repayment") == 0)
+                {
+                    filterTransactionsByType(accNo, "Loan Repayment");
+                }
+                else
+                {
+                    filterTransactionsByType(accNo, type);
+                }
+            }
+            else
+            {
+                printf("Invalid transaction type.\n");
+                waitForEnter();
+            }
+            break;
+        }
+        case 4:
+            showTransactionSummary(accNo);
+            break;
+        case 5:
+            printf("Returning to previous menu...\n");
+            waitForEnter();
+            break;
+        default:
+            printf("Invalid option.\n");
+            waitForEnter();
+        }
+    } while (choice != 5);
+}
+
+// Function to create a new account
+void createAccount()
+{
+    if (accountCount >= MAX_ACCOUNTS)
+    {
+        printf("Error: Maximum account limit reached.\n");
+        waitForEnter();
+        return;
+    }
+
+    printf("\n--- Create New Account ---\n");
+    Account acc;
+    acc.accountNumber = generateAccountNumber();
+    acc.loginAttempts = 0;
+    acc.lastLogin = 0;
+
+    printf("Full Name (max 49 chars): ");
+    clearInputBuffer();
+    fgets(acc.name, sizeof(acc.name), stdin);
+    acc.name[strcspn(acc.name, "\n")] = '\0';
+    if (!isValidString(acc.name, 50))
+    {
+        printf("Error: Invalid name.\n");
+        waitForEnter();
+        return;
+    }
+
+    printf("Address (max 99 chars): ");
+    fgets(acc.address, sizeof(acc.address), stdin);
+    acc.address[strcspn(acc.address, "\n")] = '\0';
+    if (!isValidString(acc.address, 100))
+    {
+        printf("Error: Invalid address.\n");
+        waitForEnter();
+        return;
+    }
+
+    do
+    {
+        printf("Phone Number (%d-%d digits): ", MIN_PHONE_LEN, MAX_PHONE_LEN);
+        scanf("%s", acc.phone);
+        if (!isValidPhone(acc.phone))
+        {
+            printf("Error: Invalid phone number. Use digits only.\n");
+        }
+    } while (!isValidPhone(acc.phone));
+
+    do
+    {
+        printf("Initial Deposit (min %.2f): ", MIN_DEPOSIT);
+        scanf("%f", &acc.balance);
+        if (acc.balance < MIN_DEPOSIT)
+        {
+            printf("Error: Minimum deposit is %.2f.\n", MIN_DEPOSIT);
+        }
+    } while (acc.balance < MIN_DEPOSIT);
+
+    do
+    {
+        printf("Set Password (%d-%d chars, must include upper, lower, digit, special): ", MIN_PASSWORD_LEN, MAX_PASSWORD_LEN);
+        scanf("%s", acc.password);
+        if (!isStrongPassword(acc.password))
+        {
+            printf("Error: Password is not strong enough.\n");
+        }
+    } while (!isStrongPassword(acc.password));
+
+    acc.loanAmount = 0.0;
+    acc.interest = 0.0;
+    acc.creationDate = time(NULL);
+
+    accounts[accountCount++] = acc;
+    saveAccountsToFile();
+    logTransaction(acc.accountNumber, "Account Creation", acc.balance);
+
+    printf("\nAccount created successfully!\n");
+    printf("Your Account Number is: %d\n", acc.accountNumber);
+    waitForEnter();
+}
+
+// Function to recover password
+void recoverPassword()
+{
+    int accNo;
+    char phone[15];
+    printf("\n--- Password Recovery ---\n");
+    printf("Enter Account Number: ");
+    scanf("%d", &accNo);
+    printf("Enter Phone Number: ");
+    scanf("%s", phone);
+
+    int index = -1;
+    for (int i = 0; i < accountCount; i++)
+    {
+        if (accounts[i].accountNumber == accNo && strcmp(accounts[i].phone, phone) == 0)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1)
+    {
+        printf("Error: Account number or phone number does not match.\n");
+        waitForEnter();
+        return;
+    }
+
+    char newPassword[20];
+    do
+    {
+        printf("Enter new password (%d-%d chars, must include upper, lower, digit, special): ", MIN_PASSWORD_LEN, MAX_PASSWORD_LEN);
+        scanf("%s", newPassword);
+        if (!isStrongPassword(newPassword))
+        {
+            printf("Error: Password is not strong enough.\n");
+        }
+    } while (!isStrongPassword(newPassword));
+
+    strncpy(accounts[index].password, newPassword, sizeof(accounts[index].password) - 1);
+    accounts[index].password[sizeof(accounts[index].password) - 1] = '\0';
+    accounts[index].loginAttempts = 0;
+    saveAccountsToFile();
+    logTransaction(accNo, "Password Reset", 0.0);
+    printf("Password reset successfully.\n");
+    waitForEnter();
+}
+
+// Function to handle user login
+int login()
+{
+    int accNo;
+    char password[20];
+    printf("\n--- Login ---\n");
+    printf("Account Number: ");
+    scanf("%d", &accNo);
+    printf("Password: ");
+    scanf("%s", password);
+
+    int index = authenticate(accNo, password);
+    if (index != -1)
+    {
+        logLoginAttempt(accNo, "Success");
+        printf("Login successful. Welcome, %s!\n", accounts[index].name);
+        waitForEnter();
+        return index;
+    }
+    else
+    {
+        logLoginAttempt(accNo, "Failed");
+        printf("Login failed. Invalid credentials.\n");
+        waitForEnter();
+        return -1;
+    }
+}
+
+// Function to deposit money
+void depositMoney(int index)
+{
+    float amount;
+    printf("\n--- Deposit ---\n");
+    printf("Enter amount to deposit: ");
+    scanf("%f", &amount);
+    if (amount <= 0)
+    {
+        printf("Error: Amount must be positive.\n");
+        waitForEnter();
+        return;
+    }
+    accounts[index].balance += amount;
+    saveAccountsToFile();
+    logTransaction(accounts[index].accountNumber, "Deposit", amount);
+    printf("Deposit successful. New Balance: %.2f\n", accounts[index].balance);
+    waitForEnter();
+}
+
+// Function to withdraw money
+void withdrawMoney(int index)
+{
+    float amount;
+    printf("\n--- Withdraw ---\n");
+    printf("Enter amount to withdraw: ");
+    scanf("%f", &amount);
+    if (amount <= 0)
+    {
+        printf("Error: Amount must be positive.\n");
+    }
+    else if (amount > accounts[index].balance)
+    {
+        printf("Error: Insufficient balance.\n");
+    }
+    else
+    {
+        accounts[index].balance -= amount;
+        saveAccountsToFile();
+        logTransaction(accounts[index].accountNumber, "Withdraw", amount);
+        printf("Withdrawal successful. New Balance: %.2f\n", accounts[index].balance);
+    }
+    waitForEnter();
+}
+
+// Function to check balance
+void checkBalance(int index)
+{
+    printf("\n--- Balance Inquiry ---\n");
+    printf("Account Number: %d\n", accounts[index].accountNumber);
+    printf("Name: %s\n", accounts[index].name);
+    printf("Current Balance: %.2f\n", accounts[index].balance);
+    printf("Loan Amount: %.2f\n", accounts[index].loanAmount);
+    printf("Total Interest Earned: %.2f\n", accounts[index].interest);
+    printf("Last Login: %s\n", accounts[index].lastLogin ? getTimeString(accounts[index].lastLogin) : "Never");
+    waitForEnter();
+}
+
+void transferFunds(int senderIndex)
+{
+    int receiverAccNo;
+    float amount;
+    printf("\n--- Transfer Funds ---\n");
+    printf("Your current balance: %.2f\n", accounts[senderIndex].balance);
+    printf("Enter receiver's account number: ");
+    scanf("%d", &receiverAccNo);
+
+    int receiverIndex = -1;
+    for (int i = 0; i < accountCount; i++)
+    {
+        if (accounts[i].accountNumber == receiverAccNo)
+        {
+            receiverIndex = i;
+            break;
+        }
+    }
+
+    if (receiverIndex == -1)
+    {
+        printf("Error: Receiver account not found.\n");
+        waitForEnter();
+        return;
+    }
+
+    if (senderIndex == receiverIndex)
+    {
+        printf("Error: Cannot transfer funds to yourself.\n");
+        waitForEnter();
+        return;
+    }
+
+    printf("Enter amount to transfer: ");
+    scanf("%f", &amount);
+
+    if (amount <= 0)
+    {
+        printf("Error: Invalid amount.\n");
+        waitForEnter();
+        return;
+    }
+
+    if (amount > accounts[senderIndex].balance)
+    {
+        printf("Error: Insufficient balance.\n");
+        waitForEnter();
+        return;
+    }
+
+    accounts[senderIndex].balance -= amount;
+    accounts[receiverIndex].balance += amount;
+    saveAccountsToFile();
+    logTransaction(accounts[senderIndex].accountNumber, "Transfer Out", amount);
+    logTransaction(accounts[receiverIndex].accountNumber, "Transfer In", amount);
+
+    printf("Funds transferred successfully!\n");
+    printf("Your new balance: %.2f\n", accounts[senderIndex].balance);
+    printf("Receiver's new balance: %.2f\n", accounts[receiverIndex].balance);
+    waitForEnter();
+}
+
+// Function to update account details
+void updateDetails(int index)
+{
+    printf("\n--- Update Account Details ---\n");
+    clearInputBuffer();
+    printf("New Name (max 49 chars, press Enter to keep current): ");
+    char temp[50];
+    fgets(temp, sizeof(temp), stdin);
+    temp[strcspn(temp, "\n")] = '\0';
+    if (strlen(temp) > 0 && isValidString(temp, 50))
+    {
+        strncpy(accounts[index].name, temp, sizeof(accounts[index].name) - 1);
+        accounts[index].name[sizeof(accounts[index].name) - 1] = '\0';
+    }
+
+    printf("New Address (max 99 chars, press Enter to keep current): ");
+    fgets(temp, sizeof(temp), stdin);
+    temp[strcspn(temp, "\n")] = '\0';
+    if (strlen(temp) > 0 && isValidString(temp, 100))
+    {
+        strncpy(accounts[index].address, temp, sizeof(accounts[index].address) - 1);
+        accounts[index].address[sizeof(accounts[index].address) - 1] = '\0';
+    }
+
+    printf("New Phone (%d-%d digits, press Enter to keep current): ", MIN_PHONE_LEN, MAX_PHONE_LEN);
+    fgets(temp, sizeof(temp), stdin);
+    temp[strcspn(temp, "\n")] = '\0';
+    if (strlen(temp) > 0)
+    {
+        if (isValidPhone(temp))
+        {
+            strncpy(accounts[index].phone, temp, sizeof(accounts[index].phone) - 1);
+            accounts[index].phone[sizeof(accounts[index].phone) - 1] = '\0';
+        }
+        else
+        {
+            printf("Error: Invalid phone number. Keeping current phone number.\n");
+        }
+    }
+
+    saveAccountsToFile();
+    logTransaction(accounts[index].accountNumber, "Details Updated", 0.0);
+    printf("Details updated successfully.\n");
+    waitForEnter();
+}
+
+// Function to apply interest to all accounts
+void applyInterest()
+{
+    for (int i = 0; i < accountCount; i++)
+    {
+        float interest = accounts[i].balance * INTEREST_RATE;
+        accounts[i].balance += interest;
+        accounts[i].interest += interest;
+        logTransaction(accounts[i].accountNumber, "Interest Applied", interest);
+    }
+    saveAccountsToFile();
+    printf("%.2f%% interest applied to all accounts.\n", INTEREST_RATE * 100);
+    waitForEnter();
+}
+
+// Function to set interest rate
+void setInterestRate()
+{
+    float newRate;
+    printf("\n--- Set Interest Rate ---\n");
+    printf("Current Interest Rate: %.2f%%\n", INTEREST_RATE * 100);
+    printf("Enter new interest rate (as percentage, e.g., 3.5 for 3.5%%): ");
+    scanf("%f", &newRate);
+
+    if (newRate <= 0 || newRate > 100)
+    {
+        printf("Error: Invalid interest rate. Must be between 0 and 100%%.\n");
+    }
+    else
+    {
+        INTEREST_RATE = newRate / 100.0f;
+        if (rateHistoryCount < 100)
+        {
+            rateHistory[rateHistoryCount].rate = newRate;
+            rateHistory[rateHistoryCount].timestamp = time(NULL);
+            rateHistoryCount++;
+        }
+        saveAccountsToFile();
+        logTransaction(0, "Interest Rate Changed", newRate);
+        printf("Interest rate updated to %.2f%%\n", newRate);
+    }
+    waitForEnter();
+}
+
+// Function to view interest rate history
+void viewInterestRateHistory()
+{
+    printf("\n--- Interest Rate History ---\n");
+    if (rateHistoryCount == 0)
+    {
+        printf("No interest rate changes recorded.\n");
+    }
+    else
+    {
+        for (int i = 0; i < rateHistoryCount; i++)
+        {
+            printf("Rate: %.2f%% | Changed on: %s\n", rateHistory[i].rate, getTimeString(rateHistory[i].timestamp));
+        }
+    }
+    waitForEnter();
+}
+
+// Function to manage loans
+void loanSection(int index)
+{
+    printf("\n--- Loan Management ---\n");
+    printf("Current Loan: %.2f\n", accounts[index].loanAmount);
+    printf("1. Apply for Loan\n2. Repay Loan\n3. Back\n");
+    int choice;
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    if (choice == 1)
+    {
+        float loan;
+        printf("Enter loan amount (max %.2f): ", MAX_LOAN_AMOUNT);
+        scanf("%f", &loan);
+        if (loan <= 0 || loan + accounts[index].loanAmount > MAX_LOAN_AMOUNT)
+        {
+            printf("Error: Invalid loan amount or exceeds maximum limit.\n");
+        }
+        else
+        {
+            accounts[index].loanAmount += loan;
+            accounts[index].balance += loan;
+            saveAccountsToFile();
+            logTransaction(accounts[index].accountNumber, "Loan Taken", loan);
+            printf("Loan granted. Total Loan: %.2f\n", accounts[index].loanAmount);
+        }
+    }
+    else if (choice == 2)
+    {
+        float repayment;
+        printf("Enter repayment amount: ");
+        scanf("%f", &repayment);
+        if (repayment <= 0 || repayment > accounts[index].loanAmount)
+        {
+            printf("Error: Invalid repayment amount.\n");
+        }
+        else if (repayment > accounts[index].balance)
+        {
+            printf("Error: Insufficient balance to repay.\n");
+        }
+        else
+        {
+            accounts[index].loanAmount -= repayment;
+            accounts[index].balance -= repayment;
+            saveAccountsToFile();
+            logTransaction(accounts[index].accountNumber, "Loan Repayment", repayment);
+            printf("Repayment successful. Remaining Loan: %.2f\n", accounts[index].loanAmount);
+        }
+    }
+    waitForEnter();
+}
+
+// Function to close an account
+void closeAccount(int index)
+{
+    if (accounts[index].loanAmount > 0)
+    {
+        printf("Error: Cannot close account with outstanding loan of %.2f.\n", accounts[index].loanAmount);
+        waitForEnter();
+        return;
+    }
+    int accNo = accounts[index].accountNumber;
+    for (int i = index; i < accountCount - 1; i++)
+    {
+        accounts[i] = accounts[i + 1];
+    }
+    accountCount--;
+    saveAccountsToFile();
+    logTransaction(accNo, "Account Closed", 0.0);
+    printf("Account %d has been closed.\n", accNo);
+    waitForEnter();
+}
+
+// Function to view transaction history
+void viewHistory(int index)
+{
+    showTransactionHistory(accounts[index].accountNumber);
+}
+
+// Function to display logged-in user menu
+void loggedInMenu(int index)
+{
+    int choice;
+    do
+    {
+        printf("\n=== Welcome %s (Acc# %d) ===\n", accounts[index].name, accounts[index].accountNumber);
+        printf("1. Deposit Money\n");
+        printf("2. Withdraw Money\n");
+        printf("3. Check Balance\n");
+        printf("4. Fund Transfer\n");
+        printf("5. Update Profile\n");
+        printf("6. View Transaction History\n");
+        printf("7. Loan Management\n");
+        printf("8. Close Account\n");
+        printf("9. Logout\n");
+        printf("Choose an option: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            depositMoney(index);
+            break;
+        case 2:
+            withdrawMoney(index);
+            break;
+        case 3:
+            checkBalance(index);
+            break;
+        case 4:
+            transferFunds(index);
+            break;
+        case 5:
+            updateDetails(index);
+            break;
+        case 6:
+            viewHistory(index);
+            break;
+        case 7:
+            loanSection(index);
+            break;
+        case 8:
+            closeAccount(index);
+            return;
+        case 9:
+            printf("Logging out...\n");
+            waitForEnter();
+            break;
+        default:
+            printf("Invalid option.\n");
+            waitForEnter();
+        }
+    } while (choice != 9);
+}
+
+// Function to handle admin login
+int adminLogin()
+{
+    char username[20], password[20];
+    printf("\n--- Admin Login ---\n");
+    printf("Username: ");
+    scanf("%s", username);
+    printf("Password: ");
+    scanf("%s", password);
+
+    if (strcmp(username, "admin") == 0 && strcmp(password, "admin123") == 0)
+    {
+        logLoginAttempt(0, "Admin Success");
+        printf("Admin login successful.\n");
+        waitForEnter();
+        return 1;
+    }
+    logLoginAttempt(0, "Admin Failed");
+    printf("Invalid admin credentials.\n");
+    waitForEnter();
+    return 0;
+}
+
+// Function to show all accounts
+void showAllAccounts()
+{
+    printf("\n--- All Bank Accounts ---\n");
+    if (accountCount == 0)
+    {
+        printf("No accounts available.\n");
+    }
+    else
+    {
+        for (int i = 0; i < accountCount; i++)
+        {
+            Account a = accounts[i];
+            printf("\nAccount No: %d\n", a.accountNumber);
+            printf("Name      : %s\n", a.name);
+            printf("Address   : %s\n", a.address);
+            printf("Phone     : %s\n", a.phone);
+            printf("Balance   : %.2f\n", a.balance);
+            printf("Loan Amt  : %.2f\n", a.loanAmount);
+            printf("Created   : %s\n", getTimeString(a.creationDate));
+            printf("Last Login: %s\n", a.lastLogin ? getTimeString(a.lastLogin) : "Never");
+        }
+    }
+    waitForEnter();
+}
+
+// Function to remove an account by admin
+void removeAccountByAdmin()
+{
+    int accNo;
+    printf("\nEnter Account Number to Remove: ");
+    scanf("%d", &accNo);
+
+    int found = 0;
+    for (int i = 0; i < accountCount; i++)
+    {
+        if (accounts[i].accountNumber == accNo)
+        {
+            if (accounts[i].loanAmount > 0)
+            {
+                printf("Error: Cannot remove account with outstanding loan of %.2f.\n", accounts[i].loanAmount);
+            }
+            else
+            {
+                for (int j = i; j < accountCount - 1; j++)
+                {
+                    accounts[j] = accounts[j + 1];
+                }
+                accountCount--;
+                saveAccountsToFile();
+                logTransaction(accNo, "Account Removed by Admin", 0.0);
+                printf("Account %d removed successfully.\n", accNo);
+            }
+            found = 1;
+            break;
+        }
+    }
+    if (!found)
+    {
+        printf("Account not found.\n");
+    }
+    waitForEnter();
+}
+
+// Function to view login history
+void viewLoginHistory()
+{
+    FILE *fp = fopen("login_history.txt", "r");
+    if (!fp)
+    {
+        printf("No login history found.\n");
+        waitForEnter();
+        return;
+    }
+    printf("\n--- Login History ---\n");
+    char line[200];
+    while (fgets(line, sizeof(line), fp))
+    {
+        printf("%s", line);
+    }
+    fclose(fp);
+    waitForEnter();
+}
+
+// Function to display admin menu
+void adminMenu()
+{
+    int choice;
+    do
+    {
+        printf("\n=== Admin Panel ===\n");
+        printf("1. Show All Accounts\n");
+        printf("2. Remove an Account\n");
+        printf("3. Apply Interest to All Accounts\n");
+        printf("4. Set Interest Rate\n");
+        printf("5. View Interest Rate History\n");
+        printf("6. View Login History\n");
+        printf("7. Logout\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            showAllAccounts();
+            break;
+        case 2:
+            removeAccountByAdmin();
+            break;
+        case 3:
+            applyInterest();
+            break;
+        case 4:
+            setInterestRate();
+            break;
+        case 5:
+            viewInterestRateHistory();
+            break;
+        case 6:
+            viewLoginHistory();
+            break;
+        case 7:
+            printf("Logging out of admin...\n");
+            waitForEnter();
+            break;
+        default:
+            printf("Invalid choice.\n");
+            waitForEnter();
+        }
+    } while (choice != 7);
+}
+
+// Function to display main menu
+void mainMenu()
+{
+    int choice;
+    do
+    {
+        printf("\n=== Bank Account Management System ===\n");
+        printf("1. Create New Account\n");
+        printf("2. Login to Account\n");
+        printf("3. Admin Login\n");
+        printf("4. Recover Password\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            createAccount();
+            break;
+        case 2:
+        {
+            int index = login();
+            if (index != -1)
+            {
+                loggedInMenu(index);
+            }
+            break;
+        }
+        case 3:
+            if (adminLogin())
+            {
+                adminMenu();
+            }
+            break;
+        case 4:
+            recoverPassword();
+            break;
+        case 5:
+            printf("Exiting system...\n");
+            waitForEnter();
+            break;
+        default:
+            printf("Invalid choice.\n");
+            waitForEnter();
+        }
+    } while (choice != 5);
+}
+// Main function
+int main()
+{
+    printf("Initializing Bank Account Management System...\n");
+    loadAccountsFromFile();
+    mainMenu();
+    printf("System shutdown complete.\n");
+    return 0;
+}

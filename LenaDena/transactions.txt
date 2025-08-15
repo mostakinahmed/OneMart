@@ -1,0 +1,78 @@
+Acc#1000 | Account Creation | 100.00 | Thu Jul 17 13:13:58 2025
+Acc#1000 | Deposit | 1000.00 | Thu Jul 17 13:16:03 2025
+Acc#1000 | Withdraw | 500.00 | Thu Jul 17 13:16:34 2025
+Acc#1001 | Account Creation | 10000.00 | Thu Jul 17 13:18:55 2025
+Acc#1002 | Account Creation | 10000.00 | Thu Jul 17 13:41:09 2025
+Acc#1003 | Account Creation | 1000.00 | Mon Jul 21 23:27:34 2025
+Acc#1000 | Interest Applied | 18.00 | Fri Jul 25 00:38:53 2025
+Acc#1001 | Interest Applied | 300.00 | Fri Jul 25 00:38:53 2025
+Acc#1002 | Interest Applied | 300.00 | Fri Jul 25 00:38:53 2025
+Acc#1003 | Interest Applied | 30.00 | Fri Jul 25 00:38:53 2025
+Acc#0 | Interest Rate Changed | 3.00 | Fri Jul 25 00:39:49 2025
+Acc#1000 | Initial Deposit | 1000.00 | Mon Jul 28 18:06:34 2025
+Acc#1000 | Account Creation | 1000.00 | Mon Jul 28 19:54:04 2025
+Acc#1001 | Account Creation | 500.00 | Mon Jul 28 19:56:11 2025
+Acc#1000 | Transfer Out | 500.00 | Mon Jul 28 19:56:55 2025
+Acc#1001 | Transfer In | 500.00 | Mon Jul 28 19:56:55 2025
+Acc#1000 | Interest Applied | 15.00 | Mon Jul 28 20:02:02 2025
+Acc#1001 | Interest Applied | 30.00 | Mon Jul 28 20:02:02 2025
+Acc#1000 | Loan Taken | 5000.00 | Mon Jul 28 20:03:52 2025
+Acc#1000 | Account Creation | 1000.00 | Mon Aug 04 12:02:08 2025
+Acc#1000 | Account Creation | 500.00 | Mon Aug 04 12:07:22 2025
+Acc#1000 | Account Creation | 1000.00 | Mon Aug 04 12:08:59 2025
+Acc#1000 | Account Creation | 10000.00 | Mon Aug 04 12:10:22 2025
+Acc#1000 | Account Creation | 1000.00 | Mon Aug 04 12:21:06 2025
+Acc#1001 | Account Creation | 500.00 | Mon Aug 04 12:22:20 2025
+Acc#1002 | Account Creation | 1000.00 | Wed Aug 06 11:06:45 2025
+Acc#1002 | Deposit | 500.00 | Wed Aug 06 11:09:02 2025
+Acc#1000 | Password Reset | 0.00 | Tue Aug 12 23:33:01 2025
+Acc#1000 | Interest Applied | 30.00 | Tue Aug 12 23:49:09 2025
+Acc#1001 | Interest Applied | 15.00 | Tue Aug 12 23:49:09 2025
+Acc#1002 | Interest Applied | 45.00 | Tue Aug 12 23:49:09 2025
+Acc#0 | Interest Rate Changed | 3.50 | Tue Aug 12 23:50:29 2025
+Acc#1000 | Loan Taken | 10000.00 | Tue Aug 12 23:56:51 2025
+Acc#1000 | Loan Repayment | 1000.00 | Tue Aug 12 23:57:16 2025
+Acc#-1173614477 | Account Creation | 1000.00 | Wed Aug 13 08:18:39 2025
+Acc#-1173614476 | Account Creation | 10000.00 | Wed Aug 13 09:16:47 2025
+Acc#1005 | Account Creation | 10000.00 | Wed Aug 13 09:21:41 2025
+Acc#1005 | Deposit | 5000.00 | Wed Aug 13 09:22:47 2025
+Acc#1005 | Withdraw | 2000.00 | Wed Aug 13 09:23:04 2025
+Acc#1005 | Transfer Out | 3000.00 | Wed Aug 13 09:23:39 2025
+Acc#1000 | Transfer In | 3000.00 | Wed Aug 13 09:23:39 2025
+Acc#1005 | Details Updated | 0.00 | Wed Aug 13 09:24:57 2025
+Acc#1005 | Loan Taken | 50000.00 | Wed Aug 13 09:32:24 2025
+Acc#1005 | Loan Repayment | 10000.00 | Wed Aug 13 09:32:50 2025
+Acc#-1173614477 | Account Removed by Admin | 0.00 | Wed Aug 13 09:38:52 2025
+Acc#1000 | Interest Applied | 456.05 | Wed Aug 13 09:39:23 2025
+Acc#1001 | Interest Applied | 18.02 | Wed Aug 13 09:39:23 2025
+Acc#1002 | Interest Applied | 54.08 | Wed Aug 13 09:39:23 2025
+Acc#-1173614476 | Interest Applied | 350.00 | Wed Aug 13 09:39:23 2025
+Acc#1005 | Interest Applied | 1750.00 | Wed Aug 13 09:39:23 2025
+Acc#1005 | Password Reset | 0.00 | Wed Aug 13 09:41:27 2025
+Acc#1005 | Password Reset | 0.00 | Wed Aug 13 10:12:01 2025
+Acc#1005 | Account Creation | 1000.00 | Wed Aug 13 12:43:08 2025
+Acc#1006 | Account Creation | 1000.00 | Wed Aug 13 13:02:09 2025
+Acc#1007 | Account Creation | 10000.00 | Wed Aug 13 13:05:23 2025
+Acc#1007 | Deposit | 5000.00 | Wed Aug 13 13:07:08 2025
+Acc#1007 | Withdraw | 12000.00 | Wed Aug 13 13:15:40 2025
+Acc#1007 | Transfer Out | 1000.00 | Wed Aug 13 13:17:25 2025
+Acc#1000 | Transfer In | 1000.00 | Wed Aug 13 13:17:25 2025
+Acc#1007 | Details Updated | 0.00 | Wed Aug 13 13:19:47 2025
+Acc#1007 | Loan Taken | 12000.00 | Wed Aug 13 13:39:13 2025
+Acc#1007 | Loan Repayment | 5000.00 | Wed Aug 13 13:40:54 2025
+Acc#1007 | Loan Repayment | 7000.00 | Wed Aug 13 13:42:34 2025
+Acc#1007 | Account Closed | 0.00 | Wed Aug 13 13:42:47 2025
+Acc#-1173614476 | Account Removed by Admin | 0.00 | Wed Aug 13 13:54:01 2025
+Acc#1000 | Interest Applied | 507.01 | Wed Aug 13 13:55:20 2025
+Acc#1001 | Interest Applied | 18.66 | Wed Aug 13 13:55:20 2025
+Acc#1002 | Interest Applied | 55.97 | Wed Aug 13 13:55:20 2025
+Acc#1005 | Interest Applied | 1811.25 | Wed Aug 13 13:55:20 2025
+Acc#1005 | Interest Applied | 35.00 | Wed Aug 13 13:55:20 2025
+Acc#1006 | Interest Applied | 35.00 | Wed Aug 13 13:55:20 2025
+Acc#0 | Interest Rate Changed | 3.00 | Wed Aug 13 13:58:46 2025
+Acc#1006 | Password Reset | 0.00 | Wed Aug 13 14:07:30 2025
+Acc#1000 | Transfer Out | 2000.00 | Wed Aug 13 19:36:08 2025
+Acc#1006 | Transfer In | 2000.00 | Wed Aug 13 19:36:08 2025
+Acc#1000 | Deposit | 1000.00 | Wed Aug 13 20:01:56 2025
+Acc#1006 | Transfer Out | 1000.00 | Wed Aug 13 20:07:21 2025
+Acc#1000 | Transfer In | 1000.00 | Wed Aug 13 20:07:21 2025
