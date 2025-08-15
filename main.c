@@ -6784,7 +6784,6 @@ void OnlineHome()
         printCentered("4. Logout.", 4);
     }
     printCentered("         5. Admin Dashboard.", 5);
-    printCentered("         6. Get Sales Data.", 5);
     printCentered("0. Exit.  ", 4);
 
     int width, space;
@@ -6882,9 +6881,6 @@ void OnlineHome()
         {
             adminSignIn();
         }
-        break;
-    case 6:
-        getSalesData(0);
         break;
     default:
         printCentered("Invalid Choice!", 4);
