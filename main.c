@@ -76,6 +76,7 @@ void dailyIncome();
 void monthlyIncome();
 void HalfYearlyIncome();
 void yearlyIncome();
+void customDateIncome();
 
 void adminPanelSupplierManagement(); // 6. Admin Panel Supplier Management- Home
 void addSupplier();
@@ -96,6 +97,7 @@ void customerPasswordReset();
 void listOfCustomer();
 void listOfCustomerData();
 void listOfAdminData();
+void customerForgetPassword();
 
 /*-------Global Variable Section------*/
 char current_user_admin[25];
@@ -881,7 +883,9 @@ void customerSignIn()
         case 1:
             customerSignIn();
             break;
-            // reset pass not yet done
+        case 2:
+            customerForgetPassword();
+            break;
         case 3:
             customerPanelAuthentication();
             break;
@@ -3576,6 +3580,7 @@ void adminPanelAccounts() // HOME
     printCentered("     2. Monthly Income", 15);
     printCentered("          3. Half Yearly Income", 15);
     printCentered("    4. Yearly Income", 15);
+    printCentered("    5. Custom Range", 15);
     printCentered(" 0. Admin-Home", 4);
     printf("\n\n\n");
 
@@ -3587,19 +3592,23 @@ void adminPanelAccounts() // HOME
     case 1:
         dailyIncome();
         break;
-        // yet not done
+
     case 2:
         monthlyIncome();
         break;
-    // yet not done
+
     case 3:
         HalfYearlyIncome();
         break;
-    // yet not done
+
     case 4:
         yearlyIncome();
         break;
-        // yet not done
+
+    case 5:
+        customDateIncome();
+        break;
+
     case 0:
         adminPanelHome();
         break;
@@ -4010,6 +4019,107 @@ void yearlyIncome()
 //*---------------Admin Panel (Accounts) Yearly Income End----------------*/
 //
 //
+void customDateIncome()
+{
+    char headingName[40] = "Accounts";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n");
+    printCentered(" Filter Income by date", 15);
+    printCentered(" --------------------------", 15);
+
+    // display current time
+    currentDateTime();
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    // for space - 2 the reason is to make it align in center
+    for (int i = 0; i < space - 2; i++)
+        printf(" ");
+    printf("Current Date: %d-%d-%d", currentDate.day, currentDate.mon, currentDate.year);
+    printf("\n\n");
+
+    int startingDay, startingMon, startingYear, startDate;
+    setColor(15);
+    for (int i = 0; i < space - 2; i++)
+        printf(" ");
+    printf("Input starting date (Day Mon Year): ");
+    scanf("%d %d %d", &startingDay, &startingMon, &startingYear);
+    startDate = startingDay + (startingMon * 30) + (startingYear * 365);
+
+    int endingDay, endingMon, endingYear, endDate;
+    setColor(15);
+    for (int i = 0; i < space - 2; i++)
+        printf(" ");
+    printf("Input ending date (Day Mon Year): ");
+    scanf("%d %d %d", &endingDay, &endingMon, &endingYear);
+    endDate = endingDay + (endingMon * 30) + (endingYear * 365);
+
+    int index = getSalesData(0);
+
+    int i, found = 0, proDate;
+    for (i = 0; i < index; i++)
+    {
+        proDate = allSalesProduct[i].saleDate.day + (allSalesProduct[i].saleDate.mon * 30) + (allSalesProduct[i].saleDate.year * 365);
+        if (startDate <= proDate && proDate <= endDate)
+        {
+            found = 1;
+            break;
+        }
+    }
+    printf("\n\n");
+
+    if (found)
+    {
+        float sumTotal = 0, profit = 0;
+        printCentered("Sales Details", 7);
+        printCentered("----------------", 7);
+        printCentered("Invoice NO.:       Customer-ID:        Product-ID:       Product-Name:        Category:         Unit:         Date:        Total:        Type:", 15);
+        printCentered("-----------------------------------------------------------------------------------------------------------------------------------------------", 9);
+
+        for (int i = 0; i < index; i++)
+        {
+            proDate = allSalesProduct[i].saleDate.day + (allSalesProduct[i].saleDate.mon * 30) + (allSalesProduct[i].saleDate.year * 365);
+            if (startDate <= proDate && proDate <= endDate)
+            {
+                printf("       %010llu            %d             %d            %s               %s              %d         %d-%d-%d      %.2f      %s\n", allSalesProduct[i].invoiceNum, allSalesProduct[i].customerID, allSalesProduct[i].pID, allSalesProduct[i].pName, allSalesProduct[i].pCat, allSalesProduct[i].pUnit, allSalesProduct[i].saleDate.day, allSalesProduct[i].saleDate.mon, allSalesProduct[i].saleDate.year, allSalesProduct[i].totalPrice, allSalesProduct[i].saleMode);
+                sumTotal += allSalesProduct[i].totalPrice;
+            }
+        }
+        printf("\n\n");
+
+        // total sales update
+        printCentered("Total Sales:", 3);
+        printCentered("--------------", 3);
+        int width = getConsoleWidth();
+        int space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal);
+        printf("\n\n");
+
+        // total profit
+        printCentered("Total Profit:", 10);
+        printCentered("--------------", 10);
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("     %.2f", sumTotal * 0.15);
+        printf("\n\n");
+    }
+    else
+    {
+        printCentered("No product sold!", 4);
+        printf("\n\n");
+    }
+    printCentered("   Press any key to exit....", 4);
+    _getch();
+    adminPanelAccounts();
+}
 //
 //*---------------Admin Panel Supplier Management start----------------*/
 void adminPanelSupplierManagement() // HOME
@@ -5176,7 +5286,7 @@ void deleteCustomer()
             fp = fopen("customer_data/data.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%d %s %s %s\n", customerData[i].id, customerData[j].Name, customerData[j].Pass, customerData[j].Email);
+                fprintf(fp, "%d %s %s %s %s\n", customerData[j].id, customerData[j].Name, customerData[j].Pass, customerData[j].Email, customerData[j].phn);
             }
             fclose(fp);
 
@@ -5235,7 +5345,7 @@ void customerPasswordReset()
     fclose(fp);
 
     listOfCustomerData();
-    decripTech(customerData, index); // for decript data
+    decripTech2(customerData, index); // for decript data
     int width = getConsoleWidth();
     int space = (width - 18) / 2;
     setColor(15);
@@ -5301,7 +5411,7 @@ void customerPasswordReset()
             fp = fopen("customer_data/data.txt", "a");
             for (int j = 0; j < index; j++)
             {
-                fprintf(fp, "%d %s %s %s\n", customerData[j].id, customerData[j].Name, customerData[j].Pass, customerData[j].Email);
+                fprintf(fp, "%d %s %s %s %s\n", customerData[j].id, customerData[j].Name, customerData[j].Pass, customerData[j].Email, customerData[j].phn);
             }
             fclose(fp);
 
@@ -5321,6 +5431,127 @@ void customerPasswordReset()
             printCentered("'Invalid option'...press any key to try again.", 4);
             _getch();
             customerPasswordReset();
+        }
+    }
+    else
+    {
+        printCentered("     User has not been found!", 4);
+        printf("\n\n");
+        printCentered("          Press any key to return Home.....", 10);
+        _getch();
+        adminPanelUserManagement();
+    }
+}
+
+void customerForgetPassword()
+{
+    char headingName[40] = "User Management";
+    menuUI(headingName);
+    printCentered2(current_user_admin, "Home | Contact | About | Profile. ", 11);
+    printf("\n");
+    printCentered("OneMart", 10);
+    printCentered("------------------------", 10);
+    printf("\n\n");
+    printCentered("User Password Reset", 15);
+    printCentered(" --------------------------", 9);
+    printf("\n\n");
+
+    int index;
+    char usPass[20];
+    char usName[30];
+
+    FILE *fp;
+    fp = fopen("customer_data/customer_index.txt", "r");
+    fscanf(fp, "%d", &index);
+    fclose(fp);
+
+    listOfCustomerData();
+    decripTech2(customerData, index); // for decript data
+    int width = getConsoleWidth();
+    int space = (width - 18) / 2;
+    setColor(15);
+    for (int i = 0; i < space; i++)
+        printf(" ");
+    printf("Input User Name: ", 15);
+    scanf("%s", usName);
+    printf("\n");
+
+    int pass, i, found = 0;
+    for (i = 0; i < index; i++)
+    {
+
+        if (strcmp(customerData[i].Name, usName) == 0)
+        {
+            pass = i;
+            found = 1;
+            break;
+        }
+    }
+
+    // user found
+    if (found)
+    {
+        printCentered("User Found...", 10);
+        printCentered("-----------------------", 10);
+        printCentered("|     ID:       Name:        Password:            Email:  |", 9);
+        printCentered("==========================================================", 9);
+
+        printf("                                                %d     %s      %s         %s \n", customerData[i].id, customerData[i].Name, customerData[i].Pass, customerData[i].Email);
+        printf("\n\n\n\n\n");
+        printCentered("     Are you sure you want to change Password?", 15);
+        printCentered("     1. YES", 10);
+        printCentered("    2. NO", 4);
+
+        // take input
+        int option;
+        width = getConsoleWidth();
+        space = (width - 18) / 2;
+        setColor(15);
+        for (int i = 0; i < space; i++)
+            printf(" ");
+        printf("Choose Option: ");
+        scanf("%d", &option);
+        printf("\n\n");
+
+        switch (option)
+        {
+        case 1:
+
+            for (int i = 0; i < space; i++)
+                printf(" ");
+            printf("Input New Password: ", 15);
+            scanf("%s", usPass);
+            printf("\n\n");
+
+            strcpy(customerData[pass].Pass, usPass);
+            encripTech(customerData, index); // again encript data
+
+            // Latest Data Send to Costomer - FILE
+            fp = fopen("customer_data/data.txt", "w"); // delete previous data
+            fclose(fp);
+            fp = fopen("customer_data/data.txt", "a");
+            for (int j = 0; j < index; j++)
+            {
+                fprintf(fp, "%d %s %s %s %s\n", customerData[j].id, customerData[j].Name, customerData[j].Pass, customerData[j].Email, customerData[j].phn);
+            }
+            fclose(fp);
+
+            printf("\n\n");
+            printCentered("'Password Reset Done'....Press any key to return Home.", 4);
+            _getch();
+            OnlineHome();
+
+        case 2:
+            printCentered("Password Reset cancel!", 4);
+            printf("\n\n");
+            printCentered("          Press any key to return Home.....", 10);
+            _getch();
+            OnlineHome();
+        default:
+            printf("\n\n");
+            printCentered("'Invalid option'...press any key to try again.", 4);
+            _getch();
+            customerForgetPassword();
         }
     }
     else
@@ -5735,6 +5966,7 @@ void decripTech(struct user Data[100], int index)
         Data[lastIndex].Name[i] = Data[lastIndex].Name[i] - 5;
     }
 }
+
 void decripTech2(struct user Data[100], int index)
 {
     for (int j = 0; j < index; j++)
