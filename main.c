@@ -20,6 +20,7 @@ int getSalesData(int index);
 int getOfferData(int index);
 void getUserLenaDena();
 void updateLenadena(float total, int userIndex);
+void logoDisplay();
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -6729,6 +6730,23 @@ void menuProfile()
 }
 //
 //
+void logoDisplay()
+{
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n");
+    printCentered("                                        _______ __    _ _______ __   __ _______ ______ _______ ", 4);
+    printCentered("                                       |       |  |  | |       |  |_|  |   _   |    _ |       |", 2);
+    printCentered("                                       |   _   |   |_| |    ___|       |  |_|  |   | ||_     _|", 14);
+    printCentered("                                       |  | |  |       |   |___|       |       |   |_||_|   |  ", 1);
+    printCentered("                                       |  |_|  |  _    |    ___|       |       |    __  |   |  ", 13);
+    printCentered("                                       |       | | |   |   |___| ||_|| |   _   |   |  | |   |  ", 3);
+    printCentered("                                       |_______|_|  |__|_______|_|   |_|__| |__|___|  |_|___|  ", 15);
+
+    
+    printf("\n\n\n\n\n\n\n\n\n");
+    printCentered("                                        Press any key to continue....", 15);
+    _getch();
+    // system("cls");
+}
 //
 /*-----------------HOME START----------------------*/
 void OnlineHome()
@@ -7188,6 +7206,8 @@ void OnlineHome()
 /*-----------------MAIN FUNCTION START----------------------*/
 int main()
 {
+    logoDisplay(); // logo of OneMart
+
     showUI(); // for welcome page only
 
     int choice;
