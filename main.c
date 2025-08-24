@@ -21,6 +21,8 @@ int getOfferData(int index);
 void getUserLenaDena();
 void updateLenadena(float total, int userIndex);
 void logoDisplay();
+void Help();
+int main();
 
 void encripTech(struct user Data[100], int index); // Caesar Cypher - For Password
 void decripTech(struct user Data[100], int index);
@@ -346,14 +348,57 @@ void showUI()
     drawBorderLine('=');
 
     printf("\n\n");
+
+    printf("\n\n\n\n\n\n\n\n");
+    printCentered(" _______ __    _ _______ __   __ _______ ______ _______ ", 4);
+    printCentered("|       |  |  | |       |  |_|  |   _   |    _ |       |", 2);
+    printCentered("|   _   |   |_| |    ___|       |  |_|  |   | ||_     _|", 14);
+    printCentered("|  | |  |       |   |___|       |       |   |_||_|   |  ", 1);
+    printCentered("|  |_|  |  _    |    ___|       |       |    __  |   |  ", 13);
+    printCentered("|       | | |   |   |___| ||_|| |   _   |   |  | |   |  ", 3);
+    printCentered("|_______|_|  |__|_______|_|   |_|__| |__|___|  |_|___|  ", 15);
+
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+
     printCentered(" [1] Start", 10); // Green
     printCentered("[2] Help", 14);   // Yellow
     printCentered("[3] Exit", 4);    // Red
 
-    printf("\n\n");
+    printf("\n");
     drawBorderLine('=');
     printCentered("Use number keys to select.", 8);
     drawBorderLine('=');
+    int choice;
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    switch (choice)
+    {
+    case 1:
+        system("cls");
+        OnlineHome();
+        break;
+    case 2:
+        Help();
+        break;
+    case 3:
+        system("cls");
+        printCentered("Goodbye!", 4);
+        break;
+    default:
+        printCentered("Invalid Choice!", 4);
+        showUI();
+    }
+}
+void Help()
+{
+    char headingName[40] = "Help Section";
+    menuUI(headingName);
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n");
+    printCentered("Not Yet Done", 4);
+    printCentered("Press any key to back..", 10);
+    _getch();
+    showUI();
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 // for heading only
 void menuUI(char headingName[])
@@ -362,8 +407,6 @@ void menuUI(char headingName[])
     drawBorderLine('=');
     printCentered(headingName, 11);
     drawBorderLine('=');
-    // drawBorderLine('=');
-    // drawBorderLine('=');
 }
 /*-------------welcome page END-------------*/
 //
@@ -6581,49 +6624,52 @@ void menuAbout()
 {
     char headingName[10] = "OneMart";
     menuUI(headingName);
-    printf("\n\n");
 
-    printCentered(" ===========\n", 3);
-    printCentered("About\n", 3);
-    printCentered(" ===========\n", 3);
-    printf("\n"); // alinment does not match for \n\n
+    printCentered("About Us\n", 3);
+    printCentered(" ===============", 3);
 
     printf("                                                      Version       : 1.0.0\n");
     printf("                                                      Release Date  : August 2025\n");
     printf("                                                      Developed By  : Najmus Sakib\n");
+    setColor(10);
     printf("                                                                    : Mostakin Ahmed\n");
+    setColor(7);
     printf("                                                                    : Shardil Shafat\n");
-    printf("                                                      Environment   : C Language, File Handling, CLI\n\n");
+    printf("                                                      Environment   : C Language, File Handling, CLI\n");
 
-    printCentered("----------------------------------------------\n", 10);
-    printCentered("Purpose:\n", 10);
+    printCentered("----------------------------------------------", 10);
+    printCentered("Purpose:", 10);
     printf("                                                      Efficiently manage stock levels, monitor inventory\n");
     printf("                                                      changes, and support inventory operations for small\n");
-    printf("                                                      to medium-sized businesses.\n\n");
+    printf("                                                      to medium-sized businesses.\n");
 
-    printCentered("----------------------------------------------\n", 10);
-    printCentered("Developer Contact:\n", 10);
+    printCentered("----------------------------------------------", 10);
+    printCentered("Developer Contact:", 10);
+    setColor(9);
     printf("                                                      Dev-1\n");
     printf("                                                      Name  : Najmus Sakib\n");
     printf("                                                      Email : najmussakib528@gmail.com\n");
     printf("                                                      GitHub: github.com/NajmusSakib367\n\n");
+    setColor(7);
+    setColor(10);
     printf("                                                      Dev-2\n");
     printf("                                                      Name  : Mostakin Ahmed\n");
-    printf("                                                      Email : mostakinahmed???@gmail.com\n");
+    printf("                                                      Email : mostakin3@gmail.com\n");
     printf("                                                      GitHub: github.com/mostakinahmed\n\n");
+    setColor(7);
     printf("                                                      Dev-3\n");
     printf("                                                      Name  : Shadril Shafat\n");
     printf("                                                      Email : shadrilshafat???@gmail.com\n");
-    printf("                                                      GitHub: github.com/shadril\n\n");
+    printf("                                                      GitHub: github.com/shadril\n");
 
-    printCentered("----------------------------------------------\n", 10);
+    printCentered("----------------------------------------------", 10);
     printCentered("Organization:\n", 10);
     printf("                                                      Name   : Async Coders Ltd.\n");
     printf("                                                      Address: 123 Business Road, Dhaka 1207, Bangladesh\n");
-    printf("                                                      Website: www.onemart.com.bd\n\n");
+    printf("                                                      Website: www.onemart.com.bd\n");
 
-    printCentered("----------------------------------------------\n", 10);
-    printCentered("License & Disclaimer:\n", 10);
+    printCentered("----------------------------------------------", 10);
+    printCentered("License & Disclaimer:", 10);
     printf("                                                      This software is for academic or internal use only.\n");
     printf("                                                      Redistribution or commercial use is not permitted\n");
     printf("                                                      without prior permission.\n");
@@ -6657,6 +6703,7 @@ void menuProfile()
     fp = fopen("customer_data/customer_index.txt", "r");
     fscanf(fp, "%d", &index);
     fclose(fp);
+    // printf("currentCustomerID %d \n", currentCustomerID);
     for (int i = 0; i < index; i++)
     {
         if (currentCustomerID == customerData[i].id)
@@ -6741,7 +6788,6 @@ void logoDisplay()
     printCentered("                                       |       | | |   |   |___| ||_|| |   _   |   |  | |   |  ", 3);
     printCentered("                                       |_______|_|  |__|_______|_|   |_|__| |__|___|  |_|___|  ", 15);
 
-    
     printf("\n\n\n\n\n\n\n\n\n");
     printCentered("                                        Press any key to continue....", 15);
     _getch();
@@ -7206,33 +7252,7 @@ void OnlineHome()
 /*-----------------MAIN FUNCTION START----------------------*/
 int main()
 {
-    logoDisplay(); // logo of OneMart
-
     showUI(); // for welcome page only
-
-    int choice;
-    printf("\n\nEnter your choice: ");
-    scanf("%d", &choice);
-
-    switch (choice)
-    {
-    case 1:
-        system("cls");
-        OnlineHome();
-        break;
-    case 2:
-        system("cls");
-        printCentered("Help Section Coming Soon!", 14);
-        break;
-    case 3:
-        system("cls");
-        printCentered("Goodbye!", 4);
-        break;
-    default:
-        printCentered("Invalid Choice!", 4);
-        main();
-    }
 
     return 0;
 }
-/*-----------------MAIN FUNCTION END-----------------*/
